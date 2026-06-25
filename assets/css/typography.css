@@ -178,3 +178,10 @@ hr {
   border-top: 1px solid var(--rule);
   margin: var(--space-xl) 0;
 }
+/* MOBILE — prevent Safari auto-zoom */
+@media (max-width: 768px) {
+  h1 {
+    font-size: var(--fs-3xl);
+    line-height: 1.2;
+  }
+}
