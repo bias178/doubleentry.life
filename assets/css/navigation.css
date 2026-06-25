@@ -81,7 +81,6 @@ header .nav-container {
 /* ------------------------------
    MOBILE MENU BUTTON
    ------------------------------ */
-
 .nav-toggle {
   display: none;
   background: none;
@@ -98,6 +97,15 @@ header .nav-container {
   .nav-toggle {
     display: block;
   }
+}
+/* Fix hamburger visibility */
+.nav-toggle {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* ------------------------------
