@@ -74,3 +74,6 @@ footer {
 .section-start-here h2 {
   margin-top: var(--space-md);
 }
+.section-start-here .start-btn {
+  margin-top: var(--space-md);
+}
