@@ -275,3 +275,60 @@ footer {
   background: var(--neutral-50);
   border-top: 1px solid var(--neutral-200);
 }
+/* ============================================
+   MOBILE OPTIMIZATION — final pass
+   ============================================ */
+
+@media (max-width: 768px) {
+
+  /* Reduce vertical padding */
+  .section {
+    padding-top: var(--space-3xl);
+    padding-bottom: var(--space-3xl);
+  }
+
+  .hero {
+    padding-top: var(--space-4xl);
+    padding-bottom: var(--space-4xl);
+  }
+
+  /* Titles */
+  h1 {
+    font-size: var(--fs-2xl);
+    line-height: 1.2;
+  }
+
+  h2 {
+    font-size: var(--fs-xl);
+  }
+
+  /* Lead text */
+  .lead {
+    font-size: var(--fs-sm);
+    line-height: 1.55;
+  }
+
+  /* Bill device */
+  .bill-device {
+    padding: var(--space-xl);
+    margin-top: var(--space-xl);
+  }
+
+  .bill-avatar {
+    width: 120px;
+    margin-bottom: var(--space-md);
+  }
+
+  /* Buttons */
+  .btn {
+    width: 100%;
+    text-align: center;
+    margin-bottom: var(--space-md);
+  }
+
+  /* Grid becomes single column */
+  .grid-2 {
+    grid-template-columns: 1fr;
+    gap: var(--space-2xl);
+  }
+}
