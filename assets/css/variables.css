@@ -69,6 +69,8 @@
   --space-2xl: 3rem;
   --space-3xl: 4rem;
   --space-4xl: 6rem;
+  --space-5xl: 8rem;
+  --space-6xl: 10rem;
 }
 
 /* ------------------------------
@@ -88,6 +90,10 @@
   --shadow-sm: 0 2px 6px rgba(0,0,0,0.06);
   --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
   --shadow-lg: 0 16px 40px rgba(0,0,0,0.06);
+
+  /* Soft refined shadows (global polish) */
+  --shadow-soft: 0 8px 20px rgba(0,0,0,0.06);
+  --shadow-medium: 0 12px 28px rgba(0,0,0,0.08);
 }
 
 /* ------------------------------
