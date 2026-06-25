@@ -4,21 +4,19 @@
    ============================================ */
 
 /* ------------------------------
-   GLOBAL WRAPPERS
+   CONTAINER
    ------------------------------ */
 
 .container {
   width: 100%;
-  max-width: 1100px;
+  max-width: 1180px;
   margin: 0 auto;
-  padding-left: var(--space-xl);
-  padding-right: var(--space-xl);
+  padding: 0 var(--space-lg);
 }
 
 @media (max-width: 768px) {
   .container {
-    padding-left: var(--space-lg);
-    padding-right: var(--space-lg);
+    padding: 0 var(--space-lg);
   }
 }
 
@@ -27,30 +25,20 @@
    ------------------------------ */
 
 .section {
+  padding-top: var(--space-5xl);
+  padding-bottom: var(--space-5xl);
+}
+
+.section-narrow {
+  max-width: 720px;
+  margin: 0 auto;
   padding-top: var(--space-4xl);
   padding-bottom: var(--space-4xl);
 }
 
-.section-narrow {
-  max-width: 760px;
-  margin: 0 auto;
-}
-
-.section-header {
-  margin-bottom: var(--space-2xl);
-}
-
-/* Eyebrow + Title + Lead */
-.section-header .eyebrow {
-  margin-bottom: var(--space-sm);
-}
-
-.section-header h2 {
-  margin-bottom: var(--space-sm);
-}
-
-.section-header .lead {
-  max-width: 60ch;
+.section > .container {
+  margin-top: var(--space-xl);
+  margin-bottom: var(--space-xl);
 }
 
 /* ------------------------------
@@ -60,7 +48,8 @@
 .grid-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--space-2xl);
+  gap: var(--space-3xl);
+  align-items: center;
 }
 
 .grid-3 {
@@ -79,6 +68,7 @@
   .grid-2,
   .grid-3 {
     grid-template-columns: 1fr;
+    gap: var(--space-2xl);
   }
 }
 
@@ -141,147 +131,47 @@
    RESPONSIVE UTILITIES
    ------------------------------ */
 
-.hide-mobile {
-  display: block;
-}
+.hide-mobile { display: block; }
+.hide-desktop { display: none; }
 
 @media (max-width: 768px) {
-  .hide-mobile {
-    display: none;
-  }
+  .hide-mobile { display: none; }
+  .hide-desktop { display: block; }
 }
 
-.hide-desktop {
-  display: none;
-}
+/* ------------------------------
+   HERO SPACING
+   ------------------------------ */
 
-@media (max-width: 768px) {
-  .hide-desktop {
-    display: block;
-  }
-}
-/* ============================================
-   RITMO VERTICALE — GLOBAL
-   ============================================ */
-
-.section {
-  padding-top: var(--space-5xl);
-  padding-bottom: var(--space-5xl);
-}
-
-.section-narrow {
-  padding-top: var(--space-4xl);
-  padding-bottom: var(--space-4xl);
-}
-
-/* Titoli principali */
-h1, h2 {
-  margin-bottom: var(--space-lg);
-}
-
-/* Lead text */
-.lead {
-  margin-bottom: var(--space-xl);
-}
-
-/* Margini tra componenti */
-.mt-sm { margin-top: var(--space-sm); }
-.mt-md { margin-top: var(--space-md); }
-.mt-lg { margin-top: var(--space-lg); }
-.mt-xl { margin-top: var(--space-xl); }
-.mt-2xl { margin-top: var(--space-2xl); }
-
-/* Spazio extra sotto l’hero */
 .hero {
   padding-top: var(--space-6xl);
   padding-bottom: var(--space-6xl);
 }
-/* ============================================
-   GRID & LAYOUT — final refinement
-   ============================================ */
 
-/* Container width refinement */
-.container {
-  max-width: 1180px;
-  margin: 0 auto;
-  padding: 0 var(--space-lg);
+/* ------------------------------
+   SECTION BACKGROUNDS
+   ------------------------------ */
+
+.section-start-here {
+  background: var(--teal-mid);
 }
 
-/* Two-column grid refinement */
-.grid-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-3xl);
-  align-items: center;
-}
+/* ------------------------------
+   GLOBAL VISUAL POLISH
+   ------------------------------ */
 
-/* Narrow sections */
-.section-narrow {
-  max-width: 720px;
-  margin: 0 auto;
-}
-
-/* Vertical spacing consistency */
-.section > .container {
-  margin-top: var(--space-xl);
-  margin-bottom: var(--space-xl);
-}
-/* ============================================
-   MICRO-VISUAL REFINEMENT — final polish
-   ============================================ */
-
-/* Softer global shadow */
-:root {
-  --shadow-soft: 0 8px 20px rgba(0,0,0,0.06);
-  --shadow-medium: 0 12px 28px rgba(0,0,0,0.08);
-}
-
-/* Cards and devices */
 .card,
 .bill-device {
   border-radius: 14px;
   box-shadow: var(--shadow-medium);
 }
 
-/* Buttons */
-.btn {
-  border-radius: 6px;
-}
-
-/* Neutral colors refinement */
-body {
-  color: var(--neutral-900);
-}
-
-.lead {
-  color: var(--neutral-700);
-}
-
-.ledger-label {
-  color: var(--neutral-600);
-}
-
-.ledger-value {
-  color: var(--neutral-800);
-}
-
-/* Section backgrounds */
-.section-start-here {
-  background: var(--teal-mid);
-}
-
-/* Footer refinement */
-footer {
-  background: var(--neutral-50);
-  border-top: 1px solid var(--neutral-200);
-}
-/* ============================================
-   MOBILE OPTIMIZATION — final pass
-   ============================================ */
+/* ------------------------------
+   MOBILE OPTIMIZATION
+   ------------------------------ */
 
 @media (max-width: 768px) {
 
-  /* Reduce vertical padding */
   .section {
     padding-top: var(--space-3xl);
     padding-bottom: var(--space-3xl);
@@ -292,23 +182,11 @@ footer {
     padding-bottom: var(--space-4xl);
   }
 
-  /* Titles */
-  h1 {
-    font-size: var(--fs-2xl);
-    line-height: 1.2;
-  }
-
-  h2 {
-    font-size: var(--fs-xl);
-  }
-
-  /* Lead text */
   .lead {
     font-size: var(--fs-sm);
     line-height: 1.55;
   }
 
-  /* Bill device */
   .bill-device {
     padding: var(--space-xl);
     margin-top: var(--space-xl);
@@ -319,16 +197,9 @@ footer {
     margin-bottom: var(--space-md);
   }
 
-  /* Buttons */
   .btn {
     width: 100%;
     text-align: center;
     margin-bottom: var(--space-md);
-  }
-
-  /* Grid becomes single column */
-  .grid-2 {
-    grid-template-columns: 1fr;
-    gap: var(--space-2xl);
   }
 }
