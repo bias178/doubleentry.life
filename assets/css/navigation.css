@@ -143,3 +143,16 @@ body {
     padding-top: 70px;
   }
 }
+/* MOBILE NAV — definitive */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+  }
+
+  .nav-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    padding: var(--space-xl);
+  }
+}
