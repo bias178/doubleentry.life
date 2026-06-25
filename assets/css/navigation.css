@@ -1,0 +1,149 @@
+/* ============================================
+   DOUBLE ENTRY LIFE — NAVIGATION
+   Editoriale Moderno Tecnico · Strutturato
+   ============================================ */
+
+/* ------------------------------
+   HEADER WRAPPER
+   ------------------------------ */
+
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(250, 250, 248, 0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--rule);
+  padding: var(--space-md) 0;
+}
+
+header .nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-left: var(--space-xl);
+  padding-right: var(--space-xl);
+}
+
+@media (max-width: 768px) {
+  header .nav-container {
+    padding-left: var(--space-lg);
+    padding-right: var(--space-lg);
+  }
+}
+
+/* ------------------------------
+   BRAND
+   ------------------------------ */
+
+.nav-brand {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xxs);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--teal);
+  text-decoration: none;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ------------------------------
+   NAV LINKS (DESKTOP)
+   ------------------------------ */
+
+.nav-links {
+  display: flex;
+  gap: var(--space-xl);
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xxs);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--neutral-700);
+  text-decoration: none;
+  transition: color .2s ease;
+}
+
+.nav-links a:hover {
+  color: var(--teal);
+}
+
+/* Active link */
+.nav-links .active a {
+  color: var(--teal);
+  font-weight: 600;
+}
+
+/* ------------------------------
+   MOBILE MENU BUTTON
+   ------------------------------ */
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--neutral-700);
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .nav-toggle {
+    display: block;
+  }
+}
+
+/* ------------------------------
+   MOBILE MENU PANEL
+   ------------------------------ */
+
+.nav-mobile {
+  display: none;
+  flex-direction: column;
+  gap: var(--space-lg);
+  padding: var(--space-xl);
+  border-top: 1px solid var(--rule);
+  background: var(--warm-white);
+}
+
+.nav-mobile a {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--neutral-700);
+  text-decoration: none;
+}
+
+.nav-mobile a:hover {
+  color: var(--teal);
+}
+
+/* When menu is open */
+.nav-mobile.open {
+  display: flex;
+}
+
+/* ------------------------------
+   SPACING FIX FOR FIXED HEADER
+   ------------------------------ */
+
+body {
+  padding-top: 80px;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding-top: 70px;
+  }
+}
