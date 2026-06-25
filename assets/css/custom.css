@@ -77,3 +77,54 @@ footer {
 .section-start-here .start-btn {
   margin-top: var(--space-md);
 }
+/* ============================================
+   HOMEPAGE MICRO‑FIX PATCH — DEFINITIVO
+   ============================================ */
+
+/* HERO — spacing & readability */
+.section.hero h1 {
+  margin-bottom: var(--space-xl);
+}
+
+.section.hero .lead {
+  max-width: 55ch;
+  margin-top: var(--space-md);
+}
+
+.section.hero .mt-xl .btn + .btn {
+  margin-top: var(--space-sm);
+}
+
+/* BILL DEVICE — spacing */
+.bill-device-wrapper {
+  margin-top: var(--space-3xl);
+}
+
+.ledger-value {
+  font-size: var(--fs-md);
+}
+
+/* START HERE — alignment & spacing */
+.section-start-here {
+  padding-top: var(--space-3xl);
+  padding-bottom: var(--space-3xl);
+}
+
+.section-start-here h3 {
+  margin-top: var(--space-md);
+}
+
+.section-start-here .btn {
+  margin-top: var(--space-md);
+  max-width: 260px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* MOBILE — global vertical rhythm */
+@media (max-width: 768px) {
+  .section {
+    padding-top: var(--space-4xl);
+    padding-bottom: var(--space-4xl);
+  }
+}
