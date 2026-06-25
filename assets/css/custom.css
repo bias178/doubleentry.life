@@ -157,3 +157,47 @@ footer {
 .section {
   margin-top: var(--space-5xl);
 }
+/* ============================================
+   NAVBAR MOBILE FIX
+   ============================================ */
+
+/* Nascondi menu desktop su mobile */
+@media (max-width: 768px) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+/* Mostra menu mobile */
+@media (max-width: 768px) {
+  .nav-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+  }
+}
+
+/* ============================================
+   HERO — anti zoom iOS
+   ============================================ */
+@media (max-width: 768px) {
+  .section.hero h1 {
+    font-size: var(--fs-3xl);
+    line-height: 1.2;
+  }
+}
+
+/* ============================================
+   GLOBAL SECTION RHYTHM
+   ============================================ */
+.section {
+  padding-top: var(--space-5xl);
+  padding-bottom: var(--space-5xl);
+}
+
+/* START HERE refinement */
+.section-start-here {
+  padding-top: var(--space-4xl);
+  padding-bottom: var(--space-4xl);
+}
