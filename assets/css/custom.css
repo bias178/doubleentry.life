@@ -63,3 +63,6 @@ footer {
     padding-bottom: var(--space-4xl);
   }
 }
+.hero h1 {
+  margin-bottom: var(--space-xl);
+}
