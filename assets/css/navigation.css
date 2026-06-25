@@ -23,16 +23,14 @@ header .nav-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 1100px;
+  max-width: 1180px;
   margin: 0 auto;
-  padding-left: var(--space-xl);
-  padding-right: var(--space-xl);
+  padding: 0 var(--space-lg);
 }
 
 @media (max-width: 768px) {
   header .nav-container {
-    padding-left: var(--space-lg);
-    padding-right: var(--space-lg);
+    padding: 0 var(--space-lg);
   }
 }
 
@@ -75,7 +73,6 @@ header .nav-container {
   color: var(--teal);
 }
 
-/* Active link */
 .nav-links .active a {
   color: var(--teal);
   font-weight: 600;
@@ -129,7 +126,6 @@ header .nav-container {
   color: var(--teal);
 }
 
-/* When menu is open */
 .nav-mobile.open {
   display: flex;
 }
