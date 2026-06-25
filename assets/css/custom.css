@@ -66,3 +66,11 @@ footer {
 .hero h1 {
   margin-bottom: var(--space-xl);
 }
+.section-start-here {
+  padding-top: var(--space-3xl);
+  padding-bottom: var(--space-3xl);
+}
+
+.section-start-here h2 {
+  margin-top: var(--space-md);
+}
