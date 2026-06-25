@@ -128,3 +128,32 @@ footer {
     padding-bottom: var(--space-4xl);
   }
 }
+/* MENU mobile */
+.nav-links a {
+  padding: 0 var(--space-xs);
+  font-size: var(--fs-xs);
+}
+
+/* HERO mobile anti-zoom */
+@media (max-width: 768px) {
+  .section.hero h1 {
+    font-size: var(--fs-3xl);
+    line-height: 1.2;
+  }
+}
+
+/* BILL spacing */
+.bill-device-wrapper {
+  margin-top: var(--space-4xl);
+}
+
+/* START HERE spacing */
+.section-start-here {
+  padding-top: var(--space-4xl);
+  padding-bottom: var(--space-4xl);
+}
+
+/* GLOBAL section rhythm */
+.section {
+  margin-top: var(--space-5xl);
+}
