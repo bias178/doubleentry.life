@@ -23,3 +23,6 @@
 
 /* 7. Footer (brand, tagline, links, small print) */
 @import "footer.css";
+
+/* 8. Custom (patch) */
+@import "custom.css";
