@@ -1,0 +1,263 @@
+/* ============================================
+   DOUBLE ENTRY LIFE — COMPONENTS
+   Editoriale Moderno Tecnico · Strutturato
+   ============================================ */
+
+/* ------------------------------
+   BUTTONS
+   ------------------------------ */
+
+.btn {
+  display: inline-block;
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+/* Primary */
+.btn-primary {
+  background: var(--teal);
+  color: white;
+  border: 1px solid var(--teal);
+}
+
+.btn-primary:hover {
+  background: #236666;
+  border-color: #236666;
+}
+
+/* Secondary */
+.btn-secondary {
+  background: transparent;
+  color: var(--teal);
+  border: 1px solid var(--teal-mid);
+}
+
+.btn-secondary:hover {
+  background: var(--teal-light);
+}
+
+/* Ghost */
+.btn-ghost {
+  background: transparent;
+  color: var(--neutral-700);
+  border: none;
+}
+
+.btn-ghost:hover {
+  color: var(--ink);
+}
+
+/* ------------------------------
+   CARDS
+   ------------------------------ */
+
+.card {
+  background: var(--warm-white);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow .2s ease, transform .2s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.card-title {
+  font-family: var(--font-serif);
+  font-size: var(--fs-xl);
+  margin-bottom: var(--space-sm);
+}
+
+.card-text {
+  font-size: var(--fs-md);
+  color: var(--neutral-700);
+  line-height: var(--lh-relaxed);
+}
+
+/* Featured card */
+.card-featured {
+  border-top: 3px solid var(--teal);
+}
+
+/* ------------------------------
+   BADGES
+   ------------------------------ */
+
+.badge {
+  display: inline-block;
+  padding: 2px 6px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xxs);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  border-radius: var(--radius-sm);
+  background: var(--neutral-100);
+  color: var(--neutral-700);
+}
+
+.badge-teal {
+  background: var(--teal-light);
+  color: var(--teal);
+}
+
+/* ------------------------------
+   DIVIDER
+   ------------------------------ */
+
+.divider {
+  border: none;
+  border-top: 1px solid var(--rule);
+  margin: var(--space-2xl) 0;
+}
+
+/* ------------------------------
+   BREADCRUMB
+   ------------------------------ */
+
+.breadcrumb {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xxs);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--neutral-700);
+  margin-bottom: var(--space-lg);
+}
+
+.breadcrumb a {
+  color: var(--neutral-700);
+}
+
+.breadcrumb a:hover {
+  color: var(--teal);
+}
+
+/* ------------------------------
+   INFO BOX (tecnico strutturato)
+   ------------------------------ */
+
+.info-box {
+  border: 1px solid var(--rule);
+  background: var(--neutral-100);
+  padding: var(--space-lg);
+  border-radius: var(--radius-md);
+  margin: var(--space-xl) 0;
+}
+
+.info-box-title {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: var(--space-sm);
+}
+
+.info-box p {
+  margin-bottom: 0;
+}
+
+/* ------------------------------
+   ALERTS
+   ------------------------------ */
+
+.alert {
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+  border: 1px solid;
+  margin-bottom: var(--space-lg);
+}
+
+.alert-info {
+  background: var(--teal-light);
+  border-color: var(--teal-mid);
+  color: var(--teal);
+}
+
+.alert-warn {
+  background: #fff7e6;
+  border-color: #f0d48a;
+  color: #8a6d1f;
+}
+
+.alert-error {
+  background: #fdecea;
+  border-color: #f5b5b0;
+  color: var(--accent);
+}
+
+/* ------------------------------
+   FORMS
+   ------------------------------ */
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: var(--fs-md);
+  background: var(--warm-white);
+  color: var(--ink);
+  transition: border-color .2s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--teal);
+  outline: none;
+}
+
+label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xxs);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-xs);
+  color: var(--neutral-700);
+}
+
+/* ------------------------------
+   TABLES (stile ledger)
+   ------------------------------ */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: var(--space-xl);
+}
+
+th {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--neutral-700);
+  text-align: left;
+  padding-bottom: var(--space-sm);
+  border-bottom: 2px solid var(--rule);
+}
+
+td {
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: var(--fs-md);
+  color: var(--neutral-900);
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
