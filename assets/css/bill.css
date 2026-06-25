@@ -125,3 +125,54 @@
   color: var(--teal-mid);
   border-color: white;
 }
+/* ============================================
+   BILL DEVICE — refined
+   ============================================ */
+
+.bill-device {
+  padding: var(--space-2xl);
+  border-radius: 16px;
+  background: white;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+}
+
+/* Avatar */
+.bill-avatar {
+  width: 150px;
+  margin: 0 auto var(--space-lg);
+  display: block;
+}
+
+/* Ledger rows */
+.ledger-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--neutral-200);
+}
+
+.ledger-row:last-child {
+  border-bottom: none;
+}
+
+.ledger-label {
+  font-size: var(--fs-sm);
+  color: var(--neutral-600);
+}
+
+.ledger-value {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--neutral-800);
+}
+
+/* Quote */
+.bill-device blockquote {
+  font-family: var(--font-serif);
+  font-size: var(--fs-xl);
+  line-height: 1.45;
+  color: var(--neutral-800);
+  max-width: 28ch;
+  margin: var(--space-xl) auto 0;
+  text-align: center;
+}
