@@ -182,3 +182,29 @@ body {
 .hamburger::after {
   top: 6px;
 }
+/* Hamburger icon */
+.hamburger {
+  width: 22px;
+  height: 2px;
+  background: var(--neutral-700);
+  display: block;
+  position: relative;
+}
+
+.hamburger::before,
+.hamburger::after {
+  content: "";
+  width: 22px;
+  height: 2px;
+  background: var(--neutral-700);
+  position: absolute;
+  left: 0;
+}
+
+.hamburger::before {
+  top: -6px;
+}
+
+.hamburger::after {
+  top: 6px;
+}
