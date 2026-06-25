@@ -3,57 +3,40 @@
    Editoriale Moderno Tecnico · Strutturato
    ============================================ */
 
-/* ------------------------------
-   BUTTONS
-   ------------------------------ */
+/* ============================================
+   BUTTONS — refined editorial style
+   ============================================ */
 
 .btn {
-  display: inline-block;
-  padding: var(--space-sm) var(--space-lg);
-  border-radius: var(--radius-sm);
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  text-decoration: none;
-  cursor: pointer;
-  transition: all .2s ease;
+  padding: 0.75rem 1.4rem;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  border-radius: 6px;
+  letter-spacing: 0.2px;
+  transition: all 0.2s ease;
 }
 
-/* Primary */
 .btn-primary {
   background: var(--teal);
+  border-color: var(--teal);
   color: white;
-  border: 1px solid var(--teal);
 }
 
 .btn-primary:hover {
-  background: #236666;
-  border-color: #236666;
+  background: var(--teal-dark);
+  border-color: var(--teal-dark);
 }
 
-/* Secondary */
 .btn-secondary {
   background: transparent;
-  color: var(--teal);
-  border: 1px solid var(--teal-mid);
+  border: 1px solid var(--neutral-300);
+  color: var(--neutral-700);
 }
 
 .btn-secondary:hover {
-  background: var(--teal-light);
+  border-color: var(--neutral-500);
+  color: var(--neutral-900);
 }
-
-/* Ghost */
-.btn-ghost {
-  background: transparent;
-  color: var(--neutral-700);
-  border: none;
-}
-
-.btn-ghost:hover {
-  color: var(--ink);
-}
-
 /* ------------------------------
    CARDS
    ------------------------------ */
