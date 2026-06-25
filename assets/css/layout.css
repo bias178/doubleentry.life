@@ -196,3 +196,33 @@ h1, h2 {
   padding-top: var(--space-6xl);
   padding-bottom: var(--space-6xl);
 }
+/* ============================================
+   GRID & LAYOUT — final refinement
+   ============================================ */
+
+/* Container width refinement */
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 var(--space-lg);
+}
+
+/* Two-column grid refinement */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3xl);
+  align-items: center;
+}
+
+/* Narrow sections */
+.section-narrow {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* Vertical spacing consistency */
+.section > .container {
+  margin-top: var(--space-xl);
+  margin-bottom: var(--space-xl);
+}
