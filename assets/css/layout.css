@@ -226,3 +226,52 @@ h1, h2 {
   margin-top: var(--space-xl);
   margin-bottom: var(--space-xl);
 }
+/* ============================================
+   MICRO-VISUAL REFINEMENT — final polish
+   ============================================ */
+
+/* Softer global shadow */
+:root {
+  --shadow-soft: 0 8px 20px rgba(0,0,0,0.06);
+  --shadow-medium: 0 12px 28px rgba(0,0,0,0.08);
+}
+
+/* Cards and devices */
+.card,
+.bill-device {
+  border-radius: 14px;
+  box-shadow: var(--shadow-medium);
+}
+
+/* Buttons */
+.btn {
+  border-radius: 6px;
+}
+
+/* Neutral colors refinement */
+body {
+  color: var(--neutral-900);
+}
+
+.lead {
+  color: var(--neutral-700);
+}
+
+.ledger-label {
+  color: var(--neutral-600);
+}
+
+.ledger-value {
+  color: var(--neutral-800);
+}
+
+/* Section backgrounds */
+.section-start-here {
+  background: var(--teal-mid);
+}
+
+/* Footer refinement */
+footer {
+  background: var(--neutral-50);
+  border-top: 1px solid var(--neutral-200);
+}
