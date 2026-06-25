@@ -14,11 +14,12 @@
   border-radius: 6px;
   letter-spacing: 0.2px;
   transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .btn-primary {
   background: var(--teal);
-  border-color: var(--teal);
+  border: 1px solid var(--teal);
   color: white;
 }
 
@@ -37,21 +38,22 @@
   border-color: var(--neutral-500);
   color: var(--neutral-900);
 }
-/* ------------------------------
+
+/* ============================================
    CARDS
-   ------------------------------ */
+   ============================================ */
 
 .card {
   background: var(--warm-white);
   border: 1px solid var(--rule);
   border-radius: var(--radius-md);
   padding: var(--space-xl);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-soft);
   transition: box-shadow .2s ease, transform .2s ease;
 }
 
 .card:hover {
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-medium);
   transform: translateY(-2px);
 }
 
@@ -72,9 +74,9 @@
   border-top: 3px solid var(--teal);
 }
 
-/* ------------------------------
+/* ============================================
    BADGES
-   ------------------------------ */
+   ============================================ */
 
 .badge {
   display: inline-block;
@@ -93,9 +95,9 @@
   color: var(--teal);
 }
 
-/* ------------------------------
+/* ============================================
    DIVIDER
-   ------------------------------ */
+   ============================================ */
 
 .divider {
   border: none;
@@ -103,9 +105,9 @@
   margin: var(--space-2xl) 0;
 }
 
-/* ------------------------------
+/* ============================================
    BREADCRUMB
-   ------------------------------ */
+   ============================================ */
 
 .breadcrumb {
   font-family: var(--font-mono);
@@ -124,9 +126,9 @@
   color: var(--teal);
 }
 
-/* ------------------------------
+/* ============================================
    INFO BOX (tecnico strutturato)
-   ------------------------------ */
+   ============================================ */
 
 .info-box {
   border: 1px solid var(--rule);
@@ -149,9 +151,9 @@
   margin-bottom: 0;
 }
 
-/* ------------------------------
+/* ============================================
    ALERTS
-   ------------------------------ */
+   ============================================ */
 
 .alert {
   padding: var(--space-md) var(--space-lg);
@@ -178,9 +180,9 @@
   color: var(--accent);
 }
 
-/* ------------------------------
+/* ============================================
    FORMS
-   ------------------------------ */
+   ============================================ */
 
 input,
 textarea,
@@ -213,9 +215,9 @@ label {
   color: var(--neutral-700);
 }
 
-/* ------------------------------
-   TABLES (stile ledger)
-   ------------------------------ */
+/* ============================================
+   TABLES (ledger style)
+   ============================================ */
 
 table {
   width: 100%;
