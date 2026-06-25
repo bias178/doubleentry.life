@@ -78,25 +78,53 @@ header .nav-container {
   font-weight: 600;
 }
 
-/* ------------------------------
-   MOBILE MENU BUTTON
-   ------------------------------ */
+/*/* MOBILE MENU BUTTON */
 .nav-toggle {
   display: none;
   background: none;
   border: none;
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--neutral-700);
   cursor: pointer;
+
+  /* Fix hamburger visibility */
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @media (max-width: 768px) {
   .nav-toggle {
-    display: block;
+    display: flex;
   }
+}
+
+/* Hamburger icon */
+.hamburger {
+  width: 22px;
+  height: 2px;
+  background: var(--neutral-700);
+  position: relative;
+}
+
+.hamburger::before,
+.hamburger::after {
+  content: "";
+  width: 22px;
+  height: 2px;
+  background: var(--neutral-700);
+  position: absolute;
+  left: 0;
+}
+
+.hamburger::before {
+  top: -6px;
+}
+
+.hamburger::after {
+  top: 6px;
+}
 }
 /* Fix hamburger visibility */
 .nav-toggle {
