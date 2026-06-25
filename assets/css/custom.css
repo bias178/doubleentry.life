@@ -1,0 +1,65 @@
+/* ============================================
+   HOMEPAGE MICRO‑FIX PATCH
+   (Hero · Bill · Start Here · Footer · Mobile)
+   ============================================ */
+
+/* ------------------------------
+   HERO — spacing & readability
+   ------------------------------ */
+
+.hero h1 {
+  margin-bottom: var(--space-lg);
+}
+
+.hero .lead {
+  margin-top: var(--space-md);
+  max-width: 55ch;
+}
+
+.hero .btn + .btn {
+  margin-top: var(--space-sm);
+}
+
+/* ------------------------------
+   BILL DEVICE — spacing & readability
+   ------------------------------ */
+
+.bill-device-wrapper {
+  margin-top: var(--space-3xl);
+}
+
+.ledger-value {
+  font-size: var(--fs-md);
+}
+
+/* ------------------------------
+   START HERE — hierarchy & button width
+   ------------------------------ */
+
+.section-start-here h2 {
+  font-size: var(--fs-2xl);
+}
+
+.section-start-here .start-btn {
+  max-width: 260px;
+  margin: 0 auto;
+}
+
+/* ------------------------------
+   FOOTER — better separation
+   ------------------------------ */
+
+footer {
+  margin-top: var(--space-5xl);
+}
+
+/* ------------------------------
+   MOBILE — global vertical rhythm
+   ------------------------------ */
+
+@media (max-width: 768px) {
+  .section {
+    padding-top: var(--space-4xl);
+    padding-bottom: var(--space-4xl);
+  }
+}
