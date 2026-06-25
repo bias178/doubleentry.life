@@ -14,6 +14,7 @@
 
 /* 4. Componenti (bottoni, card, badge, divider, blockquote, forms) */
 @import "components.css";
+@import "bill.css";
 
 /* 5. Navigazione (header, menu, mobile nav) */
 @import "navigation.css";
