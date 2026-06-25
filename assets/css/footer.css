@@ -96,3 +96,28 @@ footer .footer-container {
   color: var(--neutral-500);
   letter-spacing: .08em;
 }
+/* ============================================
+   FOOTER — refined
+   ============================================ */
+
+footer {
+  padding: var(--space-4xl) 0;
+  background: var(--neutral-50);
+  border-top: 1px solid var(--neutral-200);
+  text-align: center;
+}
+
+.footer-brand {
+  font-family: var(--font-serif);
+  font-size: var(--fs-2xl);
+  margin-bottom: var(--space-sm);
+  color: var(--neutral-900);
+}
+
+.footer-tagline {
+  font-size: var(--fs-sm);
+  color: var(--neutral-600);
+  max-width: 40ch;
+  margin: 0 auto;
+  line-height: 1.5;
+}
