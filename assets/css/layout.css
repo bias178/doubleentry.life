@@ -21,7 +21,7 @@
 }
 
 /* ------------------------------
-   SECTIONS
+   SECTIONS (GLOBAL RHYTHM)
    ------------------------------ */
 
 .section {
@@ -73,8 +73,7 @@
 }
 
 /* ------------------------------
-   LEDGER-LIKE STRUCTURE
-   (per la variante tecnico strutturato)
+   LEDGER STRUCTURE
    ------------------------------ */
 
 .ledger-box {
@@ -172,21 +171,25 @@
 
 @media (max-width: 768px) {
 
+  /* Global rhythm */
   .section {
-    padding-top: var(--space-3xl);
-    padding-bottom: var(--space-3xl);
+    padding-top: var(--space-4xl);
+    padding-bottom: var(--space-4xl);
   }
 
+  /* Hero */
   .hero {
     padding-top: var(--space-4xl);
     padding-bottom: var(--space-4xl);
   }
 
+  /* Lead text */
   .lead {
     font-size: var(--fs-sm);
     line-height: 1.55;
   }
 
+  /* Bill device */
   .bill-device {
     padding: var(--space-xl);
     margin-top: var(--space-xl);
@@ -197,6 +200,7 @@
     margin-bottom: var(--space-md);
   }
 
+  /* Buttons */
   .btn {
     width: 100%;
     text-align: center;
