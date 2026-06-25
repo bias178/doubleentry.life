@@ -172,3 +172,39 @@ hr {
   border-top: 1px solid var(--rule);
   margin: var(--space-xl) 0;
 }
+/* ============================================
+   VISUAL HIERARCHY — refined
+   ============================================ */
+
+/* Eyebrow */
+.eyebrow {
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--neutral-500);
+  margin-bottom: var(--space-sm);
+}
+
+/* Section titles */
+h2 {
+  font-size: var(--fs-3xl);
+  line-height: 1.15;
+  margin-bottom: var(--space-md);
+  color: var(--neutral-900);
+}
+
+/* Subtitles (if used) */
+h3 {
+  font-size: var(--fs-xl);
+  margin-bottom: var(--space-sm);
+  color: var(--neutral-800);
+}
+
+/* Lead text */
+.lead {
+  font-size: var(--fs-md);
+  line-height: 1.6;
+  margin-bottom: var(--space-xl);
+  color: var(--neutral-700);
+}
