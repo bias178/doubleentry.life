@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Entry not found / Double Entry Life</title>
+  <meta name="robots" content="noindex" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --teal:       #2a7a7a;
+      --teal-light: #e6f2f2;
+      --teal-mid:   #c0dede;
+      --red:        #c0392b;
+      --ink:        #1a1a1a;
+      --ink-muted:  #5a5a6a;
+      --paper:      #fafaf8;
+      --neutral:    #6b6b7a;
+      --rule:       #e2e2e0;
+      --font-serif: 'DM Serif Display', Georgia, serif;
+      --font-mono:  'IBM Plex Mono', monospace;
+      --font-sans:  'Inter', system-ui, sans-serif;
+      --max-w:      1080px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; }
+    body { font-family: var(--font-sans); background: var(--paper); color: var(--ink); -webkit-font-smoothing: antialiased; min-height: 100vh; display: flex; flex-direction: column; }
+    a { color: inherit; text-decoration: none; }
+
+    .nav { border-bottom: 1px solid var(--rule); }
+    .nav-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); }
+    .nav-logo span { color: var(--ink); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--neutral); transition: color 0.15s; }
+    .nav-links a:hover { color: var(--teal); }
+
+    .not-found { flex: 1; display: flex; align-items: center; justify-content: center; padding: 4rem 2rem; }
+    .not-found-inner { max-width: 440px; }
+    .not-found-code { font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); margin-bottom: 1.5rem; }
+
+    .error-ledger { background: white; border: 1px solid var(--rule); margin-bottom: 2.5rem; }
+    .error-ledger-header { background: var(--ink); padding: 0.65rem 1.1rem; display: flex; justify-content: space-between; }
+    .error-ledger-label { font-family: var(--font-mono); font-size: 0.57rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.6); }
+    .error-ledger-ref { font-family: var(--font-mono); font-size: 0.55rem; color: rgba(255,255,255,0.35); }
+    .error-ledger-row { display: flex; justify-content: space-between; padding: 0.65rem 1.1rem; border-bottom: 1px solid var(--rule); font-family: var(--font-mono); font-size: 0.68rem; }
+    .error-ledger-row:last-child { border-bottom: none; }
+    .error-ledger-row-label { color: var(--neutral); }
+    .error-ledger-row-val { color: var(--ink); }
+    .error-ledger-row-val.neg { color: var(--red); }
+    .error-ledger-divider { border: none; border-top: 1px solid var(--teal-mid); margin: 0.1rem 1.1rem; }
+
+    .not-found-headline { font-family: var(--font-serif); font-size: clamp(1.5rem, 4vw, 2rem); color: var(--ink); line-height: 1.2; margin-bottom: 1rem; }
+    .not-found-body { font-size: 0.9rem; color: var(--ink-muted); line-height: 1.75; margin-bottom: 2rem; }
+
+    .not-found-links { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn-primary { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--paper); background: var(--teal); padding: 0.75rem 1.25rem; border-radius: 2px; transition: background 0.15s; }
+    .btn-primary:hover { background: #1f5e5e; }
+    .btn-ghost { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--teal); padding: 0.75rem 1.25rem; border: 1px solid var(--teal-mid); border-radius: 2px; transition: border-color 0.15s; }
+    .btn-ghost:hover { border-color: var(--teal); }
+
+    .footer { border-top: 1px solid var(--rule); }
+    .footer-bottom { max-width: var(--max-w); margin: 0 auto; padding: 1.25rem 2rem; display: flex; justify-content: space-between; }
+    .footer-copy { font-family: var(--font-mono); font-size: 0.6rem; color: var(--neutral); }
+    .footer-linkedin { font-family: var(--font-mono); font-size: 0.6rem; color: var(--teal); }
+
+    @media (max-width: 600px) { .nav-links { display: none; } }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  </style>
+</head>
+<body>
+
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">Double&nbsp;<span>Entry</span>&nbsp;Life</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="fy2026.html">FY 2026</a></li>
+        <li><a href="fy2025.html">FY 2025</a></li>
+        <li><a href="fy2024.html">FY 2024</a></li>
+        <li><a href="start.html">Meet Bill</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="not-found" aria-label="Entry not found">
+    <div class="not-found-inner">
+      <p class="not-found-code">Error 404 / Ledger entry not found</p>
+
+      <div class="error-ledger" aria-hidden="true">
+        <div class="error-ledger-header">
+          <span class="error-ledger-label">Request ledger</span>
+          <span class="error-ledger-ref">System / Auto</span>
+        </div>
+        <div class="error-ledger-row">
+          <span class="error-ledger-row-label">Pages requested</span>
+          <span class="error-ledger-row-val">1</span>
+        </div>
+        <div class="error-ledger-row">
+          <span class="error-ledger-row-label">Pages found</span>
+          <span class="error-ledger-row-val neg">0</span>
+        </div>
+        <hr class="error-ledger-divider" />
+        <div class="error-ledger-row">
+          <span class="error-ledger-row-label">Variance</span>
+          <span class="error-ledger-row-val neg">-1 (unreconciled)</span>
+        </div>
+      </div>
+
+      <h1 class="not-found-headline">This entry does not exist in the ledger.</h1>
+      <p class="not-found-body">
+        If it is not recorded, it did not happen. You can return to the homepage or open the current fiscal year.
+      </p>
+      <div class="not-found-links">
+        <a href="index.html" class="btn-primary">Back to home</a>
+        <a href="fy2026.html" class="btn-ghost">Open FY 2026</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer" role="contentinfo">
+    <div class="footer-bottom">
+      <span class="footer-copy">&#169; 2026 Double Entry Life. All entries by Biagio Tozzo.</span>
+      <a href="https://linkedin.com/in/biagiotozzo" target="_blank" rel="noopener" class="footer-linkedin">LinkedIn</a>
+    </div>
+  </footer>
+
+</body>
+</html>

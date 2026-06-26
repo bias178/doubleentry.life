@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- TEMPLATE: update per episode -->
+  <title>EP.00 / [Title] / Double Entry Life</title>
+  <meta name="description" content="[Episode description, 150 chars max]" />
+  <meta property="og:title" content="EP.00 / [Title] / Double Entry Life" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://doubleentry.life/ep-00.html" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --teal:       #2a7a7a;
+      --teal-light: #e6f2f2;
+      --teal-mid:   #c0dede;
+      --red:        #c0392b;
+      --green:      #1a6b3c;
+      --ink:        #1a1a1a;
+      --ink-muted:  #5a5a6a;
+      --paper:      #fafaf8;
+      --neutral:    #6b6b7a;
+      --rule:       #e2e2e0;
+      --font-serif: 'DM Serif Display', Georgia, serif;
+      --font-mono:  'IBM Plex Mono', monospace;
+      --font-sans:  'Inter', system-ui, sans-serif;
+      --max-w:      1080px;
+      --col:        660px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body { font-family: var(--font-sans); background: var(--paper); color: var(--ink); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+
+    /* NAV */
+    .nav { border-bottom: 1px solid var(--rule); position: sticky; top: 0; z-index: 100; background: var(--paper); }
+    .nav-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); }
+    .nav-logo span { color: var(--ink); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--neutral); transition: color 0.15s; }
+    .nav-links a:hover { color: var(--teal); }
+    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; flex-direction: column; gap: 5px; }
+    .nav-hamburger span { display: block; width: 22px; height: 1.5px; background: var(--ink); }
+    .nav-mobile { display: none; position: absolute; top: 56px; left: 0; right: 0; background: var(--paper); border-bottom: 1px solid var(--rule); padding: 1.5rem 2rem; z-index: 99; }
+    .nav-mobile.open { display: block; }
+    .nav-mobile ul { list-style: none; display: flex; flex-direction: column; gap: 1.25rem; }
+    .nav-mobile a { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--neutral); }
+
+    /* ARTICLE HEADER */
+    .article-header { border-bottom: 1px solid var(--rule); background: white; }
+    .article-header-inner { max-width: var(--max-w); margin: 0 auto; padding: 3.5rem 2rem 2.5rem; }
+    .article-meta { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .article-ep-badge { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); background: var(--teal-light); padding: 0.25rem 0.65rem; border-radius: 2px; }
+    .article-fy-badge { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--neutral); border: 1px solid var(--rule); padding: 0.25rem 0.65rem; border-radius: 2px; }
+    /* TEMPLATE: update per episode */
+    .article-concept { font-family: var(--font-mono); font-size: 0.6rem; color: var(--neutral); letter-spacing: 0.04em; }
+    .article-date { font-family: var(--font-mono); font-size: 0.6rem; color: var(--neutral); margin-left: auto; }
+    .article-title { font-family: var(--font-serif); font-size: clamp(1.85rem, 4vw, 2.75rem); line-height: 1.1; color: var(--ink); max-width: 24ch; margin-bottom: 1.25rem; }
+    .article-deck { font-size: 1rem; color: var(--ink-muted); max-width: 54ch; line-height: 1.75; }
+
+    /* LAYOUT */
+    .article-layout { max-width: var(--max-w); margin: 0 auto; padding: 3.5rem 2rem; display: grid; grid-template-columns: var(--col) 1fr; gap: 5rem; align-items: start; }
+
+    /* PROSE */
+    .article-prose {}
+    .article-intro { font-family: var(--font-serif); font-size: 1.12rem; line-height: 1.75; color: var(--ink); margin-bottom: 2.5rem; }
+    .article-section { margin-bottom: 2.5rem; }
+    .article-section-label { display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.85rem; }
+    .article-section-icon { font-size: 1rem; line-height: 1; }
+    .article-section-title { font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--neutral); }
+    .article-section p { font-size: 1rem; color: var(--ink-muted); line-height: 1.8; margin-bottom: 1rem; }
+    .article-section p:last-child { margin-bottom: 0; }
+
+    /* Tip block */
+    .article-tip { background: var(--teal-light); border-left: 3px solid var(--teal); padding: 1.1rem 1.4rem; margin-bottom: 2.5rem; }
+    .article-tip-label { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); margin-bottom: 0.5rem; }
+    .article-tip p { font-size: 0.95rem; color: var(--ink); line-height: 1.7; }
+
+    /* Impact table */
+    .article-impact { border: 1px solid var(--rule); background: white; margin-bottom: 2.5rem; }
+    .article-impact-header { background: var(--ink); padding: 0.65rem 1.1rem; display: flex; justify-content: space-between; }
+    .article-impact-header-label { font-family: var(--font-mono); font-size: 0.57rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.6); }
+    .article-impact-header-ep { font-family: var(--font-mono); font-size: 0.55rem; color: rgba(255,255,255,0.35); }
+    .impact-row { display: flex; justify-content: space-between; align-items: baseline; padding: 0.65rem 1.1rem; border-bottom: 1px solid var(--rule); }
+    .impact-row:last-child { border-bottom: none; }
+    .impact-row.highlight { background: var(--teal-light); }
+    .impact-row-label { font-family: var(--font-mono); font-size: 0.62rem; color: var(--neutral); }
+    .impact-row-val { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink); }
+    .impact-row-val.neg { color: var(--red); }
+    .impact-row-val.pos { color: var(--green); }
+    .impact-divider { border: none; border-top: 1px solid var(--teal-mid); margin: 0.1rem 1.1rem; }
+
+    /* Bio */
+    .article-bio { border-top: 1px solid var(--rule); padding-top: 1.5rem; }
+    .article-bio p { font-family: var(--font-mono); font-size: 0.65rem; color: var(--neutral); line-height: 1.7; }
+
+    /* SIDEBAR */
+    .article-sidebar { position: sticky; top: 5rem; display: flex; flex-direction: column; gap: 1.5rem; }
+
+    /* Tamagotchi */
+    .tamagotchi { width: 240px; margin: 0 auto; background: white; border-radius: 2.4rem; border: 2px solid var(--teal-mid); box-shadow: 0 4px 32px rgba(42,122,122,0.1); overflow: hidden; }
+    .tama-screen { background: #f4f8f8; border: 1px solid var(--teal-mid); margin: 0.85rem; border-radius: 0.85rem; min-height: 310px; overflow: hidden; display: flex; flex-direction: column; }
+    .tama-tabs { display: flex; border-bottom: 1px solid var(--teal-mid); }
+    .tama-tab { flex: 1; padding: 0.5rem 0; font-family: var(--font-mono); font-size: 0.52rem; letter-spacing: 0.05em; text-transform: uppercase; text-align: center; color: var(--teal); cursor: pointer; background: none; border: none; border-right: 1px solid var(--teal-mid); transition: background 0.15s, color 0.15s; }
+    .tama-tab:last-child { border-right: none; }
+    .tama-tab.active { background: var(--teal); color: white; }
+    .tama-panel { display: none; flex: 1; padding: 0.75rem; overflow-y: auto; }
+    .tama-panel.active { display: block; }
+
+    /* Ledger panel */
+    .tama-ledger-title { font-family: var(--font-mono); font-size: 0.52rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--neutral); margin-bottom: 0.5rem; }
+    .tama-row { display: flex; justify-content: space-between; padding: 0.28rem 0.2rem; font-family: var(--font-mono); font-size: 0.58rem; border-bottom: 1px solid rgba(0,0,0,0.04); }
+    /* TEMPLATE: add class "highlight" to the episode focus row */
+    .tama-row.highlight { background: var(--teal-light); border-radius: 2px; margin: 0 -0.2rem; padding: 0.28rem 0.4rem; }
+    .tama-row-label { color: var(--neutral); }
+    .tama-row-val { color: var(--ink); }
+    .tama-row-val.neg { color: var(--red); }
+    .tama-row-val.pos { color: var(--green); }
+    .tama-divider { border: none; border-top: 1px solid var(--teal-mid); margin: 0.3rem 0; }
+
+    /* Vitals panel */
+    .tama-vitals { display: flex; flex-direction: column; gap: 0.85rem; padding-top: 0.25rem; }
+    .tama-vital-header { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.52rem; color: var(--neutral); margin-bottom: 0.28rem; }
+    .tama-vital-compare { color: var(--teal); font-size: 0.48rem; }
+    .tama-vital-track { height: 5px; background: var(--rule); border-radius: 3px; overflow: hidden; position: relative; }
+    .tama-vital-before { position: absolute; height: 100%; background: var(--teal-mid); border-radius: 3px; }
+    .tama-vital-after { position: absolute; height: 100%; background: var(--teal); border-radius: 3px; width: 0; transition: width 1s ease 0.3s; }
+
+    /* Insight panel */
+    .tama-concept { font-family: var(--font-serif); font-size: 0.9rem; color: var(--ink); margin-bottom: 0.5rem; line-height: 1.3; }
+    .tama-insight-body { font-size: 0.65rem; color: var(--ink-muted); line-height: 1.7; margin-bottom: 0.6rem; }
+    .tama-insight-divider { border: none; border-top: 1px solid var(--rule); margin: 0.5rem 0; }
+    .tama-bio { font-family: var(--font-mono); font-size: 0.52rem; color: var(--neutral); line-height: 1.65; }
+
+    /* Physical buttons */
+    .tama-buttons { display: flex; justify-content: center; align-items: center; gap: 0.9rem; padding: 0.65rem 0 1rem; }
+    .tama-btn { width: 28px; height: 28px; border-radius: 50%; background: #ebebeb; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; color: var(--neutral); transition: background 0.15s; }
+    .tama-btn:hover { background: #d8d8d8; }
+    .tama-btn.center { width: 34px; height: 34px; background: var(--teal); color: white; }
+    .tama-btn.center:hover { background: #1f5e5e; }
+
+    /* FY back link */
+    .sidebar-fy-link { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--teal); border-bottom: 1px solid var(--teal-mid); padding-bottom: 2px; text-align: center; display: block; transition: border-color 0.15s; }
+    .sidebar-fy-link:hover { border-color: var(--teal); }
+
+    /* EP NAV */
+    .ep-nav { border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); background: white; }
+    .ep-nav-inner { max-width: var(--max-w); margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; }
+    .ep-nav-cell { padding: 1.25rem 2rem; display: flex; flex-direction: column; gap: 0.3rem; transition: background 0.15s; }
+    .ep-nav-cell:hover { background: var(--teal-light); }
+    .ep-nav-cell.next { text-align: right; border-left: 1px solid var(--rule); }
+    .ep-nav-cell.disabled { opacity: 0.3; pointer-events: none; }
+    .ep-nav-direction { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--neutral); }
+    .ep-nav-ep { font-family: var(--font-mono); font-size: 0.62rem; color: var(--teal); }
+    .ep-nav-title { font-family: var(--font-serif); font-size: 0.95rem; color: var(--ink); line-height: 1.2; }
+
+    /* FOOTER */
+    .footer { border-top: 1px solid var(--rule); }
+    .footer-inner { max-width: var(--max-w); margin: 0 auto; padding: 3rem 2rem; display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; }
+    .footer-brand-name { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); margin-bottom: 0.5rem; }
+    .footer-brand-desc { font-size: 0.8rem; color: var(--neutral); max-width: 28ch; line-height: 1.6; }
+    .footer-links { display: flex; gap: 2rem; }
+    .footer-col-label { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--neutral); margin-bottom: 1rem; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+    .footer-col a { font-size: 0.8rem; color: var(--ink-muted); transition: color 0.15s; }
+    .footer-col a:hover { color: var(--teal); }
+    .footer-bottom { border-top: 1px solid var(--rule); padding: 1.25rem 2rem; max-width: var(--max-w); margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    .footer-copy { font-family: var(--font-mono); font-size: 0.6rem; color: var(--neutral); }
+    .footer-linkedin { font-family: var(--font-mono); font-size: 0.6rem; color: var(--teal); transition: opacity 0.15s; }
+    .footer-linkedin:hover { opacity: 0.7; }
+
+    @media (max-width: 860px) {
+      .article-layout { grid-template-columns: 1fr; gap: 3rem; }
+      .article-sidebar { position: static; }
+      .tamagotchi { width: 100%; max-width: 280px; }
+      .ep-nav-inner { grid-template-columns: 1fr; }
+      .ep-nav-cell.next { text-align: left; border-left: none; border-top: 1px solid var(--rule); }
+      .footer-inner { flex-direction: column; }
+      .footer-links { flex-direction: column; gap: 1.5rem; }
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+      .nav { position: relative; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  </style>
+</head>
+<body>
+
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">Double&nbsp;<span>Entry</span>&nbsp;Life</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="fy2026.html">FY 2026</a></li>
+        <li><a href="fy2025.html">FY 2025</a></li>
+        <li><a href="fy2024.html">FY 2024</a></li>
+        <li><a href="start.html">Meet Bill</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+      <button class="nav-hamburger" aria-label="Open menu" aria-expanded="false" onclick="
+        var open = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!open));
+        document.getElementById('nav-mobile').classList.toggle('open', !open);
+      ">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-mobile" id="nav-mobile">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="fy2026.html">FY 2026</a></li>
+        <li><a href="fy2025.html">FY 2025</a></li>
+        <li><a href="fy2024.html">FY 2024</a></li>
+        <li><a href="start.html">Meet Bill</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ARTICLE HEADER: update all values per episode -->
+  <header class="article-header">
+    <div class="article-header-inner">
+      <div class="article-meta">
+        <span class="article-ep-badge">EP.00</span>
+        <span class="article-fy-badge">FY 2026</span>
+        <span class="article-concept">Asset Depreciation Analysis</span>
+        <span class="article-date">00 Mon 2026</span>
+      </div>
+      <h1 class="article-title">[Episode title goes here]</h1>
+      <p class="article-deck">[One or two sentences. What happens to Bill. What the ledger shows. No rhetoric.]</p>
+    </div>
+  </header>
+
+  <div class="article-layout">
+
+    <!-- PROSE -->
+    <article class="article-prose" aria-label="Article content">
+
+      <p class="article-intro">
+        [Opening narrative. Two short paragraphs. Bill's situation, described factually. No adjectives that are not numbers.]
+      </p>
+
+      <div class="article-section">
+        <div class="article-section-label">
+          <span class="article-section-icon">&#128214;</span>
+          <span class="article-section-title">What accounting says</span>
+        </div>
+        <p>[Technical concept explained clearly. One paragraph. No jargon without definition.]</p>
+        <p>[Second paragraph if needed. Keep it tight.]</p>
+      </div>
+
+      <div class="article-section">
+        <div class="article-section-label">
+          <span class="article-section-icon">&#128269;</span>
+          <span class="article-section-title">In real life</span>
+        </div>
+        <p>[How this applies to Bill's specific numbers. What the ledger shows that his bank does not.]</p>
+        <p>[Second paragraph if needed.]</p>
+      </div>
+
+      <div class="article-tip">
+        <p class="article-tip-label">The tip</p>
+        <p>[One actionable sentence. No exclamation marks. No motivational framing.]</p>
+      </div>
+
+      <!-- Financial impact table: update per episode -->
+      <div class="article-impact">
+        <div class="article-impact-header">
+          <span class="article-impact-header-label">Bill's ledger / EP.00 impact</span>
+          <span class="article-impact-header-ep">FY 2026</span>
+        </div>
+        <div class="impact-row">
+          <span class="impact-row-label">Cash surplus (before)</span>
+          <span class="impact-row-val pos">380</span>
+        </div>
+        <!-- TEMPLATE: highlight the episode's key line -->
+        <div class="impact-row highlight">
+          <span class="impact-row-label">[Episode concept item]</span>
+          <span class="impact-row-val neg">-000</span>
+        </div>
+        <hr class="impact-divider" />
+        <div class="impact-row">
+          <span class="impact-row-label">Real surplus (after)</span>
+          <span class="impact-row-val">000</span>
+        </div>
+        <div class="impact-row">
+          <span class="impact-row-label">Net worth impact</span>
+          <span class="impact-row-val neg">-000</span>
+        </div>
+      </div>
+
+      <div class="article-bio">
+        <p>Bill is 38. He earns 2,500 net, pays a mortgage, drives a financed car, and wonders where his money goes. Every episode, we read his personal ledger through accounting eyes.</p>
+      </div>
+
+    </article>
+
+    <!-- SIDEBAR -->
+    <aside class="article-sidebar" aria-label="Bill's interactive ledger">
+
+      <div class="tamagotchi" role="region" aria-label="Bill's Tamagotchi ledger">
+        <div class="tama-screen">
+          <div class="tama-tabs" role="tablist">
+            <button class="tama-tab active" role="tab" aria-selected="true" aria-controls="panel-ledger" id="tab-ledger" onclick="switchTab('ledger')">Ledger</button>
+            <button class="tama-tab" role="tab" aria-selected="false" aria-controls="panel-vitals" id="tab-vitals" onclick="switchTab('vitals')">Vitals</button>
+            <button class="tama-tab" role="tab" aria-selected="false" aria-controls="panel-insight" id="tab-insight" onclick="switchTab('insight')">Insight</button>
+          </div>
+
+          <!-- LEDGER: update rows per episode, add highlight class to focus row -->
+          <div class="tama-panel active" id="panel-ledger" role="tabpanel" aria-labelledby="tab-ledger">
+            <p class="tama-ledger-title">Monthly Cash Flow / EP.00</p>
+            <div class="tama-row">
+              <span class="tama-row-label">Net salary</span>
+              <span class="tama-row-val pos">2,500</span>
+            </div>
+            <hr class="tama-divider" />
+            <div class="tama-row">
+              <span class="tama-row-label">Mortgage</span>
+              <span class="tama-row-val neg">-800</span>
+            </div>
+            <div class="tama-row">
+              <span class="tama-row-label">Car finance</span>
+              <span class="tama-row-val neg">-350</span>
+            </div>
+            <div class="tama-row">
+              <span class="tama-row-label">Storage box</span>
+              <span class="tama-row-val neg">-60</span>
+            </div>
+            <div class="tama-row">
+              <span class="tama-row-label">Food</span>
+              <span class="tama-row-val neg">-400</span>
+            </div>
+            <div class="tama-row">
+              <span class="tama-row-label">Utilities</span>
+              <span class="tama-row-val neg">-150</span>
+            </div>
+            <div class="tama-row">
+              <span class="tama-row-label">Fuel</span>
+              <span class="tama-row-val neg">-80</span>
+            </div>
+            <div class="tama-row">
+              <span class="tama-row-label">Subscriptions</span>
+              <span class="tama-row-val neg">-70</span>
+            </div>
+            <div class="tama-row">
+              <span class="tama-row-label">Misc</span>
+              <span class="tama-row-val neg">-210</span>
+            </div>
+            <hr class="tama-divider" />
+            <!-- TEMPLATE: add episode-specific highlighted row below -->
+            <div class="tama-row highlight">
+              <span class="tama-row-label">[Episode item]</span>
+              <span class="tama-row-val neg">-000</span>
+            </div>
+            <hr class="tama-divider" />
+            <div class="tama-row">
+              <span class="tama-row-label">Real surplus</span>
+              <span class="tama-row-val">000</span>
+            </div>
+          </div>
+
+          <!-- VITALS: update before/after per episode -->
+          <div class="tama-panel" id="panel-vitals" role="tabpanel" aria-labelledby="tab-vitals">
+            <div class="tama-vitals">
+              <div>
+                <div class="tama-vital-header">
+                  <span>CASH</span>
+                  <span class="tama-vital-compare">00% &#8594; <strong>00%</strong></span>
+                </div>
+                <div class="tama-vital-track">
+                  <div class="tama-vital-before" style="width:46%"></div>
+                  <div class="tama-vital-after" data-width="46%" style="width:0%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="tama-vital-header">
+                  <span>EQUITY</span>
+                  <span class="tama-vital-compare">00% &#8594; <strong>00%</strong></span>
+                </div>
+                <div class="tama-vital-track">
+                  <div class="tama-vital-before" style="width:26%"></div>
+                  <div class="tama-vital-after" data-width="26%" style="width:0%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="tama-vital-header">
+                  <span>STRESS</span>
+                  <span class="tama-vital-compare">00% &#8594; <strong>00%</strong></span>
+                </div>
+                <div class="tama-vital-track">
+                  <div class="tama-vital-before" style="width:64%"></div>
+                  <div class="tama-vital-after" data-width="64%" style="width:0%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="tama-vital-header">
+                  <span>FUTURE</span>
+                  <span class="tama-vital-compare">00% &#8594; <strong>00%</strong></span>
+                </div>
+                <div class="tama-vital-track">
+                  <div class="tama-vital-before" style="width:42%"></div>
+                  <div class="tama-vital-after" data-width="42%" style="width:0%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- INSIGHT: update concept and body per episode -->
+          <div class="tama-panel" id="panel-insight" role="tabpanel" aria-labelledby="tab-insight">
+            <p class="tama-concept">[Concept name from taxonomy]</p>
+            <p class="tama-insight-body">[Two sentences: the accounting definition. Precise, no metaphors.]</p>
+            <p class="tama-insight-body">[One sentence: what this means for Bill's specific numbers.]</p>
+            <hr class="tama-insight-divider" />
+            <p class="tama-bio">Bill / 38 / 2,500 net / mortgage / financed car / open ledger since Apr 2024.</p>
+          </div>
+        </div>
+
+        <div class="tama-buttons" aria-label="Tab navigation">
+          <button class="tama-btn" aria-label="Previous tab" onclick="cycleTabs(-1)">&#8592;</button>
+          <button class="tama-btn center" aria-label="Ledger tab" onclick="switchTab('ledger')">&#9679;</button>
+          <button class="tama-btn" aria-label="Next tab" onclick="cycleTabs(1)">&#8594;</button>
+        </div>
+      </div>
+
+      <!-- Back to FY link: update per episode -->
+      <a href="fy2026.html" class="sidebar-fy-link">Back to FY 2026 ledger</a>
+
+    </aside>
+  </div>
+
+  <!-- EP NAVIGATION: update per episode -->
+  <nav class="ep-nav" aria-label="Episode navigation">
+    <div class="ep-nav-inner">
+      <a href="ep-00.html" class="ep-nav-cell prev">
+        <span class="ep-nav-direction">&#8592; Previous entry</span>
+        <span class="ep-nav-ep">EP.00</span>
+        <span class="ep-nav-title">[Previous episode title]</span>
+      </a>
+      <a href="ep-00.html" class="ep-nav-cell next">
+        <span class="ep-nav-direction">Next entry &#8594;</span>
+        <span class="ep-nav-ep">EP.00</span>
+        <span class="ep-nav-title">[Next episode title]</span>
+      </a>
+    </div>
+  </nav>
+
+  <footer class="footer" role="contentinfo">
+    <div class="footer-inner">
+      <div>
+        <p class="footer-brand-name">Double Entry Life</p>
+        <p class="footer-brand-desc">A financial reporting system rendered as editorial content. Est. April 2024.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <p class="footer-col-label">System</p>
+          <ul>
+            <li><a href="fy2026.html">FY 2026</a></li>
+            <li><a href="fy2025.html">FY 2025</a></li>
+            <li><a href="fy2024.html">FY 2024</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-label">Navigate</p>
+          <ul>
+            <li><a href="start.html">Meet Bill</a></li>
+            <li><a href="about.html">About</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-label">Connect</p>
+          <ul>
+            <li><a href="https://linkedin.com/in/biagiotozzo" target="_blank" rel="noopener">LinkedIn</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">&#169; 2026 Double Entry Life. All entries by Biagio Tozzo.</span>
+      <a href="https://linkedin.com/in/biagiotozzo" target="_blank" rel="noopener" class="footer-linkedin">LinkedIn</a>
+    </div>
+  </footer>
+
+  <script>
+    var tabOrder = ['ledger', 'vitals', 'insight'];
+    var currentTab = 0;
+    var vitalsAnimated = false;
+
+    function switchTab(name) {
+      tabOrder.forEach(function(t, i) {
+        var tab = document.getElementById('tab-' + t);
+        var panel = document.getElementById('panel-' + t);
+        var active = (t === name);
+        tab.classList.toggle('active', active);
+        tab.setAttribute('aria-selected', active);
+        panel.classList.toggle('active', active);
+        if (active) currentTab = i;
+      });
+      if (name === 'vitals' && !vitalsAnimated) {
+        vitalsAnimated = true;
+        setTimeout(function() {
+          document.querySelectorAll('.tama-vital-after').forEach(function(el) {
+            el.style.width = el.getAttribute('data-width');
+          });
+        }, 80);
+      }
+    }
+
+    function cycleTabs(dir) {
+      switchTab(tabOrder[(currentTab + dir + tabOrder.length) % tabOrder.length]);
+    }
+  </script>
+
+</body>
+</html>
