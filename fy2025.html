@@ -107,6 +107,28 @@
     .footer-bottom{border-top:1px solid var(--rule);padding:1.25rem 2rem;max-width:var(--max-w);margin:0 auto;display:flex;justify-content:space-between;align-items:center;}
     .footer-copy{font-family:var(--font-mono);font-size:0.6rem;color:var(--neutral);}
     .footer-linkedin{font-family:var(--font-mono);font-size:0.6rem;color:var(--teal);}
+
+    /* XBRL balance sheet */
+    .xbrl-statement{border:1px solid var(--rule);background:white;}
+    .xbrl-header{background:var(--ink);padding:0.65rem 1rem;}
+    .xbrl-header-title{font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);display:block;margin-bottom:0.15rem;}
+    .xbrl-header-sub{font-family:var(--font-mono);font-size:0.5rem;color:rgba(255,255,255,0.4);}
+    .xbrl-col-headers{display:grid;grid-template-columns:1fr 90px 90px;padding:0.45rem 1rem;border-bottom:2px solid var(--ink);gap:0.5rem;}
+    .xbrl-col-head{font-family:var(--font-mono);font-size:0.52rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--neutral);text-align:right;}
+    .xbrl-col-head:first-child{text-align:left;}
+    .xbrl-section{background:var(--teal-light);padding:0.35rem 1rem;display:grid;grid-template-columns:1fr 90px 90px;gap:0.5rem;border-bottom:1px solid var(--teal-mid);}
+    .xbrl-section-label{font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal);font-weight:600;}
+    .xbrl-row{display:grid;grid-template-columns:1fr 90px 90px;padding:0.55rem 1rem;border-bottom:1px solid var(--rule);gap:0.5rem;align-items:baseline;}
+    .xbrl-row:last-child{border-bottom:none;}
+    .xbrl-row.indent{padding-left:1.5rem;}
+    .xbrl-row.subtotal{border-top:1px solid var(--neutral);}
+    .xbrl-row.total{border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);}
+    .xbrl-label{font-family:var(--font-mono);font-size:0.62rem;color:var(--neutral);}
+    .xbrl-row.total .xbrl-label{color:var(--ink);font-weight:600;}
+    .xbrl-val{font-family:var(--font-mono);font-size:0.68rem;color:var(--ink);text-align:right;}
+    .xbrl-val.pos{color:var(--green);}
+    .xbrl-val.neg{color:var(--red);}
+    .xbrl-val.muted{color:var(--neutral);}
     @media(max-width:860px){.fy-header-inner{grid-template-columns:1fr;gap:1.5rem;}.fy-opening{grid-template-columns:1fr;gap:2rem;}.fy-closing{grid-template-columns:1fr;gap:2rem;}.ledger-cols{display:none;}.ledger-entry{grid-template-columns:1fr;gap:0.3rem;padding:1rem;}.ledger-entry-impact,.ledger-entry-link{text-align:left;}.ledger-gap{grid-template-columns:1fr;}.footer-inner{flex-direction:column;}.footer-links{flex-direction:column;gap:1.5rem;}.nav-links{display:none;}.nav-hamburger{display:flex;}.nav{position:relative;}}
     @media(prefers-reduced-motion:reduce){*{transition:none !important;}}
   </style>
@@ -160,9 +182,26 @@
       <p class="fy-opening-text">Bill earns 56% more. He saves 63% less per month. The accounting concept at the centre of this year is not income: it is structural cost. Independence has a fixed price that income alone does not explain.</p>
     </div>
     <div>
-      <p class="fy-balance-label">Opening balance sheet / 01 Jan 2025</p>
-      <div class="fy-balance-table">
-        <div class="fy-balance-row"><span class="fy-balance-row-label">Liquid savings</span><span class="fy-balance-row-val pos">+3,270</span></div>
+            <p class="fy-balance-label">Statement of Financial Position</p>
+      <div class="xbrl-statement">
+        <div class="xbrl-header">
+          <span class="xbrl-header-title">Statement of Financial Position</span>
+          <span class="xbrl-header-sub">As at Dec 2025 vs Jan 2025 (opening) / EUR</span>
+        </div>
+        <div class="xbrl-col-headers">
+          <span class="xbrl-col-head">Line item</span>
+          <span class="xbrl-col-head">Dec 2025</span>
+          <span class="xbrl-col-head">Jan 2025</span>
+        </div>
+        <div class="xbrl-section"><span class="xbrl-section-label">Current assets</span><span></span><span></span></div>
+        <div class="xbrl-row indent"><span class="xbrl-label">Cash and cash equivalents</span><span class="xbrl-val pos">5,970</span><span class="xbrl-val muted">3,270</span></div>
+        <div class="xbrl-row indent"><span class="xbrl-label">Security deposits</span><span class="xbrl-val">1,200</span><span class="xbrl-val muted">—</span></div>
+        <div class="xbrl-row subtotal"><span class="xbrl-label">Total current assets</span><span class="xbrl-val pos">7,170</span><span class="xbrl-val muted">3,270</span></div>
+        <div class="xbrl-section"><span class="xbrl-section-label">Current liabilities</span><span></span><span></span></div>
+        <div class="xbrl-row indent"><span class="xbrl-label">Short-term obligations</span><span class="xbrl-val muted">—</span><span class="xbrl-val muted">—</span></div>
+        <div class="xbrl-row subtotal"><span class="xbrl-label">Total current liabilities</span><span class="xbrl-val muted">0</span><span class="xbrl-val muted">0</span></div>
+        <div class="xbrl-row total"><span class="xbrl-label">Net assets / Equity</span><span class="xbrl-val pos">7,170</span><span class="xbrl-val muted">3,270</span></div>
+      </div>
         <div class="fy-balance-row"><span class="fy-balance-row-label">Liabilities</span><span class="fy-balance-row-val">0</span></div>
         <hr class="fy-balance-divider" />
         <div class="fy-balance-row"><span class="fy-balance-row-label">Net worth</span><span class="fy-balance-row-val pos">+3,270</span></div>

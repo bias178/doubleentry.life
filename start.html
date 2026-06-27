@@ -4,20 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Meet Bill / Double Entry Life</title>
-  <meta name="description" content="Bill is 26. His ledger has been open since April 2024. This is his baseline: every number, every account, every decision." />
+  <meta name="description" content="Bill is 26. His ledger has been open since April 2024." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
   <style>
-    :root {
-      --teal:#2a7a7a;--teal-light:#e6f2f2;--teal-mid:#c0dede;
-      --red:#c0392b;--green:#1a6b3c;--ink:#1a1a1a;--ink-muted:#5a5a6a;
-      --paper:#fafaf8;--neutral:#6b6b7a;--rule:#e2e2e0;
-      --font-serif:'DM Serif Display',Georgia,serif;
-      --font-mono:'IBM Plex Mono',monospace;
-      --font-sans:'Inter',system-ui,sans-serif;
-      --max-w:1080px;
-    }
+    :root{--teal:#2a7a7a;--teal-light:#e6f2f2;--teal-mid:#c0dede;--red:#c0392b;--green:#1a6b3c;--ink:#1a1a1a;--ink-muted:#5a5a6a;--paper:#fafaf8;--neutral:#6b6b7a;--rule:#e2e2e0;--font-serif:'DM Serif Display',Georgia,serif;--font-mono:'IBM Plex Mono',monospace;--font-sans:'Inter',system-ui,sans-serif;--max-w:1080px;}
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
     html{font-size:16px;scroll-behavior:smooth;}
     body{font-family:var(--font-sans);background:var(--paper);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;}
@@ -46,34 +38,35 @@
     .page-header-note strong{color:var(--teal);display:block;margin-bottom:0.3rem;letter-spacing:0.06em;text-transform:uppercase;font-size:0.58rem;}
 
     .start-body{max-width:var(--max-w);margin:0 auto;padding:3rem 2rem 5rem;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;}
-    .section-label{font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--neutral);margin-bottom:1rem;}
 
-    .statement{border:1px solid var(--rule);background:white;margin-bottom:2rem;}
-    .statement-header{background:var(--ink);padding:0.7rem 1.1rem;display:flex;justify-content:space-between;align-items:center;}
-    .statement-header-label{font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.6);}
-    .statement-header-ref{font-family:var(--font-mono);font-size:0.55rem;color:rgba(255,255,255,0.35);}
-    .statement-row{display:flex;justify-content:space-between;align-items:baseline;padding:0.65rem 1.1rem;border-bottom:1px solid var(--rule);}
-    .statement-row:last-child{border-bottom:none;}
-    .statement-row.section-head{background:var(--teal-light);padding-top:0.45rem;padding-bottom:0.45rem;}
-    .statement-row.total{background:var(--paper);}
-    .statement-label{font-family:var(--font-mono);font-size:0.62rem;color:var(--neutral);}
-    .statement-label.section{font-size:0.57rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal);}
-    .statement-val{font-family:var(--font-mono);font-size:0.75rem;color:var(--ink);}
-    .statement-val.neg{color:var(--red);}
-    .statement-val.pos{color:var(--green);}
-    .statement-divider{border:none;border-top:1px solid var(--teal-mid);margin:0.1rem 1.1rem;}
+    /* XBRL-style financial statements */
+    .xbrl-statement{border:1px solid var(--rule);background:white;margin-bottom:2rem;}
+    .xbrl-header{background:var(--ink);padding:0.65rem 1.1rem;}
+    .xbrl-header-title{font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);display:block;margin-bottom:0.2rem;}
+    .xbrl-header-sub{font-family:var(--font-mono);font-size:0.52rem;color:rgba(255,255,255,0.4);}
+    .xbrl-col-headers{display:grid;grid-template-columns:1fr 90px 90px 70px;padding:0.5rem 1.1rem;border-bottom:2px solid var(--ink);gap:0.5rem;}
+    .xbrl-col-head{font-family:var(--font-mono);font-size:0.55rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--neutral);text-align:right;}
+    .xbrl-col-head:first-child{text-align:left;}
+    .xbrl-section{background:var(--teal-light);padding:0.4rem 1.1rem;display:grid;grid-template-columns:1fr 90px 90px 70px;gap:0.5rem;border-bottom:1px solid var(--teal-mid);}
+    .xbrl-section-label{font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal);font-weight:600;}
+    .xbrl-row{display:grid;grid-template-columns:1fr 90px 90px 70px;padding:0.55rem 1.1rem;border-bottom:1px solid var(--rule);gap:0.5rem;align-items:baseline;}
+    .xbrl-row:last-child{border-bottom:none;}
+    .xbrl-row.indent{padding-left:1.75rem;}
+    .xbrl-row.total{background:var(--paper);border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);}
+    .xbrl-row.subtotal{border-top:1px solid var(--neutral);}
+    .xbrl-label{font-family:var(--font-mono);font-size:0.62rem;color:var(--neutral);}
+    .xbrl-row.total .xbrl-label{color:var(--ink);font-weight:600;}
+    .xbrl-val{font-family:var(--font-mono);font-size:0.68rem;color:var(--ink);text-align:right;}
+    .xbrl-val.neg{color:var(--red);}
+    .xbrl-val.pos{color:var(--green);}
+    .xbrl-val.muted{color:var(--neutral);}
+    .xbrl-change{font-family:var(--font-mono);font-size:0.6rem;text-align:right;}
+    .xbrl-change.pos{color:var(--green);}
+    .xbrl-change.neg{color:var(--red);}
+    .xbrl-change.neutral{color:var(--neutral);}
+    .xbrl-divider{border:none;border-top:1px solid var(--teal-mid);margin:0;}
 
-    .vitals-block{border:1px solid var(--rule);background:white;margin-bottom:2rem;}
-    .vitals-header{background:var(--teal);padding:0.7rem 1.1rem;display:flex;justify-content:space-between;}
-    .vitals-header-label{font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.8);}
-    .vitals-header-ep{font-family:var(--font-mono);font-size:0.55rem;color:rgba(255,255,255,0.5);}
-    .vitals-body{padding:1.25rem 1.1rem;display:flex;flex-direction:column;gap:1rem;}
-    .vital-row{}
-    .vital-meta{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:0.6rem;color:var(--neutral);margin-bottom:0.3rem;}
-    .vital-desc{font-size:0.72rem;color:var(--ink-muted);margin-bottom:0.35rem;line-height:1.4;}
-    .vital-track{height:6px;background:var(--rule);border-radius:3px;overflow:hidden;}
-    .vital-fill{height:100%;background:var(--teal);border-radius:3px;width:0;transition:width 1s ease;}
-
+    /* Profile and vitals */
     .profile-block{border:1px solid var(--rule);background:white;margin-bottom:2rem;}
     .profile-header{background:var(--ink);padding:0.7rem 1.1rem;}
     .profile-header-label{font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.6);}
@@ -84,11 +77,26 @@
     .profile-row-label{color:var(--neutral);}
     .profile-row-val{color:var(--ink);}
 
+    .vitals-block{border:1px solid var(--rule);background:white;margin-bottom:2rem;}
+    .vitals-header{background:var(--teal);padding:0.7rem 1.1rem;display:flex;justify-content:space-between;}
+    .vitals-header-label{font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.8);}
+    .vitals-header-ep{font-family:var(--font-mono);font-size:0.55rem;color:rgba(255,255,255,0.5);}
+    .vitals-body{padding:1.25rem 1.1rem;display:flex;flex-direction:column;gap:1rem;}
+    .vital-row{}
+    .vital-meta{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:0.6rem;color:var(--neutral);margin-bottom:0.3rem;}
+    .vital-meta-vals{display:flex;gap:0.75rem;}
+    .vital-meta-prior{color:var(--neutral);opacity:0.6;}
+    .vital-meta-current{color:var(--teal);font-weight:600;}
+    .vital-desc{font-size:0.72rem;color:var(--ink-muted);margin-bottom:0.35rem;line-height:1.4;}
+    .vital-track{height:6px;background:var(--rule);border-radius:3px;overflow:hidden;position:relative;}
+    .vital-fill-prior{position:absolute;height:100%;background:var(--teal-mid);border-radius:3px;width:0;transition:width 1s ease;}
+    .vital-fill{position:absolute;height:100%;background:var(--teal);border-radius:3px;width:0;transition:width 1s ease 0.2s;}
+
     .how-block{border:1px solid var(--rule);background:white;padding:1.25rem 1.1rem;margin-bottom:2rem;}
     .how-block p{font-size:0.85rem;color:var(--ink-muted);line-height:1.75;margin-bottom:0.85rem;}
     .how-block p:last-child{margin-bottom:0;}
     .how-block strong{color:var(--ink);font-weight:500;}
-
+    .section-label{font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--neutral);margin-bottom:1rem;}
     .start-cta{display:inline-flex;align-items:center;gap:0.5rem;font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.07em;text-transform:uppercase;color:var(--paper);background:var(--teal);padding:0.8rem 1.5rem;border-radius:2px;transition:background 0.15s;}
     .start-cta:hover{background:#1f5e5e;}
 
@@ -109,6 +117,9 @@
       .page-header-inner{grid-template-columns:1fr;}
       .page-header-note{display:none;}
       .start-body{grid-template-columns:1fr;}
+      .xbrl-col-headers{grid-template-columns:1fr 70px 70px 55px;}
+      .xbrl-section{grid-template-columns:1fr 70px 70px 55px;}
+      .xbrl-row{grid-template-columns:1fr 70px 70px 55px;}
       .footer-inner{flex-direction:column;}
       .footer-links{flex-direction:column;gap:1.5rem;}
       .nav-links{display:none;}
@@ -131,22 +142,18 @@
         <li><a href="start.html" aria-current="page">Meet Bill</a></li>
         <li><a href="about.html">About</a></li>
       </ul>
-      <button class="nav-hamburger" aria-label="Open menu" aria-expanded="false" onclick="
-        var open=this.getAttribute('aria-expanded')==='true';
-        this.setAttribute('aria-expanded',String(!open));
-        document.getElementById('nav-mobile').classList.toggle('open',!open);
-      "><span></span><span></span><span></span></button>
+      <button class="nav-hamburger" aria-label="Open menu" aria-expanded="false" onclick="var o=this.getAttribute('aria-expanded')==='true';this.setAttribute('aria-expanded',String(!o));document.getElementById('nav-mobile').classList.toggle('open',!o);">
+        <span></span><span></span><span></span>
+      </button>
     </div>
-    <div class="nav-mobile" id="nav-mobile">
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="fy2026.html">FY 2026</a></li>
-        <li><a href="fy2025.html">FY 2025</a></li>
-        <li><a href="fy2024.html">FY 2024</a></li>
-        <li><a href="start.html">Meet Bill</a></li>
-        <li><a href="about.html">About</a></li>
-      </ul>
-    </div>
+    <div class="nav-mobile" id="nav-mobile"><ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="fy2026.html">FY 2026</a></li>
+      <li><a href="fy2025.html">FY 2025</a></li>
+      <li><a href="fy2024.html">FY 2024</a></li>
+      <li><a href="start.html">Meet Bill</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul></div>
   </nav>
 
   <header class="page-header">
@@ -158,95 +165,150 @@
       </div>
       <div class="page-header-note">
         <strong>How to read this</strong>
-        Bill's data is fixed at each EP boundary. Numbers on this page reflect the FY 2026 current state (EP.26). Earlier states are in the FY ledgers.
+        Current period = EP.26 (Jul 2026). Prior period = same month prior year (Jul 2025) for the cash flow statement, FY2025 closing for the balance sheet. All figures in EUR.
       </div>
     </div>
   </header>
 
   <div class="start-body">
     <div>
-      <p class="section-label">Income statement / monthly / EP.26</p>
-      <div class="statement">
-        <div class="statement-header">
-          <span class="statement-header-label">Cash Flow Statement</span>
-          <span class="statement-header-ref">EP.26 / Jul 2026</span>
+
+      <!-- STATEMENT OF CASH FLOWS -->
+      <p class="section-label">Statement of Cash Flows / Monthly</p>
+      <div class="xbrl-statement">
+        <div class="xbrl-header">
+          <span class="xbrl-header-title">Statement of Cash Flows</span>
+          <span class="xbrl-header-sub">Period ending Jul 2026 vs Jul 2025 / EUR / Monthly</span>
         </div>
-        <div class="statement-row section-head">
-          <span class="statement-label section">Inflows</span><span class="statement-val"></span>
+        <div class="xbrl-col-headers">
+          <span class="xbrl-col-head">Line item</span>
+          <span class="xbrl-col-head">Jul 2026</span>
+          <span class="xbrl-col-head">Jul 2025</span>
+          <span class="xbrl-col-head">Change</span>
         </div>
-        <div class="statement-row">
-          <span class="statement-label">Net monthly salary</span>
-          <span class="statement-val pos" id="s-income"></span>
+
+        <div class="xbrl-section"><span class="xbrl-section-label">Operating inflows</span><span></span><span></span><span></span></div>
+        <div class="xbrl-row indent">
+          <span class="xbrl-label">Net salary</span>
+          <span class="xbrl-val pos" id="s-income">1,400</span>
+          <span class="xbrl-val muted" id="s-prior-income">900</span>
+          <span class="xbrl-change pos" id="s-chg-income">+500</span>
         </div>
-        <div class="statement-row section-head">
-          <span class="statement-label section">Fixed outflows</span><span class="statement-val"></span>
+
+        <div class="xbrl-section"><span class="xbrl-section-label">Operating outflows</span><span></span><span></span><span></span></div>
+        <div class="xbrl-row indent">
+          <span class="xbrl-label">Rent</span>
+          <span class="xbrl-val neg">-600</span>
+          <span class="xbrl-val muted">0</span>
+          <span class="xbrl-change neg">-600</span>
         </div>
-        <div class="statement-row">
-          <span class="statement-label">Rent (shared flat)</span>
-          <span class="statement-val neg" id="s-rent"></span>
+        <div class="xbrl-row indent">
+          <span class="xbrl-label">Food and groceries</span>
+          <span class="xbrl-val neg">-250</span>
+          <span class="xbrl-val muted">-80</span>
+          <span class="xbrl-change neg">-170</span>
         </div>
-        <div class="statement-row">
-          <span class="statement-label">Food</span>
-          <span class="statement-val neg" id="s-food"></span>
+        <div class="xbrl-row indent">
+          <span class="xbrl-label">Transport</span>
+          <span class="xbrl-val neg">-80</span>
+          <span class="xbrl-val muted">-120</span>
+          <span class="xbrl-change pos">+40</span>
         </div>
-        <div class="statement-row">
-          <span class="statement-label">Transport</span>
-          <span class="statement-val neg" id="s-transport"></span>
+        <div class="xbrl-row indent">
+          <span class="xbrl-label">Phone</span>
+          <span class="xbrl-val neg">-25</span>
+          <span class="xbrl-val muted">-25</span>
+          <span class="xbrl-change neutral">0</span>
         </div>
-        <div class="statement-row">
-          <span class="statement-label">Phone</span>
-          <span class="statement-val neg" id="s-phone"></span>
+        <div class="xbrl-row indent">
+          <span class="xbrl-label">Subscriptions</span>
+          <span class="xbrl-val neg">-30</span>
+          <span class="xbrl-val muted">-30</span>
+          <span class="xbrl-change neutral">0</span>
         </div>
-        <div class="statement-row">
-          <span class="statement-label">Subscriptions</span>
-          <span class="statement-val neg" id="s-subs"></span>
+        <div class="xbrl-row indent">
+          <span class="xbrl-label">Social and leisure</span>
+          <span class="xbrl-val neg">-150</span>
+          <span class="xbrl-val muted">-150</span>
+          <span class="xbrl-change neutral">0</span>
         </div>
-        <div class="statement-row">
-          <span class="statement-label">Social / leisure</span>
-          <span class="statement-val neg" id="s-social"></span>
+        <div class="xbrl-row indent">
+          <span class="xbrl-label">Miscellaneous</span>
+          <span class="xbrl-val neg">-80</span>
+          <span class="xbrl-val muted">-80</span>
+          <span class="xbrl-change neutral">0</span>
         </div>
-        <div class="statement-row">
-          <span class="statement-label">Miscellaneous</span>
-          <span class="statement-val neg" id="s-misc"></span>
-        </div>
-        <hr class="statement-divider" />
-        <div class="statement-row total">
-          <span class="statement-label">Monthly surplus</span>
-          <span class="statement-val pos" id="s-surplus"></span>
+
+        <div class="xbrl-row total">
+          <span class="xbrl-label">Net cash from operating activities</span>
+          <span class="xbrl-val pos">185</span>
+          <span class="xbrl-val muted">495</span>
+          <span class="xbrl-change neg">-310</span>
         </div>
       </div>
 
-      <p class="section-label">Balance sheet / EP.26</p>
-      <div class="statement">
-        <div class="statement-header">
-          <span class="statement-header-label">Balance Sheet</span>
-          <span class="statement-header-ref">EP.26 / Jul 2026</span>
+      <!-- STATEMENT OF FINANCIAL POSITION -->
+      <p class="section-label">Statement of Financial Position</p>
+      <div class="xbrl-statement">
+        <div class="xbrl-header">
+          <span class="xbrl-header-title">Statement of Financial Position</span>
+          <span class="xbrl-header-sub">As at Jul 2026 vs Dec 2025 / EUR</span>
         </div>
-        <div class="statement-row section-head">
-          <span class="statement-label section">Assets</span><span class="statement-val"></span>
+        <div class="xbrl-col-headers">
+          <span class="xbrl-col-head">Line item</span>
+          <span class="xbrl-col-head">Jul 2026</span>
+          <span class="xbrl-col-head">Dec 2025</span>
+          <span class="xbrl-col-head">Change</span>
         </div>
-        <div class="statement-row">
-          <span class="statement-label">Liquid savings</span>
-          <span class="statement-val pos" id="s-savings"></span>
+
+        <div class="xbrl-section"><span class="xbrl-section-label">Current assets</span><span></span><span></span><span></span></div>
+        <div class="xbrl-row indent">
+          <span class="xbrl-label">Cash and cash equivalents</span>
+          <span class="xbrl-val pos">7,265</span>
+          <span class="xbrl-val muted">5,970</span>
+          <span class="xbrl-change pos">+1,295</span>
         </div>
-        <div class="statement-row">
-          <span class="statement-label">Rental deposit (recoverable)</span>
-          <span class="statement-val" id="s-deposit"></span>
+        <div class="xbrl-row indent">
+          <span class="xbrl-label">Security deposit (recoverable)</span>
+          <span class="xbrl-val">1,200</span>
+          <span class="xbrl-val muted">1,200</span>
+          <span class="xbrl-change neutral">0</span>
         </div>
-        <hr class="statement-divider" />
-        <div class="statement-row total">
-          <span class="statement-label">Net worth (derived)</span>
-          <span class="statement-val pos" id="s-networth"></span>
+        <div class="xbrl-row subtotal">
+          <span class="xbrl-label">Total current assets</span>
+          <span class="xbrl-val pos">8,465</span>
+          <span class="xbrl-val muted">7,170</span>
+          <span class="xbrl-change pos">+1,295</span>
+        </div>
+
+        <div class="xbrl-section"><span class="xbrl-section-label">Current liabilities</span><span></span><span></span><span></span></div>
+        <div class="xbrl-row indent">
+          <span class="xbrl-label">Short-term debt and obligations</span>
+          <span class="xbrl-val muted">—</span>
+          <span class="xbrl-val muted">—</span>
+          <span class="xbrl-change neutral">—</span>
+        </div>
+        <div class="xbrl-row subtotal">
+          <span class="xbrl-label">Total current liabilities</span>
+          <span class="xbrl-val muted">0</span>
+          <span class="xbrl-val muted">0</span>
+          <span class="xbrl-change neutral">0</span>
+        </div>
+
+        <div class="xbrl-row total">
+          <span class="xbrl-label">Net assets / Equity</span>
+          <span class="xbrl-val pos">8,465</span>
+          <span class="xbrl-val muted">7,170</span>
+          <span class="xbrl-change pos">+1,295</span>
         </div>
       </div>
+
     </div>
 
     <div>
       <p class="section-label">Entity profile</p>
       <div class="profile-block">
-        <div class="profile-header">
-          <span class="profile-header-label">Bill / Entity Master Record</span>
-        </div>
+        <div class="profile-header"><span class="profile-header-label">Bill / Entity Master Record</span></div>
         <div class="profile-avatar" id="bill-avatar-wrap">
           <div id="bill-avatar-placeholder" style="font-family:var(--font-mono);font-size:0.55rem;color:var(--teal);text-align:center;line-height:1.7;">BILL<br>pixel art</div>
         </div>
@@ -254,48 +316,85 @@
           <div class="profile-row"><span class="profile-row-label">Age</span><span class="profile-row-val">26</span></div>
           <div class="profile-row"><span class="profile-row-label">Nationality</span><span class="profile-row-val">European (generic)</span></div>
           <div class="profile-row"><span class="profile-row-label">Education</span><span class="profile-row-val">Graduate, Apr 2024</span></div>
-          <div class="profile-row"><span class="profile-row-label">First job</span><span class="profile-row-val">Jun 2024 / 900 net</span></div>
-          <div class="profile-row"><span class="profile-row-label">Current job</span><span class="profile-row-val">Sep 2025 / 1,400 net</span></div>
+          <div class="profile-row"><span class="profile-row-label">First employment</span><span class="profile-row-val">Jun 2024 / 900 net</span></div>
+          <div class="profile-row"><span class="profile-row-label">Current employment</span><span class="profile-row-val">Sep 2025 / 1,400 net</span></div>
           <div class="profile-row"><span class="profile-row-label">Housing</span><span class="profile-row-val">Shared flat / 600 rent</span></div>
-          <div class="profile-row"><span class="profile-row-label">First recorded</span><span class="profile-row-val">EP.01 / 15 Apr 2024</span></div>
+          <div class="profile-row"><span class="profile-row-label">System entry</span><span class="profile-row-val">EP.01 / 15 Apr 2024</span></div>
         </div>
       </div>
 
-      <p class="section-label">Vitals / EP.26 current state</p>
+      <p class="section-label">Financial health indicators / EP.26</p>
       <div class="vitals-block">
         <div class="vitals-header">
-          <span class="vitals-header-label">Financial Health Indicators</span>
-          <span class="vitals-header-ep">EP.26</span>
+          <span class="vitals-header-label">Vitals / Current vs Prior Year</span>
+          <span class="vitals-header-ep">EP.26 vs FY2025</span>
         </div>
         <div class="vitals-body">
           <div class="vital-row">
-            <div class="vital-meta"><span>CASH</span><span id="v-cash-val">--</span></div>
+            <div class="vital-meta">
+              <span>CASH</span>
+              <div class="vital-meta-vals">
+                <span class="vital-meta-prior" id="vp-cash">48%</span>
+                <span class="vital-meta-current" id="vc-cash">52%</span>
+              </div>
+            </div>
             <p class="vital-desc">Liquidity relative to monthly outflows and emergency buffer.</p>
-            <div class="vital-track"><div class="vital-fill" data-key="cash" id="v-cash"></div></div>
+            <div class="vital-track">
+              <div class="vital-fill-prior" id="vbar-prior-cash"></div>
+              <div class="vital-fill" id="vbar-cash"></div>
+            </div>
           </div>
           <div class="vital-row">
-            <div class="vital-meta"><span>EQUITY</span><span id="v-equity-val">--</span></div>
-            <p class="vital-desc">Net worth trajectory relative to age and income.</p>
-            <div class="vital-track"><div class="vital-fill" data-key="equity" id="v-equity"></div></div>
+            <div class="vital-meta">
+              <span>EQUITY</span>
+              <div class="vital-meta-vals">
+                <span class="vital-meta-prior" id="vp-equity">55%</span>
+                <span class="vital-meta-current" id="vc-equity">58%</span>
+              </div>
+            </div>
+            <p class="vital-desc">Net worth trajectory relative to age and income level.</p>
+            <div class="vital-track">
+              <div class="vital-fill-prior" id="vbar-prior-equity"></div>
+              <div class="vital-fill" id="vbar-equity"></div>
+            </div>
           </div>
           <div class="vital-row">
-            <div class="vital-meta"><span>STRESS</span><span id="v-stress-val">--</span></div>
+            <div class="vital-meta">
+              <span>STRESS</span>
+              <div class="vital-meta-vals">
+                <span class="vital-meta-prior" id="vp-stress">62%</span>
+                <span class="vital-meta-current" id="vc-stress">60%</span>
+              </div>
+            </div>
             <p class="vital-desc">Fixed commitments as percentage of net income. Above 60% is structurally fragile.</p>
-            <div class="vital-track"><div class="vital-fill" data-key="stress" id="v-stress"></div></div>
+            <div class="vital-track">
+              <div class="vital-fill-prior" id="vbar-prior-stress"></div>
+              <div class="vital-fill" id="vbar-stress"></div>
+            </div>
           </div>
           <div class="vital-row">
-            <div class="vital-meta"><span>FUTURE</span><span id="v-future-val">--</span></div>
-            <p class="vital-desc">Five-year projection based on current trajectory.</p>
-            <div class="vital-track"><div class="vital-fill" data-key="future" id="v-future"></div></div>
+            <div class="vital-meta">
+              <span>FUTURE</span>
+              <div class="vital-meta-vals">
+                <span class="vital-meta-prior" id="vp-future">52%</span>
+                <span class="vital-meta-current" id="vc-future">55%</span>
+              </div>
+            </div>
+            <p class="vital-desc">Five-year projection based on current trajectory and decisions recorded to date.</p>
+            <div class="vital-track">
+              <div class="vital-fill-prior" id="vbar-prior-future"></div>
+              <div class="vital-fill" id="vbar-future"></div>
+            </div>
           </div>
         </div>
       </div>
 
       <p class="section-label">How to read this system</p>
       <div class="how-block">
-        <p>Bill started with <strong>1,000 euro</strong> in April 2024, the day he graduated. No job, no savings, no debt. Every number since then is traceable to a specific decision recorded in the ledger.</p>
-        <p><strong>Net worth is always derived.</strong> It is the sum of assets minus liabilities at any given EP boundary. It is never manually set.</p>
+        <p>Bill started with <strong>1,000 euro</strong> in April 2024. Every number since then is traceable to a specific decision recorded in a specific episode.</p>
+        <p><strong>Net assets is always derived.</strong> It equals total assets minus total liabilities at any EP boundary. It is never manually set.</p>
         <p><strong>Breaks in publishing do not mean breaks in Bill's life.</strong> Every month is accounted for, whether or not an episode was published that month.</p>
+        <p><strong>BillBoard</strong> is the interactive financial dashboard embedded in each episode. It shows the Statement of Cash Flows, Vitals, and the accounting insight behind each decision.</p>
       </div>
 
       <a href="fy2026.html" class="start-cta">Open the FY 2026 ledger</a>
@@ -304,32 +403,11 @@
 
   <footer class="footer" role="contentinfo">
     <div class="footer-inner">
-      <div>
-        <p class="footer-brand-name">Double Entry Life</p>
-        <p class="footer-brand-desc">A financial reporting system rendered as editorial content. Est. April 2024.</p>
-      </div>
+      <div><p class="footer-brand-name">Double Entry Life</p><p class="footer-brand-desc">A financial reporting system rendered as editorial content. Est. April 2024.</p></div>
       <div class="footer-links">
-        <div class="footer-col">
-          <p class="footer-col-label">System</p>
-          <ul>
-            <li><a href="fy2026.html">FY 2026</a></li>
-            <li><a href="fy2025.html">FY 2025</a></li>
-            <li><a href="fy2024.html">FY 2024</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <p class="footer-col-label">Navigate</p>
-          <ul>
-            <li><a href="start.html">Meet Bill</a></li>
-            <li><a href="about.html">About</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <p class="footer-col-label">Connect</p>
-          <ul>
-            <li><a href="https://linkedin.com/in/biagiotozzo" target="_blank" rel="noopener">LinkedIn</a></li>
-          </ul>
-        </div>
+        <div class="footer-col"><p class="footer-col-label">System</p><ul><li><a href="fy2026.html">FY 2026</a></li><li><a href="fy2025.html">FY 2025</a></li><li><a href="fy2024.html">FY 2024</a></li></ul></div>
+        <div class="footer-col"><p class="footer-col-label">Navigate</p><ul><li><a href="start.html">Meet Bill</a></li><li><a href="about.html">About</a></li></ul></div>
+        <div class="footer-col"><p class="footer-col-label">Connect</p><ul><li><a href="https://linkedin.com/in/biagiotozzo" target="_blank" rel="noopener">LinkedIn</a></li></ul></div>
       </div>
     </div>
     <div class="footer-bottom">
@@ -342,58 +420,34 @@
   <script>
   (function(){
     var s = BILL_STATE;
-    function fmt(n){ return Math.abs(Math.round(n)).toLocaleString('en-GB'); }
-    function fmtS(n){ return (n>=0?'+':'-') + fmt(n); }
-    function fmtN(n){ return (n<0?'-':'') + fmt(n); }
+    var vitals = {cash:s.cash, equity:s.equity, stress:s.stress, future:s.future};
+    var priors  = {cash:s.prior_cash, equity:s.prior_equity, stress:s.prior_stress, future:s.prior_future};
 
-    var map = {
-      's-income':    [s.income,    true],
-      's-rent':      [s.rent,      false],
-      's-food':      [s.food,      false],
-      's-transport': [s.transport, false],
-      's-phone':     [s.phone,     false],
-      's-subs':      [s.subs,      false],
-      's-social':    [s.social,    false],
-      's-misc':      [s.misc,      false],
-      's-surplus':   [s.surplus,   true],
-      's-savings':   [s.savings,   true],
-      's-deposit':   [s.deposit,   true],
-      's-networth':  [s.netWorth,  true]
-    };
-    Object.keys(map).forEach(function(id){
-      var el = document.getElementById(id);
-      if(!el) return;
-      var val = map[id][0], pos = map[id][1];
-      el.textContent = pos ? fmtS(val) : fmtN(val);
-    });
-
-    // Vitals
     var animated = false;
     function animateVitals(){
-      if(animated) return; animated = true;
-      ['cash','equity','stress','future'].forEach(function(k,i){
+      if(animated)return; animated=true;
+      Object.keys(vitals).forEach(function(k,i){
         setTimeout(function(){
-          document.getElementById('v-'+k).style.width = s[k]+'%';
-          document.getElementById('v-'+k+'-val').textContent = s[k]+'%';
+          document.getElementById('vbar-'+k).style.width       = vitals[k]+'%';
+          document.getElementById('vbar-prior-'+k).style.width = priors[k]+'%';
+          document.getElementById('vc-'+k).textContent = vitals[k]+'%';
+          document.getElementById('vp-'+k).textContent = priors[k]+'%';
         }, i*180);
       });
     }
     if('IntersectionObserver' in window){
-      var obs = new IntersectionObserver(function(entries){
-        entries.forEach(function(e){ if(e.isIntersecting){ animateVitals(); obs.disconnect(); }});
-      },{threshold:0.2});
-      var t = document.querySelector('.vitals-body');
-      if(t) obs.observe(t);
+      var obs=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting){animateVitals();obs.disconnect();}});},{threshold:0.2});
+      var t=document.querySelector('.vitals-body'); if(t) obs.observe(t);
     } else { setTimeout(animateVitals,600); }
 
-    // Bill avatar
-    var wrap = document.getElementById('bill-avatar-wrap');
-    var ph   = document.getElementById('bill-avatar-placeholder');
+    // Bill avatar - loaded from bill-state only if img property exists
+    var wrap=document.getElementById('bill-avatar-wrap');
+    var ph=document.getElementById('bill-avatar-placeholder');
     if(wrap && s.img){
-      var img = document.createElement('img');
-      img.src = s.img; img.alt = 'Bill';
-      img.style.cssText = 'width:80px;height:80px;object-fit:contain;image-rendering:pixelated';
-      wrap.replaceChild(img, ph);
+      var img=document.createElement('img');
+      img.src=s.img; img.alt='Bill';
+      img.style.cssText='width:80px;height:80px;object-fit:contain;image-rendering:pixelated';
+      wrap.replaceChild(img,ph);
     }
   })();
   </script>

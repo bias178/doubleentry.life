@@ -80,19 +80,32 @@
     .article-tip-label { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); margin-bottom: 0.5rem; }
     .article-tip p { font-size: 0.95rem; color: var(--ink); line-height: 1.7; }
 
-    /* Impact table */
+    /* XBRL-style impact table */
     .article-impact { border: 1px solid var(--rule); background: white; margin-bottom: 2.5rem; }
-    .article-impact-header { background: var(--ink); padding: 0.65rem 1.1rem; display: flex; justify-content: space-between; }
-    .article-impact-header-label { font-family: var(--font-mono); font-size: 0.57rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.6); }
-    .article-impact-header-ep { font-family: var(--font-mono); font-size: 0.55rem; color: rgba(255,255,255,0.35); }
-    .impact-row { display: flex; justify-content: space-between; align-items: baseline; padding: 0.65rem 1.1rem; border-bottom: 1px solid var(--rule); }
+    .article-impact-header { background: var(--ink); padding: 0.65rem 1.1rem; }
+    .article-impact-header-label { font-family: var(--font-mono); font-size: 0.57rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.6); display: block; margin-bottom: 0.15rem; }
+    .article-impact-header-ep { font-family: var(--font-mono); font-size: 0.52rem; color: rgba(255,255,255,0.35); }
+    .xbrl-col-heads { display: grid; grid-template-columns: 1fr 80px 80px 65px; padding: 0.45rem 1.1rem; border-bottom: 2px solid var(--ink); gap: 0.4rem; }
+    .xbrl-ch { font-family: var(--font-mono); font-size: 0.52rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--neutral); text-align: right; }
+    .xbrl-ch:first-child { text-align: left; }
+    .xbrl-sec { background: var(--teal-light); padding: 0.35rem 1.1rem; display: grid; grid-template-columns: 1fr 80px 80px 65px; gap: 0.4rem; border-bottom: 1px solid var(--teal-mid); }
+    .xbrl-sec-lbl { font-family: var(--font-mono); font-size: 0.55rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--teal); font-weight: 600; }
+    .impact-row { display: grid; grid-template-columns: 1fr 80px 80px 65px; padding: 0.55rem 1.1rem; border-bottom: 1px solid var(--rule); gap: 0.4rem; align-items: baseline; }
     .impact-row:last-child { border-bottom: none; }
+    .impact-row.indent { padding-left: 1.6rem; }
     .impact-row.highlight { background: var(--teal-light); }
+    .impact-row.total { border-top: 2px solid var(--ink); border-bottom: 2px solid var(--ink); }
     .impact-row-label { font-family: var(--font-mono); font-size: 0.62rem; color: var(--neutral); }
-    .impact-row-val { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink); }
+    .impact-row.total .impact-row-label { color: var(--ink); font-weight: 600; }
+    .impact-row-val { font-family: var(--font-mono); font-size: 0.68rem; color: var(--ink); text-align: right; }
     .impact-row-val.neg { color: var(--red); }
     .impact-row-val.pos { color: var(--green); }
-    .impact-divider { border: none; border-top: 1px solid var(--teal-mid); margin: 0.1rem 1.1rem; }
+    .impact-row-val.muted { color: var(--neutral); }
+    .impact-chg { font-family: var(--font-mono); font-size: 0.6rem; text-align: right; }
+    .impact-chg.pos { color: var(--green); }
+    .impact-chg.neg { color: var(--red); }
+    .impact-chg.neutral { color: var(--neutral); }
+    .impact-divider { border: none; border-top: 1px solid var(--teal-mid); margin: 0; }
 
     /* Bio */
     .article-bio { border-top: 1px solid var(--rule); padding-top: 1.5rem; }
@@ -101,8 +114,8 @@
     /* SIDEBAR */
     .article-sidebar { position: sticky; top: 5rem; display: flex; flex-direction: column; gap: 1.5rem; }
 
-    /* Tamagotchi */
-    .tamagotchi { width: 240px; margin: 0 auto; background: white; border-radius: 2.4rem; border: 2px solid var(--teal-mid); box-shadow: 0 4px 32px rgba(42,122,122,0.1); overflow: hidden; }
+    /* BillBoard */
+    .billboard { width: 240px; margin: 0 auto; background: white; border-radius: 2.4rem; border: 2px solid var(--teal-mid); box-shadow: 0 4px 32px rgba(42,122,122,0.1); overflow: hidden; }
     .tama-screen { background: #f4f8f8; border: 1px solid var(--teal-mid); margin: 0.85rem; border-radius: 0.85rem; min-height: 310px; overflow: hidden; display: flex; flex-direction: column; }
     .tama-tabs { display: flex; border-bottom: 1px solid var(--teal-mid); }
     .tama-tab { flex: 1; padding: 0.5rem 0; font-family: var(--font-mono); font-size: 0.52rem; letter-spacing: 0.05em; text-transform: uppercase; text-align: center; color: var(--teal); cursor: pointer; background: none; border: none; border-right: 1px solid var(--teal-mid); transition: background 0.15s, color 0.15s; }
@@ -176,7 +189,7 @@
     @media (max-width: 860px) {
       .article-layout { grid-template-columns: 1fr; gap: 3rem; }
       .article-sidebar { position: static; }
-      .tamagotchi { width: 100%; max-width: 280px; }
+      .billboard { width: 100%; max-width: 280px; }
       .ep-nav-inner { grid-template-columns: 1fr; }
       .ep-nav-cell.next { text-align: left; border-left: none; border-top: 1px solid var(--rule); }
       .footer-inner { flex-direction: column; }
@@ -267,29 +280,51 @@
         <p>[One actionable sentence. No exclamation marks. No motivational framing.]</p>
       </div>
 
-      <!-- Financial impact table: update per episode -->
+      <!-- XBRL Financial impact table: update per episode -->
+      <!-- TEMPLATE: update all values, periods, and highlighted row per episode -->
       <div class="article-impact">
         <div class="article-impact-header">
-          <span class="article-impact-header-label">Bill's ledger / EP.00 impact</span>
-          <span class="article-impact-header-ep">FY 2026</span>
+          <span class="article-impact-header-label">Statement of Cash Flows / EP.00 impact</span>
+          <span class="article-impact-header-ep">FY 2026 / EUR / Monthly</span>
         </div>
-        <div class="impact-row">
-          <span class="impact-row-label">Cash surplus (before)</span>
-          <span class="impact-row-val pos">380</span>
+        <div class="xbrl-col-heads">
+          <span class="xbrl-ch">Line item</span>
+          <span class="xbrl-ch">EP.00</span>
+          <span class="xbrl-ch">Prior</span>
+          <span class="xbrl-ch">Change</span>
         </div>
-        <!-- TEMPLATE: highlight the episode's key line -->
-        <div class="impact-row highlight">
+        <div class="xbrl-sec"><span class="xbrl-sec-lbl">Operating inflows</span><span></span><span></span><span></span></div>
+        <div class="impact-row indent">
+          <span class="impact-row-label">Net salary</span>
+          <span class="impact-row-val pos">1,400</span>
+          <span class="impact-row-val muted">1,400</span>
+          <span class="impact-chg neutral">0</span>
+        </div>
+        <div class="xbrl-sec"><span class="xbrl-sec-lbl">Operating outflows</span><span></span><span></span><span></span></div>
+        <div class="impact-row indent">
+          <span class="impact-row-label">Rent</span>
+          <span class="impact-row-val neg">-600</span>
+          <span class="impact-row-val muted">-600</span>
+          <span class="impact-chg neutral">0</span>
+        </div>
+        <!-- TEMPLATE: highlight the episode focus row with class "highlight" -->
+        <div class="impact-row indent highlight">
           <span class="impact-row-label">[Episode concept item]</span>
           <span class="impact-row-val neg">-000</span>
+          <span class="impact-row-val muted">-000</span>
+          <span class="impact-chg neg">-000</span>
         </div>
-        <hr class="impact-divider" />
-        <div class="impact-row">
-          <span class="impact-row-label">Real surplus (after)</span>
-          <span class="impact-row-val">000</span>
+        <div class="impact-row indent">
+          <span class="impact-row-label">Other outflows</span>
+          <span class="impact-row-val neg">-015</span>
+          <span class="impact-row-val muted">-015</span>
+          <span class="impact-chg neutral">0</span>
         </div>
-        <div class="impact-row">
-          <span class="impact-row-label">Net worth impact</span>
-          <span class="impact-row-val neg">-000</span>
+        <div class="impact-row total">
+          <span class="impact-row-label">Net cash from operating activities</span>
+          <span class="impact-row-val pos">000</span>
+          <span class="impact-row-val muted">185</span>
+          <span class="impact-chg neg">-000</span>
         </div>
       </div>
 
@@ -302,7 +337,7 @@
     <!-- SIDEBAR -->
     <aside class="article-sidebar" aria-label="Bill's interactive ledger">
 
-      <div class="tamagotchi" role="region" aria-label="Bill's Tamagotchi ledger">
+      <div class="billboard" role="region" aria-label="Bill's BillBoard ledger">
         <div class="tama-screen">
           <div class="tama-tabs" role="tablist">
             <button class="tama-tab active" role="tab" aria-selected="true" aria-controls="panel-ledger" id="tab-ledger" onclick="switchTab('ledger')">Ledger</button>
