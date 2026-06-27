@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FY 2026 / Restatement / Double Entry Life</title>
+  <meta name="description" content="FY 2026 ledger. Bill's third fiscal year. Restatement: three years of decisions, one open ledger." />
+  <meta property="og:title" content="FY 2026 / Restatement / Double Entry Life" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://doubleentry.life/fy2026.html" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --teal:       #2a7a7a;
+      --teal-light: #e6f2f2;
+      --teal-mid:   #c0dede;
+      --red:        #c0392b;
+      --green:      #1a6b3c;
+      --ink:        #1a1a1a;
+      --ink-muted:  #5a5a6a;
+      --paper:      #fafaf8;
+      --neutral:    #6b6b7a;
+      --rule:       #e2e2e0;
+      --font-serif: 'DM Serif Display', Georgia, serif;
+      --font-mono:  'IBM Plex Mono', monospace;
+      --font-sans:  'Inter', system-ui, sans-serif;
+      --max-w:      1080px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* ============================================================
+       NAV
+    ============================================================ */
+    .nav { border-bottom: 1px solid var(--rule); position: sticky; top: 0; z-index: 100; background: var(--paper); }
+    .nav-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 2rem;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); }
+    .nav-logo span { color: var(--ink); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--neutral); transition: color 0.15s; }
+    .nav-links a:hover, .nav-links a[aria-current="page"] { color: var(--teal); }
+    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; flex-direction: column; gap: 5px; }
+    .nav-hamburger span { display: block; width: 22px; height: 1.5px; background: var(--ink); }
+    .nav-mobile { display: none; position: absolute; top: 56px; left: 0; right: 0; background: var(--paper); border-bottom: 1px solid var(--rule); padding: 1.5rem 2rem; z-index: 99; }
+    .nav-mobile.open { display: block; }
+    .nav-mobile ul { list-style: none; display: flex; flex-direction: column; gap: 1.25rem; }
+    .nav-mobile a { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--neutral); }
+
+    /* ============================================================
+       FY REPORT HEADER
+    ============================================================ */
+    .fy-header {
+      border-bottom: 1px solid var(--rule);
+      background: white;
+    }
+    .fy-header-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 3rem 2rem 2.5rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 3rem;
+      align-items: end;
+    }
+    .fy-header-meta {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .fy-status-badge {
+      background: var(--teal-light);
+      color: var(--teal);
+      padding: 0.2rem 0.6rem;
+      border-radius: 2px;
+      font-size: 0.55rem;
+      letter-spacing: 0.1em;
+    }
+    .fy-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      line-height: 1.1;
+      color: var(--ink);
+      margin-bottom: 0.75rem;
+    }
+    .fy-subtitle {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--neutral);
+      letter-spacing: 0.04em;
+    }
+    /* FY summary figures */
+    .fy-figures {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      min-width: 220px;
+      border: 1px solid var(--rule);
+      background: var(--paper);
+    }
+    .fy-figure-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    .fy-figure-row:last-child { border-bottom: none; }
+    .fy-figure-label { font-family: var(--font-mono); font-size: 0.6rem; color: var(--neutral); }
+    .fy-figure-val { font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink); }
+    .fy-figure-val.neg { color: var(--red); }
+    .fy-figure-val.pos { color: var(--green); }
+
+    /* ============================================================
+       FY OPENING BALANCE NARRATIVE
+    ============================================================ */
+    .fy-opening {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 2.5rem 2rem;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 4rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    .fy-opening-narrative {}
+    .fy-opening-label {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--neutral);
+      margin-bottom: 1rem;
+    }
+    .fy-opening-text {
+      font-size: 0.95rem;
+      color: var(--ink-muted);
+      line-height: 1.8;
+    }
+    .fy-opening-text strong { color: var(--ink); font-weight: 500; }
+    .fy-opening-balance {}
+    .fy-balance-label {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--neutral);
+      margin-bottom: 1rem;
+    }
+    .fy-balance-table { border: 1px solid var(--rule); background: white; }
+    .fy-balance-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.6rem 1rem;
+      border-bottom: 1px solid var(--rule);
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+    }
+    .fy-balance-row:last-child { border-bottom: none; }
+    .fy-balance-row-label { color: var(--neutral); }
+    .fy-balance-row-val { color: var(--ink); }
+    .fy-balance-row-val.neg { color: var(--red); }
+    .fy-balance-row-val.pos { color: var(--green); }
+    .fy-balance-divider { border: none; border-top: 1px solid var(--teal-mid); margin: 0.1rem 1rem; }
+
+    /* ============================================================
+       LEDGER TIMELINE
+    ============================================================ */
+    .ledger {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 2.5rem 2rem;
+    }
+    .ledger-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 1.5rem;
+    }
+    .ledger-header-label {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--neutral);
+    }
+    .ledger-header-count {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: var(--neutral);
+    }
+
+    /* Column headers */
+    .ledger-cols {
+      display: grid;
+      grid-template-columns: 80px 1fr 220px 100px 80px;
+      gap: 0;
+      padding: 0.5rem 1rem;
+      border-bottom: 2px solid var(--ink);
+      margin-bottom: 0;
+    }
+    .ledger-col-head {
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--neutral);
+    }
+    .ledger-col-head.right { text-align: right; }
+
+    /* Ledger entries */
+    .ledger-entry {
+      display: grid;
+      grid-template-columns: 80px 1fr 220px 100px 80px;
+      gap: 0;
+      padding: 0.9rem 1rem;
+      border-bottom: 1px solid var(--rule);
+      align-items: center;
+      transition: background 0.12s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .ledger-entry:hover { background: white; }
+    .ledger-entry.linkedin-launch { background: var(--teal-light); border-left: 3px solid var(--teal); }
+    .ledger-entry.linkedin-launch:hover { background: #d4ecec; }
+
+    .ledger-entry-date {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      color: var(--neutral);
+    }
+    .ledger-entry-main {}
+    .ledger-entry-ep {
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      color: var(--teal);
+      letter-spacing: 0.06em;
+      margin-bottom: 0.15rem;
+    }
+    .ledger-entry-title {
+      font-family: var(--font-sans);
+      font-size: 0.88rem;
+      color: var(--ink);
+      line-height: 1.3;
+    }
+    .ledger-entry-concept {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: var(--neutral);
+      letter-spacing: 0.03em;
+    }
+    .ledger-entry-impact {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      text-align: right;
+    }
+    .ledger-entry-impact.neg { color: var(--red); }
+    .ledger-entry-impact.pos { color: var(--green); }
+    .ledger-entry-impact.neutral { color: var(--neutral); }
+    .ledger-entry-nw {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--ink);
+      text-align: right;
+    }
+    .ledger-entry-nw.neg { color: var(--red); }
+    .ledger-entry-link {
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      color: var(--teal);
+      text-align: right;
+      letter-spacing: 0.04em;
+    }
+    .ledger-entry-link.upcoming { color: var(--neutral); }
+
+    /* Non-reporting period rows */
+    .ledger-gap {
+      display: grid;
+      grid-template-columns: 80px 1fr 220px 100px 80px;
+      padding: 0.6rem 1rem;
+      border-bottom: 1px solid var(--rule);
+      background: var(--paper);
+      align-items: center;
+    }
+    .ledger-gap-label {
+      grid-column: 1 / -1;
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      color: var(--neutral);
+      letter-spacing: 0.06em;
+      opacity: 0.6;
+      font-style: italic;
+    }
+
+    /* ============================================================
+       FY CLOSING SUMMARY
+    ============================================================ */
+    .fy-closing {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 2.5rem 2rem 5rem;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 4rem;
+      border-top: 2px solid var(--ink);
+    }
+    .fy-closing-narrative {}
+    .fy-closing-label {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--neutral);
+      margin-bottom: 1rem;
+    }
+    .fy-closing-status {
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      color: var(--ink);
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    .fy-closing-text {
+      font-size: 0.9rem;
+      color: var(--ink-muted);
+      line-height: 1.8;
+    }
+    .fy-closing-link {
+      display: inline-block;
+      margin-top: 1.25rem;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--neutral);
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 2px;
+    }
+    .fy-vitals-summary {}
+    .fy-vitals-label {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--neutral);
+      margin-bottom: 1rem;
+    }
+    .fy-vitals-grid { display: flex; flex-direction: column; gap: 0.85rem; }
+    .fy-vital {}
+    .fy-vital-header {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      color: var(--neutral);
+      margin-bottom: 0.3rem;
+    }
+    .fy-vital-track { height: 5px; background: var(--rule); border-radius: 3px; overflow: hidden; }
+    .fy-vital-fill { height: 100%; background: var(--teal); border-radius: 3px; width: 0; transition: width 1s ease 0.2s; }
+
+    /* ============================================================
+       FY NAV STRIP (prev / next FY)
+    ============================================================ */
+    .fy-nav {
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      background: white;
+    }
+    .fy-nav-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    .fy-nav-cell {
+      padding: 1.25rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      transition: background 0.15s;
+    }
+    .fy-nav-cell:hover { background: var(--teal-light); }
+    .fy-nav-cell.next { text-align: right; border-left: 1px solid var(--rule); }
+    .fy-nav-cell.disabled { opacity: 0.3; pointer-events: none; }
+    .fy-nav-direction { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--neutral); }
+    .fy-nav-label { font-family: var(--font-mono); font-size: 0.65rem; color: var(--teal); }
+    .fy-nav-season { font-family: var(--font-serif); font-size: 0.95rem; color: var(--ink); }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    .footer { border-top: 1px solid var(--rule); }
+    .footer-inner { max-width: var(--max-w); margin: 0 auto; padding: 3rem 2rem; display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; }
+    .footer-brand-name { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); margin-bottom: 0.5rem; }
+    .footer-brand-desc { font-size: 0.8rem; color: var(--neutral); max-width: 28ch; line-height: 1.6; }
+    .footer-links { display: flex; gap: 2rem; }
+    .footer-col-label { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--neutral); margin-bottom: 1rem; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+    .footer-col a { font-size: 0.8rem; color: var(--ink-muted); transition: color 0.15s; }
+    .footer-col a:hover { color: var(--teal); }
+    .footer-bottom { border-top: 1px solid var(--rule); padding: 1.25rem 2rem; max-width: var(--max-w); margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    .footer-copy { font-family: var(--font-mono); font-size: 0.6rem; color: var(--neutral); }
+    .footer-linkedin { font-family: var(--font-mono); font-size: 0.6rem; color: var(--teal); transition: opacity 0.15s; }
+    .footer-linkedin:hover { opacity: 0.7; }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 860px) {
+      .fy-header-inner { grid-template-columns: 1fr; gap: 1.5rem; }
+      .fy-opening { grid-template-columns: 1fr; gap: 2rem; }
+      .fy-closing { grid-template-columns: 1fr; gap: 2rem; }
+      .ledger-cols { display: none; }
+      .ledger-entry {
+        grid-template-columns: 1fr;
+        gap: 0.3rem;
+        padding: 1rem;
+      }
+      .ledger-entry-impact, .ledger-entry-nw, .ledger-entry-link { text-align: left; }
+      .ledger-gap { grid-template-columns: 1fr; }
+      .footer-inner { flex-direction: column; }
+      .footer-links { flex-direction: column; gap: 1.5rem; }
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+      .nav { position: relative; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">Double&nbsp;<span>Entry</span>&nbsp;Life</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="fy2026.html" aria-current="page">FY 2026</a></li>
+        <li><a href="fy2025.html">FY 2025</a></li>
+        <li><a href="fy2024.html">FY 2024</a></li>
+        <li><a href="start.html">Meet Bill</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+      <button class="nav-hamburger" aria-label="Open menu" aria-expanded="false" onclick="
+        var open = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!open));
+        document.getElementById('nav-mobile').classList.toggle('open', !open);
+      ">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-mobile" id="nav-mobile">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="fy2026.html">FY 2026</a></li>
+        <li><a href="fy2025.html">FY 2025</a></li>
+        <li><a href="fy2024.html">FY 2024</a></li>
+        <li><a href="start.html">Meet Bill</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ============================================================
+       FY REPORT HEADER
+  ============================================================ -->
+  <header class="fy-header">
+    <div class="fy-header-inner">
+      <div>
+        <div class="fy-header-meta">
+          FY 2026 / Ledger Report
+          <span class="fy-status-badge">Active</span>
+        </div>
+        <h1 class="fy-title">Restatement</h1>
+        <p class="fy-subtitle">
+          Reporting period: 01 Jan 2026 - 31 Dec 2026 &nbsp;/&nbsp;
+          Entity: Bill &nbsp;/&nbsp;
+          Episodes: 11 entries, 6 recorded
+        </p>
+      </div>
+      <div class="fy-figures" aria-label="FY 2026 summary figures">
+        <div class="fy-figure-row">
+          <span class="fy-figure-label">Opening net worth</span>
+          <span class="fy-figure-val neg">-41,800</span>
+        </div>
+        <div class="fy-figure-row">
+          <span class="fy-figure-label">Current net worth</span>
+          <span class="fy-figure-val neg">-43,100</span>
+        </div>
+        <div class="fy-figure-row">
+          <span class="fy-figure-label">YTD change</span>
+          <span class="fy-figure-val neg">-1,300</span>
+        </div>
+        <div class="fy-figure-row">
+          <span class="fy-figure-label">Entries not yet recorded</span>
+          <span class="fy-figure-val">5</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       FY OPENING BALANCE NARRATIVE
+  ============================================================ -->
+  <section class="fy-opening" aria-label="Opening balance narrative">
+    <div class="fy-opening-narrative">
+      <p class="fy-opening-label">Opening balance / 01 Jan 2026</p>
+      <p class="fy-opening-text">
+        FY 2026 opens with <strong>5,970 euro</strong> in liquid savings and a rental deposit of 1,200 euro (recoverable). Total net worth at opening: <strong>+7,170</strong>. Bill is 25, earning 1,400 net, paying 600 rent in a shared flat. Monthly surplus: 185 euro.
+      </p>
+      <p class="fy-opening-text" style="margin-top:1rem;">
+        The season title is Restatement: two years of data are enough to see the shape of a pattern. The question this year is whether the current trajectory is the right one, and whether Bill has the tools to read it correctly.
+      </p>
+    </div>
+    <div class="fy-opening-balance">
+      <p class="fy-balance-label">Opening balance sheet</p>
+      <div class="fy-balance-table">
+        <div class="fy-balance-row">
+          <span class="fy-balance-row-label">Liquid savings</span>
+          <span class="fy-balance-row-val pos">+5,970</span>
+        </div>
+        <div class="fy-balance-row">
+          <span class="fy-balance-row-label">Rental deposit (recoverable)</span>
+          <span class="fy-balance-row-val">+1,200</span>
+        </div>
+        <div class="fy-balance-row">
+          <span class="fy-balance-row-label">Monthly surplus</span>
+          <span class="fy-balance-row-val pos">+185</span>
+        </div>
+        <hr class="fy-balance-divider" />
+        <div class="fy-balance-row">
+          <span class="fy-balance-row-label">Total net worth</span>
+          <span class="fy-balance-row-val pos">+7,170</span>
+        </div>
+        <div class="fy-balance-row">
+          <span class="fy-balance-row-label">Liabilities</span>
+          <span class="fy-balance-row-val">0</span>
+        </div>
+        <div class="fy-balance-row">
+          <span class="fy-balance-row-label">
+        </div>
+        <div class="fy-balance-row">
+          <span class="fy-balance-row-label">
+        </div>
+        <hr class="fy-balance-divider" />
+        <div class="fy-balance-row">
+          <span class="fy-balance-row-label">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       LEDGER TIMELINE
+  ============================================================ -->
+  <section class="ledger" aria-label="FY 2026 episode ledger">
+    <div class="ledger-header">
+      <span class="ledger-header-label">Ledger entries / FY 2026</span>
+      <span class="ledger-header-count">11 entries / 6 recorded / 5 not yet recorded</span>
+    </div>
+
+    <!-- Column headers (desktop) -->
+    <div class="ledger-cols" aria-hidden="true">
+      <span class="ledger-col-head">Date</span>
+      <span class="ledger-col-head">Entry</span>
+      <span class="ledger-col-head">Concept</span>
+      <span class="ledger-col-head right">NW impact</span>
+      <span class="ledger-col-head right">Read</span>
+    </div>
+
+    <!-- EP.21 -->
+    <a href="ep-21.html" class="ledger-entry">
+      <span class="ledger-entry-date">19 Jan 2026</span>
+      <div class="ledger-entry-main">
+        <p class="ledger-entry-ep">EP.21</p>
+        <p class="ledger-entry-title">Closing FY 2025: two years from zero</p>
+      </div>
+      <span class="ledger-entry-concept">Annual Financial Closing</span>
+      <span class="ledger-entry-impact neutral">diagnostic</span>
+      <span class="ledger-entry-link">Open</span>
+    </a>
+
+    <!-- EP.22 -->
+    <a href="ep-22.html" class="ledger-entry">
+      <span class="ledger-entry-date">09 Feb 2026</span>
+      <div class="ledger-entry-main">
+        <p class="ledger-entry-ep">EP.22</p>
+        <p class="ledger-entry-title">Should he buy a car? The full cost analysis</p>
+      </div>
+      <span class="ledger-entry-concept">Asset Depreciation Analysis</span>
+      <span class="ledger-entry-impact neg">-200</span>
+      <span class="ledger-entry-link">Open</span>
+    </a>
+
+    <!-- EP.23 -->
+    <a href="ep-23.html" class="ledger-entry">
+      <span class="ledger-entry-date">02 Mar 2026</span>
+      <div class="ledger-entry-main">
+        <p class="ledger-entry-ep">EP.23</p>
+        <p class="ledger-entry-title">Rent vs buy: the numbers behind the decision</p>
+      </div>
+      <span class="ledger-entry-concept">Structural Liquidity Assessment</span>
+      <span class="ledger-entry-impact neutral">diagnostic</span>
+      <span class="ledger-entry-link">Open</span>
+    </a>
+
+    <!-- EP.24 -->
+    <a href="ep-24.html" class="ledger-entry">
+      <span class="ledger-entry-date">23 Mar 2026</span>
+      <div class="ledger-entry-main">
+        <p class="ledger-entry-ep">EP.24</p>
+        <p class="ledger-entry-title">Liquid savings or invested? Reading the options</p>
+      </div>
+      <span class="ledger-entry-concept">Liquidity Position Analysis</span>
+      <span class="ledger-entry-impact neutral">diagnostic</span>
+      <span class="ledger-entry-link">Open</span>
+    </a>
+
+    <!-- EP.25 -->
+    <a href="ep-25.html" class="ledger-entry">
+      <span class="ledger-entry-date">27 Apr 2026</span>
+      <div class="ledger-entry-main">
+        <p class="ledger-entry-ep">EP.25</p>
+        <p class="ledger-entry-title">Two years of saving: where does Bill actually stand?</p>
+      </div>
+      <span class="ledger-entry-concept">Balance Sheet Composition</span>
+      <span class="ledger-entry-impact neutral">diagnostic</span>
+      <span class="ledger-entry-link">Open</span>
+    </a>
+
+    <!-- EP.26 - LinkedIn launch -->
+    <a href="ep-26.html" class="ledger-entry linkedin-launch">
+      <span class="ledger-entry-date">14 Jul 2026</span>
+      <div class="ledger-entry-main">
+        <p class="ledger-entry-ep">EP.26 / LinkedIn series opens</p>
+        <p class="ledger-entry-title">1,000 euro, two years later: what does the ledger say?</p>
+      </div>
+      <span class="ledger-entry-concept">Cash Flow vs Income - Multi-Year Perspective</span>
+      <span class="ledger-entry-impact neutral">diagnostic</span>
+      <span class="ledger-entry-link">Open</span>
+    </a>
+
+    <!-- Summer break -->
+    <div class="ledger-gap" aria-label="Non-reporting period">
+      <span class="ledger-gap-label">Aug 2026 / Non-reporting period (system inactive)</span>
+    </div>
+
+    <!-- EP.27 - upcoming -->
+    <div class="ledger-entry" style="opacity:0.45; pointer-events:none;">
+      <span class="ledger-entry-date">07 Sep 2026</span>
+      <div class="ledger-entry-main">
+        <p class="ledger-entry-ep">EP.27</p>
+        <p class="ledger-entry-title">Holiday snot yet recorded: CapEx or OpEx?</p>
+      </div>
+      <span class="ledger-entry-concept">Asset vs Expense Classification</span>
+      <span class="ledger-entry-impact neutral">not yet recorded</span>
+      <span class="ledger-entry-link upcoming">Upcoming</span>
+    </div>
+
+    <!-- EP.28 - upcoming -->
+    <div class="ledger-entry" style="opacity:0.45; pointer-events:none;">
+      <span class="ledger-entry-date">28 Sep 2026</span>
+      <div class="ledger-entry-main">
+        <p class="ledger-entry-ep">EP.28</p>
+        <p class="ledger-entry-title">Subscription audit: three years of recurring costs</p>
+      </div>
+      <span class="ledger-entry-concept">Recurring Liability Exposure - System Review</span>
+      <span class="ledger-entry-impact neutral">not yet recorded</span>
+      <span class="ledger-entry-link upcoming">Upcoming</span>
+    </div>
+
+    <!-- EP.29 - upcoming -->
+    <div class="ledger-entry" style="opacity:0.45; pointer-events:none;">
+      <span class="ledger-entry-date">19 Oct 2026</span>
+      <div class="ledger-entry-main">
+        <p class="ledger-entry-ep">EP.29</p>
+        <p class="ledger-entry-title">Repeated financial mistakes: a behavioral reading</p>
+      </div>
+      <span class="ledger-entry-concept">Consumption Bias Analysis</span>
+      <span class="ledger-entry-impact neutral">not yet recorded</span>
+      <span class="ledger-entry-link upcoming">Upcoming</span>
+    </div>
+
+    <!-- EP.30 - upcoming -->
+    <div class="ledger-entry" style="opacity:0.45; pointer-events:none;">
+      <span class="ledger-entry-date">09 Nov 2026</span>
+      <div class="ledger-entry-main">
+        <p class="ledger-entry-ep">EP.30</p>
+        <p class="ledger-entry-title">Job decision retrospective: what the numbers say now</p>
+      </div>
+      <span class="ledger-entry-concept">Opportunity Cost Evaluation - Multi-Year</span>
+      <span class="ledger-entry-impact neutral">not yet recorded</span>
+      <span class="ledger-entry-link upcoming">Upcoming</span>
+    </div>
+
+    <!-- Holiday break -->
+    <div class="ledger-gap" aria-label="Non-reporting period">
+      <span class="ledger-gap-label">Mid-Dec 2026 to mid-Jan 2027 / Non-reporting period (system inactive)</span>
+    </div>
+
+    <!-- EP.31 Annual Closing - upcoming -->
+    <div class="ledger-entry" style="opacity:0.45; pointer-events:none;">
+      <span class="ledger-entry-date">19 Jan 2027</span>
+      <div class="ledger-entry-main">
+        <p class="ledger-entry-ep">EP.31</p>
+        <p class="ledger-entry-title">Closing FY 2026: three years, one ledger</p>
+      </div>
+      <span class="ledger-entry-concept">Annual Financial Closing / FY 2026</span>
+      <span class="ledger-entry-impact neutral">not yet recorded</span>
+      <span class="ledger-entry-link upcoming">Upcoming</span>
+    </div>
+
+  </section>
+
+  <!-- ============================================================
+       FY CLOSING SUMMARY
+  ============================================================ -->
+  <section class="fy-closing" aria-label="FY closing summary">
+    <div class="fy-closing-narrative">
+      <p class="fy-closing-label">FY closing status</p>
+      <h2 class="fy-closing-status">FY 2026 is open. Closing scheduled 19 Jan 2027 (EP.31).</h2>
+      <p class="fy-closing-text">
+        Five entries remain in the reporting period. The annual closing will be recorded in EP.31, published 19 Jan 2027, and will include a full three-year equity evolution across FY2024, FY2025, and FY2026.
+      </p>
+      <a href="ep-31.html" class="fy-closing-link" aria-disabled="true" style="pointer-events:none;">Annual closing / EP.31 / 19 Jan 2027</a>
+    </div>
+    <div class="fy-vitals-summary">
+      <p class="fy-vitals-label">Bill's vitals / current state</p>
+      <div class="fy-vitals-grid">
+        <div class="fy-vital">
+          <div class="fy-vital-header">
+            <span>CASH</span><span>52%</span>
+          </div>
+          <div class="fy-vital-track">
+            <div class="fy-vital-fill" data-target="52"></div>
+          </div>
+        </div>
+        <div class="fy-vital">
+          <div class="fy-vital-header">
+            <span>EQUITY</span><span>58%</span>
+          </div>
+          <div class="fy-vital-track">
+            <div class="fy-vital-fill" data-target="58"></div>
+          </div>
+        </div>
+        <div class="fy-vital">
+          <div class="fy-vital-header">
+            <span>STRESS</span><span>60%</span>
+          </div>
+          <div class="fy-vital-track">
+            <div class="fy-vital-fill" data-target="60"></div>
+          </div>
+        </div>
+        <div class="fy-vital">
+          <div class="fy-vital-header">
+            <span>FUTURE</span><span>55%</span>
+          </div>
+          <div class="fy-vital-track">
+            <div class="fy-vital-fill" data-target="55"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FY NAV STRIP
+  ============================================================ -->
+  <nav class="fy-nav" aria-label="Fiscal year navigation">
+    <div class="fy-nav-inner">
+      <a href="fy2025.html" class="fy-nav-cell prev">
+        <span class="fy-nav-direction">Previous fiscal year</span>
+        <span class="fy-nav-label">FY 2025</span>
+        <span class="fy-nav-season">Going Concern</span>
+      </a>
+      <div class="fy-nav-cell next disabled">
+        <span class="fy-nav-direction">Next fiscal year</span>
+        <span class="fy-nav-label">FY 2027</span>
+        <span class="fy-nav-season">Not yet open</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- FOOTER -->
+  <footer class="footer" role="contentinfo">
+    <div class="footer-inner">
+      <div>
+        <p class="footer-brand-name">Double Entry Life</p>
+        <p class="footer-brand-desc">A financial reporting system rendered as editorial content. Est. April 2024.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <p class="footer-col-label">System</p>
+          <ul>
+            <li><a href="fy2026.html">FY 2026</a></li>
+            <li><a href="fy2025.html">FY 2025</a></li>
+            <li><a href="fy2024.html">FY 2024</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-label">Navigate</p>
+          <ul>
+            <li><a href="start.html">Meet Bill</a></li>
+            <li><a href="about.html">About</a></li>
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">&#169; 2026 Double Entry Life. All entries by Biagio Tozzo.</span>
+      <a href="https://linkedin.com/in/biagiotozzo" target="_blank" rel="noopener" class="footer-linkedin">LinkedIn</a>
+    </div>
+  </footer>
+
+  <script>
+    (function() {
+      var animated = false;
+      function animateVitals() {
+        if (animated) return;
+        animated = true;
+        document.querySelectorAll('.fy-vital-fill').forEach(function(el, i) {
+          setTimeout(function() {
+            el.style.width = el.getAttribute('data-target') + '%';
+          }, i * 150);
+        });
+      }
+      if ('IntersectionObserver' in window) {
+        var obs = new IntersectionObserver(function(entries) {
+          entries.forEach(function(e) {
+            if (e.isIntersecting) { animateVitals(); obs.disconnect(); }
+          });
+        }, { threshold: 0.2 });
+        var target = document.querySelector('.fy-vitals-grid');
+        if (target) obs.observe(target);
+      } else {
+        setTimeout(animateVitals, 800);
+      }
+    })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FY 2024 / Opening the Books / Double Entry Life</title>
+  <meta name="description" content="FY 2024 ledger. Bill graduates with 1,000 euro and lands his first job. Opening the Books: April to December 2024." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root{--teal:#2a7a7a;--teal-light:#e6f2f2;--teal-mid:#c0dede;--red:#c0392b;--green:#1a6b3c;--ink:#1a1a1a;--ink-muted:#5a5a6a;--paper:#fafaf8;--neutral:#6b6b7a;--rule:#e2e2e0;--font-serif:'DM Serif Display',Georgia,serif;--font-mono:'IBM Plex Mono',monospace;--font-sans:'Inter',system-ui,sans-serif;--max-w:1080px;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{font-size:16px;scroll-behavior:smooth;}
+    body{font-family:var(--font-sans);background:var(--paper);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;}
+    a{color:inherit;text-decoration:none;}
+    .nav{border-bottom:1px solid var(--rule);position:sticky;top:0;z-index:100;background:var(--paper);}
+    .nav-inner{max-width:var(--max-w);margin:0 auto;padding:0 2rem;height:56px;display:flex;align-items:center;justify-content:space-between;}
+    .nav-logo{font-family:var(--font-mono);font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--teal);}
+    .nav-logo span{color:var(--ink);}
+    .nav-links{display:flex;gap:2rem;list-style:none;}
+    .nav-links a{font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--neutral);transition:color 0.15s;}
+    .nav-links a:hover,.nav-links a[aria-current="page"]{color:var(--teal);}
+    .nav-hamburger{display:none;background:none;border:none;cursor:pointer;padding:4px;flex-direction:column;gap:5px;}
+    .nav-hamburger span{display:block;width:22px;height:1.5px;background:var(--ink);}
+    .nav-mobile{display:none;position:absolute;top:56px;left:0;right:0;background:var(--paper);border-bottom:1px solid var(--rule);padding:1.5rem 2rem;z-index:99;}
+    .nav-mobile.open{display:block;}
+    .nav-mobile ul{list-style:none;display:flex;flex-direction:column;gap:1.25rem;}
+    .nav-mobile a{font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--neutral);}
+    .fy-header{border-bottom:1px solid var(--rule);background:white;}
+    .fy-header-inner{max-width:var(--max-w);margin:0 auto;padding:3rem 2rem 2.5rem;display:grid;grid-template-columns:1fr auto;gap:3rem;align-items:end;}
+    .fy-header-meta{font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--teal);margin-bottom:0.75rem;display:flex;align-items:center;gap:1rem;}
+    .fy-status-badge{background:var(--rule);color:var(--neutral);padding:0.2rem 0.6rem;border-radius:2px;font-size:0.55rem;letter-spacing:0.1em;}
+    .fy-short-badge{background:var(--ink);color:rgba(255,255,255,0.7);padding:0.2rem 0.6rem;border-radius:2px;font-size:0.55rem;letter-spacing:0.1em;}
+    .fy-title{font-family:var(--font-serif);font-size:clamp(2rem,4vw,2.75rem);line-height:1.1;color:var(--ink);margin-bottom:0.75rem;}
+    .fy-subtitle{font-family:var(--font-mono);font-size:0.68rem;color:var(--neutral);}
+    .fy-figures{display:flex;flex-direction:column;min-width:220px;border:1px solid var(--rule);background:var(--paper);}
+    .fy-figure-row{display:flex;justify-content:space-between;align-items:baseline;padding:0.65rem 1rem;border-bottom:1px solid var(--rule);}
+    .fy-figure-row:last-child{border-bottom:none;}
+    .fy-figure-label{font-family:var(--font-mono);font-size:0.6rem;color:var(--neutral);}
+    .fy-figure-val{font-family:var(--font-mono);font-size:0.78rem;color:var(--ink);}
+    .fy-figure-val.neg{color:var(--red);}
+    .fy-figure-val.pos{color:var(--green);}
+    .fy-opening{max-width:var(--max-w);margin:0 auto;padding:2.5rem 2rem;display:grid;grid-template-columns:2fr 1fr;gap:4rem;border-bottom:1px solid var(--rule);}
+    .fy-opening-label{font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--neutral);margin-bottom:1rem;}
+    .fy-opening-text{font-size:0.95rem;color:var(--ink-muted);line-height:1.8;margin-bottom:1rem;}
+    .fy-opening-text:last-child{margin-bottom:0;}
+    .fy-opening-text strong{color:var(--ink);font-weight:500;}
+    .fy-balance-label{font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--neutral);margin-bottom:1rem;}
+    .fy-balance-table{border:1px solid var(--rule);background:white;}
+    .fy-balance-row{display:flex;justify-content:space-between;padding:0.6rem 1rem;border-bottom:1px solid var(--rule);font-family:var(--font-mono);font-size:0.62rem;}
+    .fy-balance-row:last-child{border-bottom:none;}
+    .fy-balance-row-label{color:var(--neutral);}
+    .fy-balance-row-val{color:var(--ink);}
+    .fy-balance-row-val.neg{color:var(--red);}
+    .fy-balance-row-val.pos{color:var(--green);}
+    .fy-balance-divider{border:none;border-top:1px solid var(--teal-mid);margin:0.1rem 1rem;}
+    .ledger{max-width:var(--max-w);margin:0 auto;padding:2.5rem 2rem;}
+    .ledger-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1.5rem;}
+    .ledger-header-label{font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--neutral);}
+    .ledger-header-count{font-family:var(--font-mono);font-size:0.6rem;color:var(--neutral);}
+    .ledger-cols{display:grid;grid-template-columns:80px 1fr 220px 100px 80px;padding:0.5rem 1rem;border-bottom:2px solid var(--ink);}
+    .ledger-col-head{font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--neutral);}
+    .ledger-col-head.right{text-align:right;}
+    .ledger-entry{display:grid;grid-template-columns:80px 1fr 220px 100px 80px;padding:0.9rem 1rem;border-bottom:1px solid var(--rule);align-items:center;transition:background 0.12s;text-decoration:none;color:inherit;}
+    .ledger-entry:hover{background:white;}
+    .ledger-entry.first{border-left:3px solid var(--ink);}
+    .ledger-entry-date{font-family:var(--font-mono);font-size:0.62rem;color:var(--neutral);}
+    .ledger-entry-ep{font-family:var(--font-mono);font-size:0.58rem;color:var(--teal);letter-spacing:0.06em;margin-bottom:0.15rem;}
+    .ledger-entry-title{font-size:0.88rem;color:var(--ink);line-height:1.3;}
+    .ledger-entry-concept{font-family:var(--font-mono);font-size:0.6rem;color:var(--neutral);}
+    .ledger-entry-impact{font-family:var(--font-mono);font-size:0.68rem;text-align:right;}
+    .ledger-entry-impact.neg{color:var(--red);}
+    .ledger-entry-impact.pos{color:var(--green);}
+    .ledger-entry-impact.neutral{color:var(--neutral);}
+    .ledger-entry-link{font-family:var(--font-mono);font-size:0.58rem;color:var(--teal);text-align:right;}
+    .ledger-gap{display:grid;grid-template-columns:80px 1fr 220px 100px 80px;padding:0.6rem 1rem;border-bottom:1px solid var(--rule);background:var(--paper);}
+    .ledger-gap-label{grid-column:1/-1;font-family:var(--font-mono);font-size:0.58rem;color:var(--neutral);opacity:0.6;font-style:italic;}
+    .fy-closing{max-width:var(--max-w);margin:0 auto;padding:2.5rem 2rem 5rem;display:grid;grid-template-columns:2fr 1fr;gap:4rem;border-top:2px solid var(--ink);}
+    .fy-closing-label{font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--neutral);margin-bottom:1rem;}
+    .fy-closing-status{font-family:var(--font-serif);font-size:1.25rem;color:var(--ink);margin-bottom:1rem;line-height:1.2;}
+    .fy-closing-text{font-size:0.9rem;color:var(--ink-muted);line-height:1.8;}
+    .fy-closing-link{display:inline-block;margin-top:1.25rem;font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--teal);border-bottom:1px solid var(--teal-mid);padding-bottom:2px;transition:border-color 0.15s;}
+    .fy-closing-link:hover{border-color:var(--teal);}
+    .fy-vitals-label{font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--neutral);margin-bottom:1rem;}
+    .fy-vitals-grid{display:flex;flex-direction:column;gap:0.85rem;}
+    .fy-vital-header{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:0.58rem;color:var(--neutral);margin-bottom:0.3rem;}
+    .fy-vital-track{height:5px;background:var(--rule);border-radius:3px;overflow:hidden;}
+    .fy-vital-fill{height:100%;background:var(--teal);border-radius:3px;width:0;transition:width 1s ease 0.2s;}
+    .fy-nav{border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);background:white;}
+    .fy-nav-inner{max-width:var(--max-w);margin:0 auto;display:grid;grid-template-columns:1fr 1fr;}
+    .fy-nav-cell{padding:1.25rem 2rem;display:flex;flex-direction:column;gap:0.3rem;transition:background 0.15s;}
+    .fy-nav-cell:hover{background:var(--teal-light);}
+    .fy-nav-cell.next{text-align:right;border-left:1px solid var(--rule);}
+    .fy-nav-cell.disabled{opacity:0.3;pointer-events:none;}
+    .fy-nav-direction{font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--neutral);}
+    .fy-nav-label{font-family:var(--font-mono);font-size:0.65rem;color:var(--teal);}
+    .fy-nav-season{font-family:var(--font-serif);font-size:0.95rem;color:var(--ink);}
+    .footer{border-top:1px solid var(--rule);}
+    .footer-inner{max-width:var(--max-w);margin:0 auto;padding:3rem 2rem;display:flex;justify-content:space-between;align-items:flex-start;gap:2rem;}
+    .footer-brand-name{font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--teal);margin-bottom:0.5rem;}
+    .footer-brand-desc{font-size:0.8rem;color:var(--neutral);max-width:28ch;line-height:1.6;}
+    .footer-links{display:flex;gap:2rem;}
+    .footer-col-label{font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--neutral);margin-bottom:1rem;}
+    .footer-col ul{list-style:none;display:flex;flex-direction:column;gap:0.6rem;}
+    .footer-col a{font-size:0.8rem;color:var(--ink-muted);transition:color 0.15s;}
+    .footer-col a:hover{color:var(--teal);}
+    .footer-bottom{border-top:1px solid var(--rule);padding:1.25rem 2rem;max-width:var(--max-w);margin:0 auto;display:flex;justify-content:space-between;align-items:center;}
+    .footer-copy{font-family:var(--font-mono);font-size:0.6rem;color:var(--neutral);}
+    .footer-linkedin{font-family:var(--font-mono);font-size:0.6rem;color:var(--teal);}
+    @media(max-width:860px){.fy-header-inner{grid-template-columns:1fr;gap:1.5rem;}.fy-opening{grid-template-columns:1fr;gap:2rem;}.fy-closing{grid-template-columns:1fr;gap:2rem;}.ledger-cols{display:none;}.ledger-entry{grid-template-columns:1fr;gap:0.3rem;padding:1rem;}.ledger-entry-impact,.ledger-entry-link{text-align:left;}.ledger-gap{grid-template-columns:1fr;}.footer-inner{flex-direction:column;}.footer-links{flex-direction:column;gap:1.5rem;}.nav-links{display:none;}.nav-hamburger{display:flex;}.nav{position:relative;}}
+    @media(prefers-reduced-motion:reduce){*{transition:none !important;}}
+  </style>
+</head>
+<body>
+
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">Double&nbsp;<span>Entry</span>&nbsp;Life</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="fy2026.html">FY 2026</a></li>
+        <li><a href="fy2025.html">FY 2025</a></li>
+        <li><a href="fy2024.html" aria-current="page">FY 2024</a></li>
+        <li><a href="start.html">Meet Bill</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+      <button class="nav-hamburger" aria-label="Open menu" aria-expanded="false" onclick="var open=this.getAttribute('aria-expanded')==='true';this.setAttribute('aria-expanded',String(!open));document.getElementById('nav-mobile').classList.toggle('open',!open);"><span></span><span></span><span></span></button>
+    </div>
+    <div class="nav-mobile" id="nav-mobile"><ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="fy2026.html">FY 2026</a></li>
+      <li><a href="fy2025.html">FY 2025</a></li>
+      <li><a href="fy2024.html">FY 2024</a></li>
+      <li><a href="start.html">Meet Bill</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul></div>
+  </nav>
+
+  <header class="fy-header">
+    <div class="fy-header-inner">
+      <div>
+        <div class="fy-header-meta">FY 2024 / Ledger Report <span class="fy-status-badge">Closed</span><span class="fy-short-badge">Short year</span></div>
+        <h1 class="fy-title">Opening the Books</h1>
+        <p class="fy-subtitle">Reporting period: 15 Apr 2024 - 31 Dec 2024 &nbsp;/&nbsp; Entity: Bill &nbsp;/&nbsp; Episodes: 9 recorded</p>
+      </div>
+      <div class="fy-figures">
+        <div class="fy-figure-row"><span class="fy-figure-label">Opening net worth</span><span class="fy-figure-val pos">+1,000</span></div>
+        <div class="fy-figure-row"><span class="fy-figure-label">Closing net worth</span><span class="fy-figure-val pos">+3,270</span></div>
+        <div class="fy-figure-row"><span class="fy-figure-label">FY change</span><span class="fy-figure-val pos">+2,270</span></div>
+        <div class="fy-figure-row"><span class="fy-figure-label">Episodes recorded</span><span class="fy-figure-val">9</span></div>
+      </div>
+    </div>
+  </header>
+
+  <section class="fy-opening">
+    <div>
+      <p class="fy-opening-label">Opening balance / 15 Apr 2024</p>
+      <p class="fy-opening-text">FY 2024 opens on <strong>15 April 2024</strong>: Bill graduates, turns 24, and receives <strong>1,000 euro</strong> as a gift. No job, no savings history, no debt. This is the baseline.</p>
+      <p class="fy-opening-text">April and May are months without income. Bill spends approximately 200 euro per month while searching for work, covering transport, phone, and social expenses. By the end of May he has <strong>600 euro</strong> remaining.</p>
+      <p class="fy-opening-text">In June 2024 he starts his first job at <strong>900 euro net per month</strong>. He still lives with his parents, so his fixed costs are minimal. The monthly surplus is 495 euro. By December, after Christmas spending of 300, his liquid savings reach <strong>3,270 euro</strong>.</p>
+    </div>
+    <div>
+      <p class="fy-balance-label">Opening balance sheet / baseline</p>
+      <div class="fy-balance-table">
+        <div class="fy-balance-row"><span class="fy-balance-row-label">Cash (graduation gift)</span><span class="fy-balance-row-val pos">+1,000</span></div>
+        <div class="fy-balance-row"><span class="fy-balance-row-label">Liabilities</span><span class="fy-balance-row-val">0</span></div>
+        <hr class="fy-balance-divider" />
+        <div class="fy-balance-row"><span class="fy-balance-row-label">Net worth</span><span class="fy-balance-row-val pos">+1,000</span></div>
+        <div class="fy-balance-row"><span class="fy-balance-row-label">Monthly income (from Jun)</span><span class="fy-balance-row-val">900</span></div>
+        <div class="fy-balance-row"><span class="fy-balance-row-label">Monthly surplus (from Jun)</span><span class="fy-balance-row-val pos">+495</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ledger">
+    <div class="ledger-header">
+      <span class="ledger-header-label">Ledger entries / FY 2024</span>
+      <span class="ledger-header-count">9 entries / all recorded / short year Apr-Dec</span>
+    </div>
+    <div class="ledger-cols" aria-hidden="true">
+      <span class="ledger-col-head">Date</span>
+      <span class="ledger-col-head">Entry</span>
+      <span class="ledger-col-head">Concept</span>
+      <span class="ledger-col-head right">NW impact</span>
+      <span class="ledger-col-head right">Read</span>
+    </div>
+
+    <a href="ep-01.html" class="ledger-entry first">
+      <span class="ledger-entry-date">15 Apr 2024</span>
+      <div><p class="ledger-entry-ep">EP.01 / System opens</p><p class="ledger-entry-title">1,000 euro. Where does it go?</p></div>
+      <span class="ledger-entry-concept">Cash Flow vs Income</span>
+      <span class="ledger-entry-impact neutral">diagnostic</span>
+      <span class="ledger-entry-link">Open</span>
+    </a>
+    <a href="ep-02.html" class="ledger-entry">
+      <span class="ledger-entry-date">06 May 2024</span>
+      <div><p class="ledger-entry-ep">EP.02</p><p class="ledger-entry-title">Two months without a salary: how long does it last?</p></div>
+      <span class="ledger-entry-concept">Cash Burn Rate</span>
+      <span class="ledger-entry-impact neg">-200</span>
+      <span class="ledger-entry-link">Open</span>
+    </a>
+    <a href="ep-03.html" class="ledger-entry">
+      <span class="ledger-entry-date">27 May 2024</span>
+      <div><p class="ledger-entry-ep">EP.03</p><p class="ledger-entry-title">First job: 900 euro net per month</p></div>
+      <span class="ledger-entry-concept">Liquidity Position Analysis</span>
+      <span class="ledger-entry-impact pos">+900</span>
+      <span class="ledger-entry-link">Open</span>
+    </a>
+    <a href="ep-04.html" class="ledger-entry">
+      <span class="ledger-entry-date">17 Jun 2024</span>
+      <div><p class="ledger-entry-ep">EP.04</p><p class="ledger-entry-title">First full month: something is left over</p></div>
+      <span class="ledger-entry-concept">Budget Variance Analysis</span>
+      <span class="ledger-entry-impact pos">+495</span>
+      <span class="ledger-entry-link">Open</span>
+    </a>
+    <a href="ep-05.html" class="ledger-entry">
+      <span class="ledger-entry-date">15 Jul 2024</span>
+      <div><p class="ledger-entry-ep">EP.05</p><p class="ledger-entry-title">First big purchase: a new smartphone</p></div>
+      <span class="ledger-entry-concept">Asset vs Expense Classification</span>
+      <span class="ledger-entry-impact neg">-400</span>
+      <span class="ledger-entry-link">Open</span>
+    </a>
+    <div class="ledger-gap"><span class="ledger-gap-label">Aug 2024 / Non-reporting period (system inactive) / Bill continues working and saving</span></div>
+    <a href="ep-06.html" class="ledger-entry">
+      <span class="ledger-entry-date">09 Sep 2024</span>
+      <div><p class="ledger-entry-ep">EP.06</p><p class="ledger-entry-title">Summer with friends: what did it actually cost?</p></div>
+      <span class="ledger-entry-concept">Consumption Bias Analysis</span>
+      <span class="ledger-entry-impact neg">-280</span>
+      <span class="ledger-entry-link">Open</span>
+    </a>
+    <a href="ep-07.html" class="ledger-entry">
+      <span class="ledger-entry-date">30 Sep 2024</span>
+      <div><p class="ledger-entry-ep">EP.07</p><p class="ledger-entry-title">Subscriptions: how many has he activated?</p></div>
+      <span class="ledger-entry-concept">Recurring Liability Exposure</span>
+      <span class="ledger-entry-impact neg">-30</span>
+      <span class="ledger-entry-link">Open</span>
+    </a>
+    <a href="ep-08.html" class="ledger-entry">
+      <span class="ledger-entry-date">21 Oct 2024</span>
+      <div><p class="ledger-entry-ep">EP.08</p><p class="ledger-entry-title">First full net worth calculation</p></div>
+      <span class="ledger-entry-concept">Balance Sheet Composition</span>
+      <span class="ledger-entry-impact neutral">diagnostic</span>
+      <span class="ledger-entry-link">Open</span>
+    </a>
+    <a href="ep-09.html" class="ledger-entry">
+      <span class="ledger-entry-date">09 Dec 2024</span>
+      <div><p class="ledger-entry-ep">EP.09</p><p class="ledger-entry-title">Christmas: first salary, first trap</p></div>
+      <span class="ledger-entry-concept">Accruals and Deferred Costs</span>
+      <span class="ledger-entry-impact neg">-300</span>
+      <span class="ledger-entry-link">Open</span>
+    </a>
+    <div class="ledger-gap"><span class="ledger-gap-label">Mid-Dec 2024 to mid-Jan 2025 / Non-reporting period (system inactive) / Bill continues working</span></div>
+  </section>
+
+  <section class="fy-closing">
+    <div>
+      <p class="fy-closing-label">FY closing status</p>
+      <h2 class="fy-closing-status">FY 2024 closed. Annual closing recorded in EP.10, 20 Jan 2025.</h2>
+      <p class="fy-closing-text">The short year closes with <strong>3,270 euro</strong> in liquid savings and zero liabilities. Net worth: +3,270. Bill started with 1,000 and added 2,270 in nine months. The pattern that matters: living with his parents makes saving easy. That will change in FY 2025.</p>
+      <a href="ep-10.html" class="fy-closing-link">Read the annual closing / EP.10</a>
+    </div>
+    <div>
+      <p class="fy-vitals-label">Bill's vitals / FY 2024 closing</p>
+      <div class="fy-vitals-grid">
+        <div><div class="fy-vital-header"><span>CASH</span><span>65%</span></div><div class="fy-vital-track"><div class="fy-vital-fill" data-target="65"></div></div></div>
+        <div><div class="fy-vital-header"><span>EQUITY</span><span>70%</span></div><div class="fy-vital-track"><div class="fy-vital-fill" data-target="70"></div></div></div>
+        <div><div class="fy-vital-header"><span>STRESS</span><span>25%</span></div><div class="fy-vital-track"><div class="fy-vital-fill" data-target="25"></div></div></div>
+        <div><div class="fy-vital-header"><span>FUTURE</span><span>68%</span></div><div class="fy-vital-track"><div class="fy-vital-fill" data-target="68"></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <nav class="fy-nav">
+    <div class="fy-nav-inner">
+      <div class="fy-nav-cell disabled"><span class="fy-nav-direction">&#8592; Previous fiscal year</span><span class="fy-nav-label">FY 2023</span><span class="fy-nav-season">System not yet open</span></div>
+      <a href="fy2025.html" class="fy-nav-cell next"><span class="fy-nav-direction">Next fiscal year &#8594;</span><span class="fy-nav-label">FY 2025</span><span class="fy-nav-season">Going Concern</span></a>
+    </div>
+  </nav>
+
+  <footer class="footer" role="contentinfo">
+    <div class="footer-inner">
+      <div><p class="footer-brand-name">Double Entry Life</p><p class="footer-brand-desc">A financial reporting system rendered as editorial content. Est. April 2024.</p></div>
+      <div class="footer-links">
+        <div class="footer-col"><p class="footer-col-label">System</p><ul><li><a href="fy2026.html">FY 2026</a></li><li><a href="fy2025.html">FY 2025</a></li><li><a href="fy2024.html">FY 2024</a></li></ul></div>
+        <div class="footer-col"><p class="footer-col-label">Navigate</p><ul><li><a href="start.html">Meet Bill</a></li><li><a href="about.html">About</a></li></ul></div>
+        <div class="footer-col"><p class="footer-col-label">Connect</p><ul><li><a href="https://linkedin.com/in/biagiotozzo" target="_blank" rel="noopener">LinkedIn</a></li></ul></div>
+      </div>
+    </div>
+    <div class="footer-bottom"><span class="footer-copy">&#169; 2026 Double Entry Life. All entries by Biagio Tozzo.</span><a href="https://linkedin.com/in/biagiotozzo" target="_blank" rel="noopener" class="footer-linkedin">LinkedIn</a></div>
+  </footer>
+
+  <script>
+  (function(){
+    var animated=false;
+    function animateVitals(){
+      if(animated)return;animated=true;
+      document.querySelectorAll('.fy-vital-fill').forEach(function(el,i){
+        setTimeout(function(){el.style.width=el.getAttribute('data-target')+'%';},i*150);
+      });
+    }
+    if('IntersectionObserver' in window){
+      var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){animateVitals();obs.disconnect();}});},{threshold:0.2});
+      var t=document.querySelector('.fy-vitals-grid');if(t)obs.observe(t);
+    } else{setTimeout(animateVitals,800);}
+  })();
+  </script>
+</body>
+</html>
