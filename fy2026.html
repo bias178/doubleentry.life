@@ -419,7 +419,7 @@
     .footer { border-top: 1px solid var(--rule); }
     .footer-inner { max-width: var(--max-w); margin: 0 auto; padding: 3rem 2rem; display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; }
     .footer-brand-name { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); margin-bottom: 0.5rem; }
-    .footer-brand-desc { font-size: 0.8rem; color: var(--neutral); max-width: 28ch; line-height: 1.6; }
+    .footer-brand-desc { font-size: 0.8rem; color: var(--neutral); line-height: 1.6; }
     .footer-links { display: flex; gap: 2rem; }
     .footer-col-label { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--neutral); margin-bottom: 1rem; }
     .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
@@ -454,6 +454,26 @@
     @media (prefers-reduced-motion: reduce) {
       * { transition: none !important; }
     }
+    .xbrl-statement{border:1px solid var(--rule);background:white;}
+    .xbrl-header{background:var(--ink);padding:0.65rem 1rem;}
+    .xbrl-header-title{font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);display:block;margin-bottom:0.15rem;}
+    .xbrl-header-sub{font-family:var(--font-mono);font-size:0.5rem;color:rgba(255,255,255,0.4);}
+    .xbrl-col-headers{display:grid;grid-template-columns:1fr 90px 90px;padding:0.45rem 1rem;border-bottom:2px solid var(--ink);gap:0.5rem;}
+    .xbrl-col-head{font-family:var(--font-mono);font-size:0.52rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--neutral);text-align:right;}
+    .xbrl-col-head:first-child{text-align:left;}
+    .xbrl-section{background:var(--teal-light);padding:0.35rem 1rem;display:grid;grid-template-columns:1fr 90px 90px;gap:0.5rem;border-bottom:1px solid var(--teal-mid);}
+    .xbrl-section-label{font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal);font-weight:600;}
+    .xbrl-row{display:grid;grid-template-columns:1fr 90px 90px;padding:0.55rem 1rem;border-bottom:1px solid var(--rule);gap:0.5rem;align-items:baseline;}
+    .xbrl-row:last-child{border-bottom:none;}
+    .xbrl-row.indent{padding-left:1.5rem;}
+    .xbrl-row.subtotal{border-top:1px solid var(--neutral);}
+    .xbrl-row.total{border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);}
+    .xbrl-label{font-family:var(--font-mono);font-size:0.62rem;color:var(--neutral);}
+    .xbrl-row.total .xbrl-label{color:var(--ink);font-weight:600;}
+    .xbrl-val{font-family:var(--font-mono);font-size:0.68rem;color:var(--ink);text-align:right;}
+    .xbrl-val.pos{color:var(--green);}
+    .xbrl-val.neg{color:var(--red);}
+    .xbrl-val.muted{color:var(--neutral);}
   </style>
 </head>
 <body>
@@ -558,7 +578,7 @@
         <div class="xbrl-row indent"><span class="xbrl-label">Security deposits</span><span class="xbrl-val">1,200</span><span class="xbrl-val muted">1,200</span></div>
         <div class="xbrl-row subtotal"><span class="xbrl-label">Total current assets</span><span class="xbrl-val pos">8,465</span><span class="xbrl-val muted">7,170</span></div>
         <div class="xbrl-section"><span class="xbrl-section-label">Current liabilities</span><span></span><span></span></div>
-        <div class="xbrl-row indent"><span class="xbrl-label">Short-term obligations</span><span class="xbrl-val muted">—</span><span class="xbrl-val muted">—</span></div>
+        <div class="xbrl-row indent"><span class="xbrl-label">Short-term obligations</span><span class="xbrl-val muted">0</span><span class="xbrl-val muted">0</span></div>
         <div class="xbrl-row subtotal"><span class="xbrl-label">Total current liabilities</span><span class="xbrl-val muted">0</span><span class="xbrl-val muted">0</span></div>
         <div class="xbrl-row total"><span class="xbrl-label">Net assets / Equity</span><span class="xbrl-val pos">8,465</span><span class="xbrl-val muted">7,170</span></div>
       </div>
@@ -755,7 +775,7 @@
     </div>
     <div class="footer-bottom">
       <span class="footer-copy">&#169; 2026 Double Entry Life. All entries by Biagio Tozzo.</span>
-      <a href="https://linkedin.com/in/biagiotozzo" target="_blank" rel="noopener" class="footer-linkedin">LinkedIn</a>
+      <a href="https://www.linkedin.com/in/biagio-tozzo-913166138" target="_blank" rel="noopener" class="footer-linkedin">LinkedIn</a>
     </div>
   </footer>
 
