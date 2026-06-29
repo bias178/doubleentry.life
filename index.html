@@ -550,7 +550,7 @@
       var open = btn.getAttribute('aria-expanded')==='true';
       btn.setAttribute('aria-expanded', String(!open));
       btn.querySelector('.tama-toggle-label').textContent = open ? 'View ledger' : 'Hide ledger';
-      btn.querySelector('.tama-toggle-icon').textContent  = open ? '&#9660;' : '&#9650;';
+      btn.querySelector('.tama-toggle-icon').textContent  = open ? '▼' : '▲';
       detail.hidden = open;
     };
 
