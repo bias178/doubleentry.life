@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About / Double Entry Life</title>
+  <meta name="description" content="Double Entry Life is a financial reporting system rendered as editorial content. A project by Biagio Tozzo, Senior Accounting Manager." />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --teal:       #2a7a7a;
+      --teal-light: #e6f2f2;
+      --teal-mid:   #c0dede;
+      --red:        #c0392b;
+      --green:      #1a6b3c;
+      --ink:        #1a1a1a;
+      --ink-muted:  #5a5a6a;
+      --paper:      #fafaf8;
+      --neutral:    #6b6b7a;
+      --rule:       #e2e2e0;
+      --font-serif: 'DM Serif Display', Georgia, serif;
+      --font-mono:  'IBM Plex Mono', monospace;
+      --font-sans:  'Inter', system-ui, sans-serif;
+      --max-w:      1080px;
+      --col:        660px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body { font-family: var(--font-sans); background: var(--paper); color: var(--ink); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+
+    .nav { border-bottom: 1px solid var(--rule); position: sticky; top: 0; z-index: 100; background: var(--paper); }
+    .nav-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); }
+    .nav-logo span { color: var(--ink); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--neutral); transition: color 0.15s; }
+    .nav-links a:hover, .nav-links a[aria-current="page"] { color: var(--teal); }
+    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; flex-direction: column; gap: 5px; }
+    .nav-hamburger span { display: block; width: 22px; height: 1.5px; background: var(--ink); }
+    .nav-mobile { display: none; position: absolute; top: 56px; left: 0; right: 0; background: var(--paper); border-bottom: 1px solid var(--rule); padding: 1.5rem 2rem; z-index: 99; }
+    .nav-mobile.open { display: block; }
+    .nav-mobile ul { list-style: none; display: flex; flex-direction: column; gap: 1.25rem; }
+    .nav-mobile a { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--neutral); }
+
+    .page-header { max-width: var(--max-w); margin: 0 auto; padding: 5rem 2rem 3rem; border-bottom: 1px solid var(--rule); }
+    .page-header-eyebrow { font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); margin-bottom: 1.25rem; }
+    .page-header-title { font-family: var(--font-serif); font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; color: var(--ink); max-width: 22ch; }
+
+    .about-body { max-width: var(--max-w); margin: 0 auto; padding: 4rem 2rem; display: grid; grid-template-columns: var(--col) 1fr; gap: 5rem; align-items: start; }
+
+    .about-prose h2 { font-family: var(--font-serif); font-size: 1.5rem; color: var(--ink); margin-bottom: 1rem; margin-top: 2.5rem; line-height: 1.2; }
+    .about-prose h2:first-child { margin-top: 0; }
+    .about-prose p { font-size: 1rem; color: var(--ink-muted); line-height: 1.8; margin-bottom: 1.1rem; }
+    .about-prose p:last-child { margin-bottom: 0; }
+    .about-prose a { color: var(--teal); border-bottom: 1px solid var(--teal-mid); }
+
+    .about-sidebar { display: flex; flex-direction: column; gap: 2rem; }
+    .about-sidebar-card { background: white; border: 1px solid var(--rule); padding: 1.5rem; }
+    .about-sidebar-card-label { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--neutral); margin-bottom: 1rem; }
+    .about-sidebar-card p { font-size: 0.85rem; color: var(--ink-muted); line-height: 1.7; }
+    .about-sidebar-card a { display: inline-block; margin-top: 1rem; font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--teal); border-bottom: 1px solid var(--teal-mid); padding-bottom: 1px; }
+
+    .about-sidebar-stat { display: flex; flex-direction: column; gap: 0; }
+    .about-sidebar-stat-row { display: flex; justify-content: space-between; padding: 0.65rem 0; border-bottom: 1px solid var(--rule); }
+    .about-sidebar-stat-row:last-child { border-bottom: none; }
+    .about-sidebar-stat-label { font-family: var(--font-mono); font-size: 0.65rem; color: var(--neutral); }
+    .about-sidebar-stat-val { font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink); }
+
+    .footer { border-top: 1px solid var(--rule); margin-top: 6rem; }
+    .footer-inner { max-width: var(--max-w); margin: 0 auto; padding: 3rem 2rem; display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; }
+    .footer-brand-name { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); margin-bottom: 0.5rem; }
+    .footer-brand-desc { font-size: 0.8rem; color: var(--neutral); line-height: 1.6; }
+    .footer-links { display: flex; gap: 2rem; }
+    .footer-col-label { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--neutral); margin-bottom: 1rem; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+    .footer-col a { font-size: 0.8rem; color: var(--ink-muted); transition: color 0.15s; }
+    .footer-col a:hover { color: var(--teal); }
+    .footer-bottom { border-top: 1px solid var(--rule); padding: 1.25rem 2rem; max-width: var(--max-w); margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    .footer-copy { font-family: var(--font-mono); font-size: 0.6rem; color: var(--neutral); }
+    .footer-linkedin { font-family: var(--font-mono); font-size: 0.6rem; color: var(--teal); transition: opacity 0.15s; }
+    .footer-linkedin:hover { opacity: 0.7; }
+
+    @media (max-width: 800px) {
+      .about-body { grid-template-columns: 1fr; gap: 3rem; }
+      .footer-inner { flex-direction: column; }
+      .footer-links { flex-direction: column; gap: 1.5rem; }
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+      .nav { position: relative; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  </style>
+</head>
+<body>
+
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">Double&nbsp;<span>Entry</span>&nbsp;Life</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="fy2026.html">FY 2026</a></li>
+        <li><a href="fy2025.html">FY 2025</a></li>
+        <li><a href="fy2024.html">FY 2024</a></li>
+        <li><a href="start.html">Meet Bill</a></li>
+        <li><a href="about.html" aria-current="page">About</a></li>
+      </ul>
+      <button class="nav-hamburger" aria-label="Open menu" aria-expanded="false" onclick="
+        var open = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!open));
+        document.getElementById('nav-mobile').classList.toggle('open', !open);
+      ">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-mobile" id="nav-mobile">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="fy2026.html">FY 2026</a></li>
+        <li><a href="fy2025.html">FY 2025</a></li>
+        <li><a href="fy2024.html">FY 2024</a></li>
+        <li><a href="start.html">Meet Bill</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <header class="page-header">
+    <p class="page-header-eyebrow">About the project</p>
+    <h1 class="page-header-title">Accounting is a language. Most people never apply it to their own numbers.</h1>
+  </header>
+
+  <div class="about-body">
+    <article class="about-prose">
+
+      <h2>Where this comes from</h2>
+      <p>
+        Fourteen years in multinational finance environments teach you something textbooks do not cover: the gap between financial literacy and financial decision-making is enormous, and it does not close just because someone earns more or holds a senior title.
+      </p>
+      <p>
+        Double Entry Life is built on a precise observation. Accounting already has a word for everything that feels confusing in personal finance. Depreciation, accruals, sunk cost, the difference between cash flow and income: these are not abstract. They describe what is already happening in people's financial lives, whether or not they have the vocabulary for it.
+      </p>
+
+      <h2>What this system is</h2>
+      <p>
+        This is not a blog. It is a financial reporting system rendered as editorial content. Every page behaves like a component of a ledger. There are four objects in the system: FY (fiscal year container), EP (episode ledger entry), Bill (single persistent entity), and the BillBoard (financial statement UI).
+      </p>
+      <p>
+        The system has been running since April 2024. FY 2024 was a short year, nine months, opening the books. FY 2025 ran the full calendar year under the going concern principle. FY 2026 is the restatement: three years of data, one open ledger.
+      </p>
+
+      <h2>Why Bill</h2>
+      <p>
+        A fictional character with precise, stable numbers allows the accounting logic to be the variable. Bill's salary, savings, mortgage, and debts do not change between episodes unless an episode event explicitly changes them. His net worth is a derived value, not an assumption. Every number is traceable to a specific EP.
+      </p>
+      <p>
+        Bill is not aspirational and he is not a cautionary tale. He started with 1,000 euro and a degree. Two years later he earns 1,400 net and wonders if the trajectory is right. The ledger knows. He is starting to learn how to read it.
+      </p>
+
+      <h2>Why accounting</h2>
+      <p>
+        Personal finance content tends to cluster around two modes: motivational frameworks with no numerical precision, and spreadsheet tutorials with no human story. This system does neither. The accounting concept is the frame. Bill's decision is the content. The ledger is the evidence.
+      </p>
+      <p>
+        The LinkedIn series distributes the episodes externally. The site is the system of record. LinkedIn is the reporting channel, not the origin.
+      </p>
+
+      <h2>About the author</h2>
+      <p>
+        Biagio Tozzo is a Senior Accounting Manager with 14 years of experience in multinational finance environments. Double Entry Life is a personal project, not affiliated with any employer.
+      </p>
+      <p>
+        <a href="https://www.linkedin.com/in/biagio-tozzo-913166138" target="_blank" rel="noopener">Connect on LinkedIn</a>
+      </p>
+
+    </article>
+
+    <aside class="about-sidebar" aria-label="Project facts">
+      <div class="about-sidebar-card">
+        <p class="about-sidebar-card-label">The system</p>
+        <p>31 episodes across three fiscal years. One accounting concept per entry. One decision in Bill's life. Each EP is an atomic record: self-contained, traceable, part of the sequence.</p>
+        <a href="fy2026.html">Open the ledger</a>
+      </div>
+
+      <div class="about-sidebar-card">
+        <p class="about-sidebar-card-label">Bill at a glance / FY 2026 opening</p>
+        <div class="about-sidebar-stat">
+          <div class="about-sidebar-stat-row">
+            <span class="about-sidebar-stat-label">Age</span>
+            <span class="about-sidebar-stat-val">26</span>
+          </div>
+          <div class="about-sidebar-stat-row">
+            <span class="about-sidebar-stat-label">Started working</span>
+            <span class="about-sidebar-stat-val">Jun 2024</span>
+          </div>
+          <div class="about-sidebar-stat-row">
+            <span class="about-sidebar-stat-label">Net monthly income</span>
+            <span class="about-sidebar-stat-val">1,400</span>
+          </div>
+          <div class="about-sidebar-stat-row">
+            <span class="about-sidebar-stat-label">Monthly surplus</span>
+            <span class="about-sidebar-stat-val">185</span>
+          </div>
+          <div class="about-sidebar-stat-row">
+            <span class="about-sidebar-stat-label">Net worth</span>
+            <span class="about-sidebar-stat-val" style="color:#1a6b3c">+8,465</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-sidebar-card">
+        <p class="about-sidebar-card-label">Fiscal years</p>
+        <div class="about-sidebar-stat">
+          <div class="about-sidebar-stat-row">
+            <span class="about-sidebar-stat-label">FY 2024</span>
+            <span class="about-sidebar-stat-val">Closed / 9 EP</span>
+          </div>
+          <div class="about-sidebar-stat-row">
+            <span class="about-sidebar-stat-label">FY 2025</span>
+            <span class="about-sidebar-stat-val">Closed / 11 EP</span>
+          </div>
+          <div class="about-sidebar-stat-row">
+            <span class="about-sidebar-stat-label">FY 2026</span>
+            <span class="about-sidebar-stat-val">Active / 11 EP</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <footer class="footer" role="contentinfo">
+    <div class="footer-inner">
+      <div>
+        <p class="footer-brand-name">Double Entry Life</p>
+        <p class="footer-brand-desc">A financial reporting system rendered as editorial content. Est. April 2024.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <p class="footer-col-label">System</p>
+          <ul>
+            <li><a href="fy2026.html">FY 2026</a></li>
+            <li><a href="fy2025.html">FY 2025</a></li>
+            <li><a href="fy2024.html">FY 2024</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-label">Navigate</p>
+          <ul>
+            <li><a href="start.html">Meet Bill</a></li>
+            <li><a href="about.html">About</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-label">Connect</p>
+          <ul>
+            <li><a href="https://www.linkedin.com/in/biagio-tozzo-913166138" target="_blank" rel="noopener">LinkedIn</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">&#169; 2026 Double Entry Life. All entries by Biagio Tozzo.</span>
+      <a href="https://www.linkedin.com/in/biagio-tozzo-913166138" target="_blank" rel="noopener" class="footer-linkedin">LinkedIn</a>
+    </div>
+  </footer>
+
+</body>
+</html>
