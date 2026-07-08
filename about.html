@@ -173,7 +173,7 @@
 
       <h2>About the author</h2>
       <p>
-        Biagio Tozzo is a Senior Accounting Manager with 14 years of experience in multinational finance environments. Double Entry Life is a personal project, not affiliated with any employer.
+        Biagio Tozzo is a Senior Accounting Manager with <span id="stat-biagio-years">14</span> years of experience in multinational finance environments. Double Entry Life is a personal project, not affiliated with any employer.
       </p>
       <p>
         <a href="https://www.linkedin.com/in/biagio-tozzo-913166138" target="_blank" rel="noopener">Connect on LinkedIn</a>
@@ -184,7 +184,7 @@
     <aside class="about-sidebar" aria-label="Project facts">
       <div class="about-sidebar-card">
         <p class="about-sidebar-card-label">The system</p>
-        <p>31 episodes across three fiscal years. One accounting concept per entry. One decision in Bill's life. Each EP is an atomic record: self-contained, traceable, part of the sequence.</p>
+        <p><span id="stat-total-episodes">31</span> episodes across three fiscal years. One accounting concept per entry. One decision in Bill's life. Each EP is an atomic record: self-contained, traceable, part of the sequence.</p>
         <a href="fy2026.html">Open the ledger</a>
       </div>
 
@@ -193,7 +193,7 @@
         <div class="about-sidebar-stat">
           <div class="about-sidebar-stat-row">
             <span class="about-sidebar-stat-label">Age</span>
-            <span class="about-sidebar-stat-val">26</span>
+            <span class="about-sidebar-stat-val" id="stat-bill-age">26</span>
           </div>
           <div class="about-sidebar-stat-row">
             <span class="about-sidebar-stat-label">Started working</span>
@@ -227,7 +227,7 @@
           </div>
           <div class="about-sidebar-stat-row">
             <span class="about-sidebar-stat-label">FY 2026</span>
-            <span class="about-sidebar-stat-val">Active / 11 EP</span>
+            <span class="about-sidebar-stat-val" id="stat-fy2026-count">Active / 11 EP</span>
           </div>
         </div>
       </div>
@@ -270,5 +270,34 @@
     </div>
   </footer>
 
+  <script src="bill-state.js"></script>
+  <script>
+    (function () {
+      // FY2026 episode count and derived total, from BILL_STATE (single source of truth)
+      var fy2026El = document.getElementById('stat-fy2026-count');
+      if (fy2026El && typeof BILL_STATE !== 'undefined') {
+        fy2026El.textContent = 'Active / ' + BILL_STATE.fy2026EpisodeCount + ' EP';
+      }
+      var totalEl = document.getElementById('stat-total-episodes');
+      if (totalEl && typeof BILL_STATE !== 'undefined') {
+        totalEl.textContent = BILL_STATE.totalEpisodes;
+      }
+
+      // Bill's age, recalculated from his birth month/year on every load
+      var billBirthYear = 2000, billBirthMonth = 4; // April 2000
+      var now = new Date();
+      var billAge = now.getFullYear() - billBirthYear;
+      if ((now.getMonth() + 1) < billBirthMonth) billAge -= 1;
+      var billAgeEl = document.getElementById('stat-bill-age');
+      if (billAgeEl) billAgeEl.textContent = billAge;
+
+      // Biagio's years of experience, recalculated from March 2012 on every load
+      var expStartYear = 2012, expStartMonth = 3; // March 2012
+      var expYears = now.getFullYear() - expStartYear;
+      if ((now.getMonth() + 1) < expStartMonth) expYears -= 1;
+      var expEl = document.getElementById('stat-biagio-years');
+      if (expEl) expEl.textContent = expYears;
+    })();
+  </script>
 </body>
 </html>

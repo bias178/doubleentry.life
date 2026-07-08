@@ -7,6 +7,13 @@ var BILL_STATE = {
   date:    "14 Jul 2026",
   concept: "Cash Flow vs Income - Multi-Year Perspective",
 
+  // FY2026 is the only open fiscal year. Update this by 1 each time a new
+  // episode is published. FY2024 (9 EP) and FY2025 (11 EP) are closed and
+  // stay static everywhere else in the site.
+  fy2026EpisodeCount: 6,
+  fy2024EpisodeCount: 9,
+  fy2025EpisodeCount: 11,
+
   // Current period: monthly (EP.26, Jul 2026)
   income:     1400,
   rent:       -600,
@@ -25,7 +32,7 @@ var BILL_STATE = {
   prior_phone:      -25,
   prior_subs:       -30,
   prior_social:     -150,
-  prior_misc:       -80,
+  prior_misc:       0,
 
   // Balance sheet - current (EP.26, Jul 2026)
   savings:    7265,
@@ -55,6 +62,9 @@ BILL_STATE.surplus = BILL_STATE.income + BILL_STATE.rent + BILL_STATE.food +
 BILL_STATE.totalAssets  = BILL_STATE.savings + BILL_STATE.deposit;
 BILL_STATE.totalLiab    = 0;
 BILL_STATE.netAssets    = BILL_STATE.totalAssets;
+BILL_STATE.totalEpisodes = BILL_STATE.fy2024EpisodeCount +
+                           BILL_STATE.fy2025EpisodeCount +
+                           BILL_STATE.fy2026EpisodeCount;
 
 // Derived - prior
 BILL_STATE.prior_surplus = BILL_STATE.prior_income + BILL_STATE.prior_rent +
@@ -65,6 +75,7 @@ BILL_STATE.prior_totalAssets = BILL_STATE.prior_savings + BILL_STATE.prior_depos
 BILL_STATE.prior_netAssets   = BILL_STATE.prior_totalAssets;
 
 // Update log
+// Each new episode: bump fy2026EpisodeCount by 1 in addition to the usual figures.
 // EP.26 14 Jul 2026: savings 7265. Prior period = Jul 2025 (900 income, parents home).
 // EP.21 19 Jan 2026: FY2025 closing. savings 5970, deposit 1200.
 // Sep 2025: relocation -1600. New job 1400/mo, rent 600. Surplus 185.

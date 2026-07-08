@@ -248,8 +248,8 @@
       color: inherit;
     }
     .ledger-entry:hover { background: white; }
-    .ledger-entry.linkedin-launch { background: var(--teal-light); border-left: 3px solid var(--teal); }
-    .ledger-entry.linkedin-launch:hover { background: #d4ecec; }
+    .ledger-entry.is-latest { background: var(--teal-light); border-left: 3px solid var(--teal); }
+    .ledger-entry.is-latest:hover { background: #d4ecec; }
 
     .ledger-entry-date {
       font-family: var(--font-mono);
@@ -524,7 +524,7 @@
         <p class="fy-subtitle">
           Reporting period: 01 Jan 2026 - 31 Dec 2026 &nbsp;/&nbsp;
           Entity: Bill &nbsp;/&nbsp;
-          Episodes: 6 entries recorded
+          <span id="fy2026-episode-count-1">Episodes: 6 entries recorded</span>
         </p>
       </div>
       <div class="fy-figures" aria-label="FY 2026 summary figures">
@@ -534,15 +534,15 @@
         </div>
         <div class="fy-figure-row">
           <span class="fy-figure-label">Current net assets</span>
-          <span class="fy-figure-val pos">+8,465</span>
+          <span class="fy-figure-val pos" id="fy2026-net-assets">+8,465</span>
         </div>
         <div class="fy-figure-row">
           <span class="fy-figure-label">YTD change</span>
-          <span class="fy-figure-val pos">+1,295</span>
+          <span class="fy-figure-val pos" id="fy2026-ytd-change">+1,295</span>
         </div>
         <div class="fy-figure-row">
           <span class="fy-figure-label">Episodes recorded</span>
-          <span class="fy-figure-val">6</span>
+          <span class="fy-figure-val" id="fy2026-episode-count-3">6</span>
         </div>
       </div>
     </div>
@@ -592,7 +592,7 @@
   <section class="ledger" aria-label="FY 2026 episode ledger">
     <div class="ledger-header">
       <span class="ledger-header-label">Ledger entries / FY 2026</span>
-      <span class="ledger-header-count">6 entries recorded</span>
+      <span class="ledger-header-count" id="fy2026-episode-count-2">6 entries recorded</span>
     </div>
 
     <!-- Column headers (desktop) -->
@@ -665,7 +665,7 @@
     </a>
 
     <!-- EP.26 - LinkedIn launch -->
-    <a href="ep-26.html" class="ledger-entry linkedin-launch">
+    <a href="ep-26.html" class="ledger-entry is-latest">
       <span class="ledger-entry-date">14 Jul 2026</span>
       <div class="ledger-entry-main">
         <p class="ledger-entry-ep">EP.26 / LinkedIn series opens</p>
@@ -802,6 +802,29 @@
       } else {
         setTimeout(animateVitals, 800);
       }
+    })();
+
+    // Auto-highlight the most recently published episode: always the last
+    // .ledger-entry in the DOM. Adding a new episode block at the end of the
+    // ledger each week is enough, no class to move by hand.
+    (function() {
+      var entries = document.querySelectorAll('.ledger-entry');
+      entries.forEach(function(el) { el.classList.remove('is-latest'); });
+      if (entries.length) entries[entries.length - 1].classList.add('is-latest');
+    })();
+  </script>
+
+  <script src="bill-state.js"></script>
+  <script>
+    (function() {
+      var s = BILL_STATE;
+      function fmtSigned(n) { var sign = n < 0 ? '-' : '+'; return sign + Math.abs(Math.round(n)).toLocaleString('en-US'); }
+      function setText(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; }
+      setText('fy2026-episode-count-1', 'Episodes: ' + s.fy2026EpisodeCount + ' entries recorded');
+      setText('fy2026-episode-count-2', s.fy2026EpisodeCount + ' entries recorded');
+      setText('fy2026-episode-count-3', s.fy2026EpisodeCount);
+      setText('fy2026-net-assets', fmtSigned(s.netAssets));
+      setText('fy2026-ytd-change', fmtSigned(s.netAssets - s.prior_netAssets));
     })();
   </script>
 
