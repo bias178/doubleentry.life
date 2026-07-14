@@ -7,6 +7,17 @@ var BILL_STATE = {
   date:    "14 Jul 2026",
   concept: "Cash Flow vs Income - Multi-Year Perspective",
 
+  // Drives the "Next entry" link on every episode page. Update this to the
+  // new episode's own number/url/title each time a new episode is
+  // published. Every past episode page compares its own number against
+  // latestEpisode.number and resolves its "Next entry" link automatically:
+  // no need to reopen and edit the previous episode's file by hand.
+  latestEpisode: {
+    number: 26,
+    url:    "ep-26.html",
+    title:  "1,000 euro, two years later: what does the ledger say?"
+  },
+
   // FY2026 is the only open fiscal year. Update this by 1 each time a new
   // episode is published. FY2024 (9 EP) and FY2025 (11 EP) are closed and
   // stay static everywhere else in the site.
@@ -75,7 +86,8 @@ BILL_STATE.prior_totalAssets = BILL_STATE.prior_savings + BILL_STATE.prior_depos
 BILL_STATE.prior_netAssets   = BILL_STATE.prior_totalAssets;
 
 // Update log
-// Each new episode: bump fy2026EpisodeCount by 1 in addition to the usual figures.
+// Each new episode: bump fy2026EpisodeCount by 1, update latestEpisode to
+// the new episode's own number/url/title, in addition to the usual figures.
 // EP.26 14 Jul 2026: savings 7265. Prior period = Jul 2025 (900 income, parents home).
 // EP.21 19 Jan 2026: FY2025 closing. savings 5970, deposit 1200.
 // Sep 2025: relocation -1600. New job 1400/mo, rent 600. Surplus 185.
