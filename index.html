@@ -314,7 +314,7 @@
               <tr><td>Transport</td><td class="neg" id="bs-t-transport">-80</td></tr>
               <tr><td>Phone</td><td class="neg" id="bs-t-phone">-25</td></tr>
               <tr><td>Subscriptions</td><td class="neg" id="bs-t-subs">-30</td></tr>
-              <tr><td>Social</td><td class="neg" id="bs-t-social">-150</td></tr>
+              <tr><td>Social (incl. train home)</td><td class="neg" id="bs-t-social">-150</td></tr>
               <tr><td>Misc</td><td class="neg" id="bs-t-misc">-80</td></tr>
               <tr class="ttl"><td>Monthly surplus</td><td class="pos" id="bs-t-surplus">+185</td></tr>
               <tr class="muted"><td>Surplus vs last year</td><td class="neg" id="bs-t-surplus-delta">-310</td></tr>
@@ -362,7 +362,7 @@
     </div>
     <div class="problem-right">
       <div class="problem-ledger-header">
-        <span class="problem-ledger-title"><span id="bs-ep-1">EP.26</span> / Lifestyle Inflation Impact</span>
+        <span class="problem-ledger-title"><span id="bs-ep-1">EP.26</span> / <span id="bs-concept-1">Cash Flow vs Income - Multi-Year Perspective</span></span>
         <span class="problem-ledger-period">FY 2026</span>
       </div>
       <div class="ledger-row"><span class="ledger-row-label">Net salary</span><span class="ledger-row-val pos" id="bs-p-income">1,400</span></div>
@@ -429,7 +429,7 @@
           <div class="archive-card-stats">
             <div class="archive-card-stat"><span class="archive-card-stat-label">Episodes</span><span class="archive-card-stat-val">11</span></div>
             <div class="archive-card-stat"><span class="archive-card-stat-label">Opening net worth</span><span class="archive-card-stat-val">+3,315</span></div>
-            <div class="archive-card-stat"><span class="archive-card-stat-label">Closing net worth</span><span class="archive-card-stat-val">+7,170</span></div>
+            <div class="archive-card-stat"><span class="archive-card-stat-label">Closing net worth</span><span class="archive-card-stat-val">+5,957</span></div>
           </div>
         </div>
         <div class="archive-card-footer">View ledger</div>
@@ -441,8 +441,8 @@
           <p class="archive-card-period">Jan 2026 - Dec 2026</p>
           <div class="archive-card-stats">
             <div class="archive-card-stat"><span class="archive-card-stat-label">Episodes published</span><span class="archive-card-stat-val" id="bs-fy2026-count">6 recorded</span></div>
-            <div class="archive-card-stat"><span class="archive-card-stat-label">Opening net worth</span><span class="archive-card-stat-val">+7,170</span></div>
-            <div class="archive-card-stat"><span class="archive-card-stat-label">Current net worth</span><span class="archive-card-stat-val" id="bs-net-worth">+8,465</span></div>
+            <div class="archive-card-stat"><span class="archive-card-stat-label">Opening net worth</span><span class="archive-card-stat-val">+5,957</span></div>
+            <div class="archive-card-stat"><span class="archive-card-stat-label">Current net worth</span><span class="archive-card-stat-val" id="bs-net-worth">+7,220</span></div>
           </div>
         </div>
         <div class="archive-card-footer">Open ledger</div>
@@ -475,10 +475,11 @@
         <hr class="bill-table-divider" />
         <div class="bill-table-row"><span class="bill-table-label">Monthly surplus</span><span class="bill-table-val pos" id="bs-x-surplus">185</span></div>
         <div class="bill-table-row section-head"><span class="bill-table-label section">Balance sheet</span><span class="bill-table-val"></span></div>
-        <div class="bill-table-row"><span class="bill-table-label">Liquid savings</span><span class="bill-table-val pos" id="bs-x-savings">7,265</span></div>
+        <div class="bill-table-row"><span class="bill-table-label">Liquid savings</span><span class="bill-table-val pos" id="bs-x-savings">5,884</span></div>
         <div class="bill-table-row"><span class="bill-table-label">Rental deposit (recoverable)</span><span class="bill-table-val" id="bs-x-deposit">1,200</span></div>
+        <div class="bill-table-row"><span class="bill-table-label">Smartphone (book value)</span><span class="bill-table-val" id="bs-x-phone-nbv">136</span></div>
         <hr class="bill-table-divider" />
-        <div class="bill-table-row"><span class="bill-table-label">Net worth (derived)</span><span class="bill-table-val pos" id="bs-x-networth">8,465</span></div>
+        <div class="bill-table-row"><span class="bill-table-label">Net worth (derived)</span><span class="bill-table-val pos" id="bs-x-networth">7,220</span></div>
       </div>
     </div>
   </section>
@@ -605,6 +606,7 @@
 
     // Episode label, wherever it appears
     setText('bs-ep-1', s.episode);
+    setText('bs-concept-1', s.concept);
     setText('bs-ep-2', s.episode);
 
     // Vitals bars (BillBoard hero)
@@ -661,6 +663,7 @@
     setText('bs-x-surplus', fmtPlain(s.surplus));
     setText('bs-x-savings', fmtPlain(s.savings));
     setText('bs-x-deposit', fmtPlain(s.deposit));
+    setText('bs-x-phone-nbv', fmtPlain(s.phoneBookValue));
     setText('bs-x-networth', fmtPlain(s.netAssets));
 
     // Episode / entry counters (single source: bill-state.js)
