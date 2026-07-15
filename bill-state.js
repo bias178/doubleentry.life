@@ -46,12 +46,14 @@ var BILL_STATE = {
   prior_misc:       0,
 
   // Balance sheet - current (EP.26, Jul 2026)
-  savings:    7265,
+  savings:    5884,
   deposit:    1200,
+  phoneBookValue: 136,
 
   // Balance sheet - prior year close (FY2025, Dec 2025)
   prior_savings: 4544,
   prior_deposit: 1200,
+  prior_phoneBookValue: 213,
 
   // Vitals
   cash:   52,
@@ -70,7 +72,7 @@ var BILL_STATE = {
 BILL_STATE.surplus = BILL_STATE.income + BILL_STATE.rent + BILL_STATE.food +
                      BILL_STATE.transport + BILL_STATE.phone + BILL_STATE.subs +
                      BILL_STATE.social + BILL_STATE.misc;
-BILL_STATE.totalAssets  = BILL_STATE.savings + BILL_STATE.deposit;
+BILL_STATE.totalAssets  = BILL_STATE.savings + BILL_STATE.deposit + BILL_STATE.phoneBookValue;
 BILL_STATE.totalLiab    = 0;
 BILL_STATE.netAssets    = BILL_STATE.totalAssets;
 BILL_STATE.totalEpisodes = BILL_STATE.fy2024EpisodeCount +
@@ -82,13 +84,13 @@ BILL_STATE.prior_surplus = BILL_STATE.prior_income + BILL_STATE.prior_rent +
                            BILL_STATE.prior_food + BILL_STATE.prior_transport +
                            BILL_STATE.prior_phone + BILL_STATE.prior_subs +
                            BILL_STATE.prior_social + BILL_STATE.prior_misc;
-BILL_STATE.prior_totalAssets = BILL_STATE.prior_savings + BILL_STATE.prior_deposit;
+BILL_STATE.prior_totalAssets = BILL_STATE.prior_savings + BILL_STATE.prior_deposit + BILL_STATE.prior_phoneBookValue;
 BILL_STATE.prior_netAssets   = BILL_STATE.prior_totalAssets;
 
 // Update log
 // Each new episode: bump fy2026EpisodeCount by 1, update latestEpisode to
 // the new episode's own number/url/title, in addition to the usual figures.
-// EP.26 14 Jul 2026: savings 7265. Prior period = Jul 2025 (900 income, parents home).
+// EP.26 14 Jul 2026: savings 5884, phone book value 136 (restated, see batch-3 audit). Prior period = Jul 2025 (900 income, parents home).
 // EP.21 19 Jan 2026: FY2025 closing. savings 4544, deposit 1200 (restated, see audit).
 // Sep 2025: relocation -1600. New job 1400/mo, rent 600. Surplus 185.
 // Jun 2024 - Aug 2025: first job 900/mo, parents home. Surplus 495.
