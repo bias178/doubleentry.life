@@ -50,7 +50,7 @@ var BILL_STATE = {
   deposit:    1200,
 
   // Balance sheet - prior year close (FY2025, Dec 2025)
-  prior_savings: 5970,
+  prior_savings: 4544,
   prior_deposit: 1200,
 
   // Vitals
@@ -89,7 +89,7 @@ BILL_STATE.prior_netAssets   = BILL_STATE.prior_totalAssets;
 // Each new episode: bump fy2026EpisodeCount by 1, update latestEpisode to
 // the new episode's own number/url/title, in addition to the usual figures.
 // EP.26 14 Jul 2026: savings 7265. Prior period = Jul 2025 (900 income, parents home).
-// EP.21 19 Jan 2026: FY2025 closing. savings 5970, deposit 1200.
+// EP.21 19 Jan 2026: FY2025 closing. savings 4544, deposit 1200 (restated, see audit).
 // Sep 2025: relocation -1600. New job 1400/mo, rent 600. Surplus 185.
 // Jun 2024 - Aug 2025: first job 900/mo, parents home. Surplus 495.
 // Apr 2024: 1000 graduation gift.
