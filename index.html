@@ -321,7 +321,7 @@
             </table>
           </div>
           <div class="tama-panel" id="hero-panel-vitals">
-            <p class="tama-panel-lbl">Before vs After / Job change</p>
+            <p class="tama-panel-lbl">Before vs After / <span id="bs-vitals-fy">FY2025 close</span></p>
             <div class="tama-vgrid">
               <div class="tama-vcard"><div class="tama-vname">CASH</div><div class="tama-vtrack"><div class="tama-vbefore" id="vb-cash"></div><div class="tama-vafter" id="va-cash" style="background:#1a6b3c"></div></div><div class="tama-vvals"><span id="vbl-cash"></span><span class="neg" id="val2-cash"></span></div></div>
               <div class="tama-vcard"><div class="tama-vname">EQUITY</div><div class="tama-vtrack"><div class="tama-vbefore" id="vb-equity"></div><div class="tama-vafter" id="va-equity" style="background:#d4840a"></div></div><div class="tama-vvals"><span id="vbl-equity"></span><span class="neg" id="val2-equity"></span></div></div>
@@ -331,8 +331,8 @@
           </div>
           <div class="tama-panel" id="hero-panel-insight">
             <div class="tama-ibox">
-              <div class="tama-ilbl">Lifestyle Inflation Impact / EP.26</div>
-              <div class="tama-itxt">Bill earns <strong>500 more</strong> per month than a year ago.<br><br>He saves <strong>310 less</strong> per month. Rent absorbed the raise and then some.<br><br><strong>Income went up. Surplus went down. This is the going concern problem.</strong></div>
+              <div class="tama-ilbl" id="bs-insight-label">Real vs Nominal Rate Analysis / EP.27</div>
+              <div class="tama-itxt" id="bs-insight-text">Bill's bank pays <strong>2.10%</strong> on savings, its best offer in three years.<br><br>Eurozone inflation is projected at <strong>3.0%</strong>. The real rate on his money is <strong>negative 0.9%</strong>.<br><br><strong>The decision was correct. The money is still shrinking. Both are true.</strong></div>
             </div>
             <div class="tama-bio">Bill is <span id="bs-bill-age-3">26</span>. He earns <span id="bs-income-3">1,400</span> net, pays <span id="bs-rent-3">600</span> rent, and is starting to read the numbers.</div>
           </div>
@@ -355,23 +355,27 @@
   <!-- PROBLEM -->
   <section class="problem" aria-label="The problem">
     <div>
-      <p class="problem-eyebrow">The gap</p>
-      <h2 class="problem-statement">He earns <span id="bs-pct-income">56</span>% more than a year ago. He saves <span id="bs-pct-surplus">63</span>% less per month.</h2>
-      <p class="problem-body">The difference is not an error. It is structural cost: rent, food, utilities, transport. These did not exist when he lived with his parents. His income statement changed in September 2025 and the surplus never recovered.</p>
-      <p class="problem-body">Accounting has a word for everything that feels confusing in personal finance. This system applies that vocabulary to Bill's real numbers, one decision at a time, starting from 1,000 euro.</p>
+      <p class="problem-eyebrow" id="bs-feature-eyebrow">The real rate</p>
+      <h2 class="problem-statement" id="bs-feature-headline">The best savings rate in three years. Bill's money still shrinks.</h2>
+      <div id="bs-feature-body">
+        <p class="problem-body">The European Central Bank raised its deposit facility rate in June 2026, the first increase in nearly three years. Bill's bank followed. The offer on his screen is the most generous he has ever been shown.</p>
+        <p class="problem-body">A nominal rate tells you what the bank pays. A real rate tells you what your money is worth afterwards. Only one of the two was printed on the offer, and it was not the one that decides the outcome.</p>
+      </div>
     </div>
     <div class="problem-right">
       <div class="problem-ledger-header">
-        <span class="problem-ledger-title"><span id="bs-ep-1">EP.26</span> / <span id="bs-concept-1">Cash Flow vs Income - Multi-Year Perspective</span></span>
+        <span class="problem-ledger-title"><span id="bs-ep-1">EP.27</span> / <span id="bs-concept-1">Real vs Nominal Rate Analysis</span></span>
         <span class="problem-ledger-period">FY 2026</span>
       </div>
-      <div class="ledger-row"><span class="ledger-row-label">Net salary</span><span class="ledger-row-val pos" id="bs-p-income">1,400</span></div>
-      <div class="ledger-row"><span class="ledger-row-label">Rent (shared flat)</span><span class="ledger-row-val neg" id="bs-p-rent">-600</span></div>
-      <div class="ledger-row"><span class="ledger-row-label">Food / transport / misc</span><span class="ledger-row-val neg" id="bs-p-other">-615</span></div>
-      <hr class="ledger-divider" />
-      <div class="ledger-row"><span class="ledger-row-label">Monthly surplus</span><span class="ledger-row-val pos" id="bs-p-surplus">185</span></div>
-      <div class="ledger-row"><span class="ledger-row-label">Surplus 12 months ago</span><span class="ledger-row-val pos" id="bs-p-surplus-prior">495</span></div>
-      <div class="ledger-row"><span class="ledger-row-label">Variance</span><span class="ledger-row-val neg" id="bs-p-surplus-var">-310 per month</span></div>
+      <div id="bs-feature-rows">
+        <div class="ledger-row"><span class="ledger-row-label">ECB deposit facility rate</span><span class="ledger-row-val">2.25%</span></div>
+        <div class="ledger-row"><span class="ledger-row-label">Savings account (nominal)</span><span class="ledger-row-val pos">2.10%</span></div>
+        <div class="ledger-row"><span class="ledger-row-label">Eurozone inflation 2026 (proj.)</span><span class="ledger-row-val neg">3.0%</span></div>
+        <hr class="ledger-divider" />
+        <div class="ledger-row"><span class="ledger-row-label">Real rate</span><span class="ledger-row-val neg">-0.9%</span></div>
+        <div class="ledger-row"><span class="ledger-row-label">Moved to savings account</span><span class="ledger-row-val pos">3,000</span></div>
+        <div class="ledger-row"><span class="ledger-row-label">Operating buffer retained</span><span class="ledger-row-val">2,884</span></div>
+      </div>
     </div>
   </section>
 
@@ -385,7 +389,7 @@
         <p class="system-cell-object">Object 01 / EP</p>
         <h2 class="system-cell-title">Each episode is a ledger entry</h2>
         <p class="system-cell-body">One decision by Bill. One accounting concept. Numbers that update the system state. Every EP is an atomic record: self-contained, traceable, part of the sequence.</p>
-        <p class="system-cell-example"><span id="bs-total-entries">26</span> entries recorded / FY2024-FY2026</p>
+        <p class="system-cell-example"><span id="bs-total-entries">27</span> entries recorded / FY2024-FY2026</p>
       </div>
       <div class="system-cell">
         <p class="system-cell-object">Object 02 / FY</p>
@@ -440,7 +444,7 @@
           <h3 class="archive-card-season">Restatement</h3>
           <p class="archive-card-period">Jan 2026 - Dec 2026</p>
           <div class="archive-card-stats">
-            <div class="archive-card-stat"><span class="archive-card-stat-label">Episodes published</span><span class="archive-card-stat-val" id="bs-fy2026-count">6 recorded</span></div>
+            <div class="archive-card-stat"><span class="archive-card-stat-label">Episodes published</span><span class="archive-card-stat-val" id="bs-fy2026-count">7 recorded</span></div>
             <div class="archive-card-stat"><span class="archive-card-stat-label">Opening net worth</span><span class="archive-card-stat-val">+5,957</span></div>
             <div class="archive-card-stat"><span class="archive-card-stat-label">Current net worth</span><span class="archive-card-stat-val" id="bs-net-worth">+7,220</span></div>
           </div>
@@ -463,7 +467,7 @@
     <div>
       <div class="bill-table">
         <div class="bill-table-header">
-          <span class="bill-table-header-label">Bill / Current state / <span id="bs-ep-2">EP.26</span></span>
+          <span class="bill-table-header-label">Bill / Current state / <span id="bs-ep-2">EP.27</span></span>
           <span class="bill-table-header-label" style="color:rgba(255,255,255,0.4)">Jul 2026</span>
         </div>
         <div class="bill-table-row section-head"><span class="bill-table-label section">Income</span><span class="bill-table-val"></span></div>
@@ -608,6 +612,15 @@
     setText('bs-ep-1', s.episode);
     setText('bs-concept-1', s.concept);
     setText('bs-ep-2', s.episode);
+    setText('bs-vitals-fy', s.priorFYLabel);
+
+    // Insight panel (label + body) from bill-state.js, so index.html needs no
+    // manual edit at publication. The markup above is only a fallback.
+    if (s.insight) {
+      setText('bs-insight-label', s.insight.label);
+      var insTxt = document.getElementById('bs-insight-text');
+      if (insTxt && s.insight.html) insTxt.innerHTML = s.insight.html;
+    }
 
     // Vitals bars (BillBoard hero)
     ['cash','equity','stress','future'].forEach(function(k){
@@ -641,19 +654,44 @@
     setText('bs-income-3', fmtPlain(s.income));
     setText('bs-rent-3', fmtPlain(Math.abs(s.rent)));
 
-    // Problem section headline (percent change vs a year ago)
-    var pctIncome = Math.round((s.income - s.prior_income) / s.prior_income * 100);
-    var pctSurplus = Math.round((s.prior_surplus - s.surplus) / s.prior_surplus * 100);
-    setText('bs-pct-income', pctIncome);
-    setText('bs-pct-surplus', pctSurplus);
+    // Feature section: eyebrow, headline, body and ledger rows all come from
+    // bill-state.js, so the home page follows the latest entry. The markup in
+    // the document is only a fallback if the script does not run.
+    var hf = s.homeFeature;
+    if (hf) {
+      setText('bs-feature-eyebrow', hf.eyebrow);
+      setText('bs-feature-headline', hf.headline);
 
-    // Problem section ledger card
-    setText('bs-p-income', fmtPlain(s.income));
-    setText('bs-p-rent', fmtPlain(s.rent));
-    setText('bs-p-other', fmtPlain(s.food + s.transport + s.phone + s.subs + s.social + s.misc));
-    setText('bs-p-surplus', fmtPlain(s.surplus));
-    setText('bs-p-surplus-prior', fmtPlain(s.prior_surplus));
-    setText('bs-p-surplus-var', fmtPlain(s.surplus - s.prior_surplus) + ' per month');
+      var bodyEl = document.getElementById('bs-feature-body');
+      if (bodyEl && hf.body && hf.body.length) {
+        bodyEl.textContent = '';
+        hf.body.forEach(function(para) {
+          var p = document.createElement('p');
+          p.className = 'problem-body';
+          p.textContent = para;
+          bodyEl.appendChild(p);
+        });
+      }
+
+      var rowsEl = document.getElementById('bs-feature-rows');
+      if (rowsEl && hf.rows && hf.rows.length) {
+        rowsEl.textContent = '';
+        hf.rows.forEach(function(r) {
+          if (r.divider) rowsEl.appendChild(document.createElement('hr')).className = 'ledger-divider';
+          var row = document.createElement('div');
+          row.className = 'ledger-row';
+          var lab = document.createElement('span');
+          lab.className = 'ledger-row-label';
+          lab.textContent = r.label;
+          var val = document.createElement('span');
+          val.className = 'ledger-row-val' + (r.tone ? ' ' + r.tone : '');
+          val.textContent = r.val;
+          row.appendChild(lab);
+          row.appendChild(val);
+          rowsEl.appendChild(row);
+        });
+      }
+    }
 
     // XBRL statement (Bill / Current state)
     setText('bs-x-income', fmtPlain(s.income));
