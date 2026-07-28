@@ -120,7 +120,7 @@
 
     @media(max-width:800px){
       .page-header-inner{grid-template-columns:1fr;}
-      .page-header-note{display:none;}
+      .page-header-note{max-width:none;margin-top:1.75rem;}
       .start-body{grid-template-columns:1fr;}
       .xbrl-col-headers{grid-template-columns:1fr 70px 70px 55px;}
       .xbrl-section{grid-template-columns:1fr 70px 70px 55px;}
@@ -170,7 +170,7 @@
       </div>
       <div class="page-header-note">
         <strong>How to read this</strong>
-        Current period = EP.26 (Jul 2026). Prior period = same month prior year (Jul 2025) for the cash flow statement, FY2025 closing for the balance sheet. All figures in EUR.
+        Current period = <span id="bs-note-period">EP.26 (Jul 2026)</span>. Prior period = same month prior year (<span id="bs-note-prior">Jul 2025</span>) for the cash flow statement, FY2025 closing for the balance sheet. All figures in EUR.
       </div>
     </div>
   </header>
@@ -336,11 +336,11 @@
         </div>
       </div>
 
-      <p class="section-label">Financial health indicators / EP.26</p>
+      <p class="section-label">Financial health indicators / <span id="bs-vitals-ep-1">EP.26</span></p>
       <div class="vitals-block">
         <div class="vitals-header">
           <span class="vitals-header-label">Vitals / Current vs Prior Year</span>
-          <span class="vitals-header-ep">EP.26 vs FY2025</span>
+          <span class="vitals-header-ep"><span id="bs-vitals-ep-2">EP.26</span> vs FY2025</span>
         </div>
         <div class="vitals-body">
           <div class="vital-row">
@@ -436,6 +436,18 @@
   <script>
   (function(){
     var s = BILL_STATE;
+
+    function setText(id,v){var el=document.getElementById(id); if(el) el.textContent=v;}
+
+    // "How to read this" period label, and the two vitals EP labels, all from
+    // bill-state.js so this page needs no manual edit at publication. The month
+    // comes from the episode date, not a parse of today's date.
+    var noteMonth = (s.date||'').replace(/^\d+\s+/,'');       // "28 Jul 2026" -> "Jul 2026"
+    setText('bs-note-period', s.episode + ' (' + noteMonth + ')');
+    var priorMonth = noteMonth.replace(/(\d{4})$/, function(m){return (parseInt(m,10)-1);});
+    setText('bs-note-prior', priorMonth);
+    setText('bs-vitals-ep-1', s.episode);
+    setText('bs-vitals-ep-2', s.episode);
     var vitals = {cash:s.cash, equity:s.equity, stress:s.stress, future:s.future};
     var priors  = {cash:s.prior_cash, equity:s.prior_equity, stress:s.prior_stress, future:s.prior_future};
 
