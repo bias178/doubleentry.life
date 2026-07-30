@@ -24,7 +24,6 @@ const F = {
   mono: "'IBM Plex Mono', 'Courier New', monospace",
 };
 
-// Se hai i testi estesi dei tuoi prompt/matrici originali, sostituiscili a queste costanti
 const MATRIX = `Treatment Matrix (personal module, authoritative)...`;
 
 const SYSTEM_PROMPT = `You are Language to Ledger, an educational demonstration by Double Entry Life. Translate transactions into accounting JSON following strict rules.
@@ -70,9 +69,6 @@ const B_SERIES = [
   { id: "B-20", topic: "Agriculture", ref: "IAS 41" },
 ];
 
-/**
- * Parser JSON resiliente a testo extra generato dall'LLM
- */
 function safeParseJSON(rawText) {
   if (!rawText) return null;
   const startIdx = rawText.indexOf("{");
@@ -89,9 +85,6 @@ function safeParseJSON(rawText) {
   return null;
 }
 
-/**
- * Chiamata API sicura all'endpoint serverless /api/ledger
- */
 async function fetchLedgerAPI(system, messages, maxTokens = 1000) {
   const res = await fetch("/api/ledger", {
     method: "POST",
@@ -429,4 +422,8 @@ export default function App() {
                 placeholder={awaitingAnswer ? "Answer the question below the form" : "I bought a laptop for 900 euro, paying 12 monthly installments of 75 euro."}
                 style={{
                   width: "100%", border: `1px solid ${C.tealMid}`, background: C.bg,
-       
+                  padding: "12px 14px", fontFamily: F.body, fontSize: 15, lineHeight: 1.6,
+                  color: C.ink, resize: "vertical",
+                }}
+              />
+              <div style={{ display: "flex", gap: 10,
