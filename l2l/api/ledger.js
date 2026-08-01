@@ -131,8 +131,16 @@ Respond ONLY with a single minified JSON object, no markdown, no fences, English
 export default async function handler(req, res) {
   const origin = req.headers.origin || "";
 
+  // Same-origin requests (the app calling its own /api/ledger) are always allowed:
+  // this covers the vercel.app address and any preview deployment without listing them.
+  let sameOrigin = false;
+  try {
+    sameOrigin = origin ? new URL(origin).host === req.headers.host : false;
+  } catch (_) {}
+  const allowed = sameOrigin || ALLOWED_ORIGINS.includes(origin);
+
   // CORS: answer preflight and reflect only allowed origins.
-  if (ALLOWED_ORIGINS.includes(origin)) {
+  if (allowed && origin) {
     res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Vary", "Origin");
   }
@@ -145,8 +153,8 @@ export default async function handler(req, res) {
   // Browser-origin check. Note: an Origin header can be forged outside a browser,
   // so this is a hygiene measure, not the real defence. The real defences are that
   // no client-supplied system prompt is accepted and that calls are rate limited.
-  if (origin && !ALLOWED_ORIGINS.includes(origin)) {
-    return res.status(403).json({ error: "Origin not allowed" });
+  if (origin && !allowed) {
+    return res.status(403).json({ error: "Origin not allowed", detail: "origin_rejected" });
   }
 
   const ip =
