@@ -206,12 +206,14 @@ export default async function handler(req, res) {
 
     const data = await response.json();
     if (!response.ok) {
-      // Error type only (for example authentication_error, not_found_error),
-      // never the full upstream message.
       console.error("Upstream error", response.status, data?.error?.type, data?.error?.message);
       return res.status(502).json({
         error: "Upstream error",
-        detail: String(data?.error?.type || response.status),
+        // Temporary diagnostic: the API validation message. Trim back to the
+        // error type only once the endpoint is confirmed working.
+        detail:
+          String(data?.error?.type || response.status) +
+          (data?.error?.message ? ": " + String(data.error.message).slice(0, 300) : ""),
       });
     }
     // Return only the content blocks the client needs.
