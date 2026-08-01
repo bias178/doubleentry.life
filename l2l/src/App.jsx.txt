@@ -247,7 +247,10 @@ export default function LanguageToLedger() {
             [...msgs, { role: "assistant", content: clean || "(invalid output)" }]
           );
         }
-        throw parseErr;
+        throw new Error(
+          "ENGINE:The engine returned something that is not valid JSON. What came back: " +
+            (clean ? clean.slice(0, 300) : "(empty response, no text block)")
+        );
       }
       const checkErrors = validateResult(parsed);
       if (checkErrors.length > 0) {
