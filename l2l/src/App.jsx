@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 
-/* Double Entry Life / Language to Ledger — Production Version */
+/* Double Entry Life / Language to Ledger — prototype per spec v1.2 (21 Jul 2026)
+   Site palette A, DM Serif Display + Inter + IBM Plex Mono, stateless engine. */
 
 const C = {
   teal: "#2a7a7a",
@@ -24,13 +25,9 @@ const F = {
   mono: "'IBM Plex Mono', 'Courier New', monospace",
 };
 
-const MATRIX = `Treatment Matrix (personal module, authoritative)...`;
-
-const SYSTEM_PROMPT = `You are Language to Ledger, an educational demonstration by Double Entry Life. Translate transactions into accounting JSON following strict rules.
-${MATRIX}`;
-
-const REVIEWER_PROMPT = `You are the reviewer in Language to Ledger. Perform an independent check on the proposed entry.
-${MATRIX}`;
+// The engine endpoint. Prompts and the treatment matrix live server-side in
+// api/ledger.js and are never shipped to the browser.
+const ENDPOINT = "/api/ledger";
 
 const EXAMPLES = [
   { label: "Certification course", text: "I paid 1,200 euro for a professional certification course that lasts two years." },
@@ -69,40 +66,6 @@ const B_SERIES = [
   { id: "B-20", topic: "Agriculture", ref: "IAS 41" },
 ];
 
-function safeParseJSON(rawText) {
-  if (!rawText) return null;
-  const startIdx = rawText.indexOf("{");
-  const endIdx = rawText.lastIndexOf("}");
-  
-  if (startIdx !== -1 && endIdx !== -1 && endIdx > startIdx) {
-    const jsonCandidate = rawText.slice(startIdx, endIdx + 1);
-    try {
-      return JSON.parse(jsonCandidate);
-    } catch (e) {
-      console.error("JSON parsing failed:", e);
-    }
-  }
-  return null;
-}
-
-async function fetchLedgerAPI(system, messages, maxTokens = 1000) {
-  const res = await fetch("/api/ledger", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ system, messages, maxTokens }),
-  });
-
-  if (!res.ok) {
-    throw new Error(`Server returned status ${res.status}`);
-  }
-
-  const data = await res.json();
-  return (data.content || [])
-    .filter((b) => b.type === "text")
-    .map((b) => b.text)
-    .join("\n");
-}
-
 function IconPerson({ color }) {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -139,7 +102,7 @@ function Eyebrow({ children }) {
   );
 }
 
-export default function App() {
+export default function LanguageToLedger() {
   const [input, setInput] = useState("");
   const [mode, setMode] = useState("personal");
   const [history, setHistory] = useState([]);
@@ -216,13 +179,20 @@ export default function App() {
       "Preparer assumptions: " + JSON.stringify(parsed.assumptions || []) + "\n" +
       "Preparer output: " + JSON.stringify({ concept: parsed.concept, entries: parsed.entries, impact: parsed.impact });
     try {
-      const raw = await fetchLedgerAPI(REVIEWER_PROMPT, [{ role: "user", content: payload }], 700);
-      const verdict = safeParseJSON(raw);
-      if (verdict) {
-        setReview(verdict);
-      } else {
-        setReview({ status: "unavailable" });
-      }
+      const response = await fetch(ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          role: "review",
+          messages: [{ role: "user", content: payload }],
+        }),
+      });
+      if (!response.ok) throw new Error("Reviewer request failed");
+      const data = await response.json();
+      const raw = (data.content || []).filter((b) => b.type === "text").map((b) => b.text).join("\n");
+      const clean = raw.replace(/```json|```/g, "").trim();
+      const verdict = JSON.parse(clean);
+      setReview(verdict);
     } catch (e) {
       setReview({ status: "unavailable" });
     } finally {
@@ -237,38 +207,57 @@ export default function App() {
     setError(null);
     if (attempt === 0) { setReview(null); setReviewing(false); }
     const msgs = [...(baseMsgs !== null ? baseMsgs : history), { role: "user", content: trimmed }];
-    
     try {
-      const raw = await fetchLedgerAPI(SYSTEM_PROMPT, msgs, 1000);
-      const parsed = safeParseJSON(raw);
-
-      if (!parsed) {
+      const response = await fetch(ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          role: "prepare",
+          messages: msgs,
+        }),
+      });
+      if (!response.ok) {
+        const status = response.status;
+        throw new Error(
+          status === 429
+            ? "Too many requests in a short time. Please wait a moment and try again."
+            : "The engine could not be reached. Please try again."
+        );
+      }
+      const data = await response.json();
+      const raw = (data.content || [])
+        .filter((b) => b.type === "text")
+        .map((b) => b.text)
+        .join("\n");
+      const clean = raw.replace(/```json|```/g, "").trim();
+      let parsed;
+      try {
+        parsed = JSON.parse(clean);
+      } catch (parseErr) {
         if (attempt < 2) {
           return post(
             "Your previous output was invalid or cut off. Produce the same result again as minified JSON, more concise: fewer impact rows, shorter prose, first installment only.",
             attempt + 1,
-            [...msgs, { role: "assistant", content: raw || "(invalid output)" }]
+            [...msgs, { role: "assistant", content: clean || "(invalid output)" }]
           );
         }
-        throw new Error("Unable to parse JSON after retries.");
+        throw parseErr;
       }
-
       const checkErrors = validateResult(parsed);
       if (checkErrors.length > 0) {
         if (attempt < 2) {
           return post(
             "Deterministic checks rejected your output. Fix exactly these errors and return the corrected minified JSON, changing nothing else: " + checkErrors.join(" "),
             attempt + 1,
-            [...msgs, { role: "assistant", content: raw }]
+            [...msgs, { role: "assistant", content: clean }]
           );
         }
         setError("The engine produced an entry that failed the accounting checks twice: " + checkErrors.join(" ") + " Nothing unbalanced is ever shown. Post the transaction again.");
         return;
       }
-
       setResult(parsed);
       if (parsed.status === "question") {
-        setHistory([...msgs, { role: "assistant", content: raw }]);
+        setHistory([...msgs, { role: "assistant", content: clean }]);
       } else {
         setHistory([]);
       }
@@ -333,6 +322,7 @@ export default function App() {
         }
       `}</style>
 
+      {/* Standalone header */}
       <header className="l2l-topbar" role="banner">
         <div className="l2l-topbar-inner">
           <span className="l2l-wordmark">
@@ -345,14 +335,19 @@ export default function App() {
       </header>
 
       <div style={{ maxWidth: 720, margin: "0 auto", padding: "40px 20px 80px" }}>
+        {/* Intro */}
         <header style={{ marginBottom: 36 }}>
           <p style={{ fontSize: 15, color: C.muted, lineHeight: 1.7, maxWidth: 560 }}>
             Describe a transaction in plain words, in English, Spanish, French, German or Italian. The engine reads it the way an accountant would and replies in English: a named concept, a double entry, its assumptions declared, and the impact on your statements.
           </p>
         </header>
 
+        {/* Personal / Business toggle */}
         <section style={{ marginBottom: 28 }}>
-          <div style={{ display: "inline-flex", border: `1px solid ${C.tealMid}`, background: C.bg, padding: 4, gap: 4, borderRadius: 2 }}>
+          <div style={{
+            display: "inline-flex", border: `1px solid ${C.tealMid}`, background: C.bg,
+            padding: 4, gap: 4, borderRadius: 2,
+          }}>
             <button
               onClick={() => { setMode("personal"); reset(); }}
               aria-pressed={mode === "personal"}
@@ -390,6 +385,7 @@ export default function App() {
         </section>
 
         {mode === "business" ? (
+          /* Business module: in development */
           <section style={{ background: "white", border: `1px solid ${C.rule}`, padding: 28, marginBottom: 40 }}>
             <Eyebrow>Enterprise module</Eyebrow>
             <h2 style={{ fontFamily: F.serif, fontSize: 24, fontWeight: 400, margin: "6px 0 12px" }}>
@@ -412,18 +408,420 @@ export default function App() {
             </div>
           </section>
         ) : (
-          <>
-            <section style={{ background: "white", border: `1px solid ${C.rule}`, padding: 20, marginBottom: 16 }}>
-              <Eyebrow>{awaitingAnswer ? "Your answer" : "The transaction"}</Eyebrow>
-              <textarea
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                rows={3}
-                placeholder={awaitingAnswer ? "Answer the question below the form" : "I bought a laptop for 900 euro, paying 12 monthly installments of 75 euro."}
+        <>
+        {/* Input */}
+        <section style={{ background: "white", border: `1px solid ${C.rule}`, padding: 20, marginBottom: 16 }}>
+          <Eyebrow>{awaitingAnswer ? "Your answer" : "The transaction"}</Eyebrow>
+          <textarea
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            rows={3}
+            placeholder={awaitingAnswer ? "Answer the question below the form" : "I bought a laptop for 900 euro, paying 12 monthly installments of 75 euro."}
+            style={{
+              width: "100%", border: `1px solid ${C.tealMid}`, background: C.bg,
+              padding: "12px 14px", fontFamily: F.body, fontSize: 15, lineHeight: 1.6,
+              color: C.ink, resize: "vertical",
+            }}
+          />
+          <div style={{ display: "flex", gap: 10, marginTop: 12, alignItems: "center", flexWrap: "wrap" }}>
+            <button
+              onClick={() => post(input)}
+              disabled={loading || !input.trim()}
+              style={{
+                background: loading || !input.trim() ? C.tealMid : C.teal,
+                color: "white", border: "none", padding: "10px 22px",
+                fontFamily: F.mono, fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase",
+                transition: "background 0.15s",
+              }}
+            >
+              {loading ? "Posting..." : awaitingAnswer ? "Send answer" : "Post to ledger"}
+            </button>
+            {(result || error) && (
+              <button
+                onClick={reset}
                 style={{
-                  width: "100%", border: `1px solid ${C.tealMid}`, background: C.bg,
-                  padding: "12px 14px", fontFamily: F.body, fontSize: 15, lineHeight: 1.6,
-                  color: C.ink, resize: "vertical",
+                  background: "transparent", color: C.teal, border: `1px solid ${C.tealMid}`,
+                  padding: "9px 16px", fontFamily: F.mono, fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase",
                 }}
-              />
-              <div style={{ display: "flex", gap: 10,
+              >
+                New entry
+              </button>
+            )}
+          </div>
+        </section>
+
+        {/* Example chips */}
+        {!result && !loading && (
+          <section style={{ marginBottom: 40 }}>
+            <div style={{ fontFamily: F.mono, fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: C.neutral, marginBottom: 10 }}>
+              Test cases
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+              {EXAMPLES.map((ex) => (
+                <button
+                  key={ex.label}
+                  onClick={() => { setInput(ex.text); }}
+                  style={{
+                    background: C.tealLight, border: `1px solid ${C.tealMid}`, color: C.tealDark,
+                    padding: "6px 12px", fontFamily: F.mono, fontSize: 11.5,
+                  }}
+                >
+                  {ex.label}
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
+        </>
+        )}
+
+        <div ref={outRef} />
+
+        {/* Error */}
+        {error && (
+          <section style={{ background: "white", borderLeft: `3px solid ${C.red}`, border: `1px solid ${C.rule}`, padding: 20, marginBottom: 24 }}>
+            <Eyebrow>Engine error</Eyebrow>
+            <p style={{ fontSize: 14.5, lineHeight: 1.7, color: C.ink }}>{error}</p>
+          </section>
+        )}
+
+        {/* Question: guided completion */}
+        {result && result.status === "question" && (
+          <section style={{ background: C.tealLight, borderLeft: `3px solid ${C.teal}`, padding: 20, marginBottom: 24 }}>
+            <Eyebrow>Complete the entry</Eyebrow>
+            {result.reading && (
+              <div style={{ marginBottom: 14 }}>
+                <div style={{ fontFamily: F.mono, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: C.neutral, marginBottom: 4 }}>On file</div>
+                <p style={{ fontSize: 13.5, lineHeight: 1.7, color: C.ink }}>{result.reading}</p>
+              </div>
+            )}
+            <p style={{ fontSize: 15, lineHeight: 1.7, marginBottom: 14 }}>{result.question}</p>
+            {result.missing && result.missing.length > 0 ? (
+              <div>
+                {result.missing.map((m) => (
+                  <div key={m.id} style={{ marginBottom: 16 }}>
+                    <label htmlFor={"f-" + m.id} style={{ display: "block", fontFamily: F.mono, fontSize: 11.5, color: C.tealDark, marginBottom: 6 }}>
+                      {m.label}
+                    </label>
+                    {m.options && m.options.length > 0 ? (
+                      <div>
+                        {m.options.map((o) => {
+                          const sel = fields[m.id] === o.value;
+                          return (
+                            <div
+                              key={o.value}
+                              onClick={() => setFields({ ...fields, [m.id]: o.value })}
+                              style={{
+                                border: `1px solid ${sel ? C.teal : C.rule}`,
+                                borderLeft: `3px solid ${sel ? C.teal : C.rule}`,
+                                background: sel ? C.tealLight : "white",
+                                padding: "10px 14px", marginBottom: 8, cursor: "pointer",
+                              }}
+                            >
+                              <div style={{ fontFamily: F.body, fontSize: 14, fontWeight: 600, color: C.ink, marginBottom: 2 }}>
+                                {o.label}
+                                {o.standard ? <span style={{ fontFamily: F.mono, fontSize: 9.5, letterSpacing: "0.06em", textTransform: "uppercase", color: C.neutral, marginLeft: 8 }}>most common</span> : null}
+                              </div>
+                              <div style={{ fontSize: 12.5, lineHeight: 1.6, color: C.neutral }}>{o.explanation}</div>
+                            </div>
+                          );
+                        })}
+                        <div
+                          onClick={() => setFields({ ...fields, [m.id]: "assume" })}
+                          style={{
+                            border: `1px dashed ${fields[m.id] === "assume" ? C.teal : C.rule}`,
+                            background: fields[m.id] === "assume" ? C.tealLight : "transparent",
+                            padding: "10px 14px", cursor: "pointer",
+                          }}
+                        >
+                          <div style={{ fontFamily: F.body, fontSize: 13.5, color: C.ink }}>Not sure. Apply the most common treatment</div>
+                          <div style={{ fontSize: 12, lineHeight: 1.6, color: C.neutral }}>The engine picks the standard option and declares the choice in the assumptions, so you can see it and change it.</div>
+                        </div>
+                      </div>
+                    ) : (
+                      <input
+                        id={"f-" + m.id}
+                        type="text"
+                        value={fields[m.id] || ""}
+                        onChange={(e) => setFields({ ...fields, [m.id]: e.target.value })}
+                        placeholder={m.hint || ""}
+                        style={{
+                          width: "100%", border: `1px solid ${C.tealMid}`, background: "white",
+                          padding: "9px 12px", fontFamily: F.body, fontSize: 14, color: C.ink,
+                        }}
+                      />
+                    )}
+                  </div>
+                ))}
+                <button
+                  onClick={() => submitFields(result.missing)}
+                  disabled={loading}
+                  style={{
+                    background: loading ? C.tealMid : C.teal, color: "white", border: "none",
+                    padding: "10px 22px", fontFamily: F.mono, fontSize: 12,
+                    letterSpacing: "0.08em", textTransform: "uppercase", marginTop: 4,
+                  }}
+                >
+                  {loading ? "Posting..." : "Complete the entry"}
+                </button>
+                <p style={{ fontFamily: F.mono, fontSize: 10.5, color: C.neutral, marginTop: 10 }}>
+                  The engine never estimates figures on its own. If you want it to pick a standard value for a field, type "assume" in that field and it will declare the assumption.
+                </p>
+              </div>
+            ) : (
+              <p style={{ fontFamily: F.mono, fontSize: 11, color: C.neutral, marginTop: 10 }}>
+                Answer in the box above to complete the entry.
+              </p>
+            )}
+          </section>
+        )}
+
+        {/* Refusal */}
+        {result && result.status === "refusal" && (
+          <section style={{ background: "white", border: `1px solid ${C.rule}`, borderLeft: `3px solid ${C.ink}`, padding: 20, marginBottom: 24 }}>
+            <Eyebrow>Not recorded</Eyebrow>
+            <p style={{ fontSize: 15, lineHeight: 1.7, marginBottom: result.refusal?.alternative ? 10 : 0 }}>
+              {result.refusal?.reason}
+            </p>
+            {result.refusal?.alternative && (
+              <p style={{ fontSize: 14, lineHeight: 1.7, color: C.muted }}>{result.refusal.alternative}</p>
+            )}
+          </section>
+        )}
+
+        {/* Full entry */}
+        {result && result.status === "entry" && (
+          <div>
+            {/* The transaction as read */}
+            {result.reading && (
+              <section style={{ background: C.bgAlt, border: `1px solid ${C.rule}`, padding: "16px 22px", marginBottom: 14 }}>
+                <Eyebrow>The transaction as read</Eyebrow>
+                <p style={{ fontSize: 14.5, lineHeight: 1.7, color: C.ink }}>{result.reading}</p>
+                <p style={{ fontFamily: F.mono, fontSize: 10.5, color: C.neutral, marginTop: 8 }}>
+                  If this does not match what you meant, rephrase the transaction. The entry below is built only on this reading.
+                </p>
+              </section>
+            )}
+
+            {/* The concept */}
+            <section style={{ background: "white", border: `1px solid ${C.rule}`, padding: 22, marginBottom: 14 }}>
+              <Eyebrow>The concept</Eyebrow>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 12, flexWrap: "wrap", marginBottom: 8 }}>
+                <h2 style={{ fontFamily: F.serif, fontSize: 24, fontWeight: 400 }}>{result.concept?.name}</h2>
+                {result.concept?.reference && (
+                  <span style={{ fontFamily: F.mono, fontSize: 11, background: C.tealLight, color: C.tealDark, padding: "3px 8px", border: `1px solid ${C.tealMid}` }}>
+                    {result.concept.reference}
+                  </span>
+                )}
+                {result.concept?.ruleId && result.concept.ruleId !== "none" && (
+                  <span style={{ fontFamily: F.mono, fontSize: 11, background: C.ink, color: "white", padding: "3px 8px" }} title="Treatment matrix card applied">
+                    {result.concept.ruleId}
+                  </span>
+                )}
+                {result.concept?.ruleId === "none" && (
+                  <span style={{ fontFamily: F.mono, fontSize: 10.5, color: C.neutral, fontStyle: "italic" }} title="No matrix card covers this case">
+                    no matrix rule
+                  </span>
+                )}
+              </div>
+              <p style={{ fontSize: 14.5, lineHeight: 1.75, color: C.muted }}>{result.concept?.definition}</p>
+            </section>
+
+            {/* The entry */}
+            <section style={{ background: "white", border: `1px solid ${C.rule}`, padding: 22, marginBottom: 14 }}>
+              <Eyebrow>The entry</Eyebrow>
+              {(result.entries || []).map((en, i) => {
+                const dSum = en.lines.reduce((s, l) => s + (l.debit || 0), 0);
+                const cSum = en.lines.reduce((s, l) => s + (l.credit || 0), 0);
+                return (
+                  <div key={i} style={{ marginBottom: i < result.entries.length - 1 ? 24 : 0 }}>
+                    <div style={{ fontFamily: F.mono, fontSize: 12, color: C.ink, fontWeight: 500, marginBottom: 8 }}>
+                      {result.entries.length > 1 ? `${i + 1}. ` : ""}{en.title}
+                    </div>
+                    <div style={{ border: `1px solid ${C.rule}` }}>
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 90px 90px", padding: "7px 12px", borderBottom: `2px solid ${C.ink}`, gap: 8 }}>
+                        <span style={{ fontFamily: F.mono, fontSize: 10, letterSpacing: "0.06em", textTransform: "uppercase", color: C.neutral }}>Account</span>
+                        <span style={{ fontFamily: F.mono, fontSize: 10, letterSpacing: "0.06em", textTransform: "uppercase", color: C.neutral, textAlign: "right" }}>Debit</span>
+                        <span style={{ fontFamily: F.mono, fontSize: 10, letterSpacing: "0.06em", textTransform: "uppercase", color: C.neutral, textAlign: "right" }}>Credit</span>
+                      </div>
+                      {en.lines.map((l, j) => (
+                        <div key={j} style={{ display: "grid", gridTemplateColumns: "1fr 90px 90px", padding: "8px 12px", borderBottom: `1px solid ${C.rule}`, gap: 8 }}>
+                          <span style={{ fontSize: 13.5, paddingLeft: l.credit ? 14 : 0, color: C.ink }}>{l.account}</span>
+                          <span style={{ fontFamily: F.mono, fontSize: 13, textAlign: "right" }}>{fmt(l.debit)}</span>
+                          <span style={{ fontFamily: F.mono, fontSize: 13, textAlign: "right" }}>{fmt(l.credit)}</span>
+                        </div>
+                      ))}
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 90px 90px", padding: "8px 12px", gap: 8, borderTop: `1px solid ${C.ink}`, borderBottom: `3px double ${C.ink}` }}>
+                        <span style={{ fontFamily: F.mono, fontSize: 11, letterSpacing: "0.06em", textTransform: "uppercase", color: C.neutral }}>Total</span>
+                        <span style={{ fontFamily: F.mono, fontSize: 13, textAlign: "right", fontWeight: 500 }}>{fmt(dSum)}</span>
+                        <span style={{ fontFamily: F.mono, fontSize: 13, textAlign: "right", fontWeight: 500 }}>{fmt(cSum)}</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </section>
+
+            {/* Assumptions */}
+            <section style={{ background: C.tealLight, borderLeft: `3px solid ${C.teal}`, padding: 20, marginBottom: 14 }}>
+              <Eyebrow>Assumptions</Eyebrow>
+              {result.assumptions && result.assumptions.length > 0 ? (
+                result.assumptions.map((a, i) => (
+                  <p key={i} style={{ fontSize: 14, lineHeight: 1.7, color: C.ink, marginBottom: i < result.assumptions.length - 1 ? 8 : 0 }}>{a}</p>
+                ))
+              ) : (
+                <p style={{ fontSize: 14, color: C.muted }}>None.</p>
+              )}
+            </section>
+
+            {/* Impact */}
+            {result.impact && (
+              <section style={{ border: `1px solid ${C.rule}`, background: "white", marginBottom: 14 }}>
+                <div style={{ background: C.ink, padding: "10px 16px" }}>
+                  <span style={{ display: "block", fontFamily: F.mono, fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.65)" }}>
+                    {result.impact.statement} / transaction impact
+                  </span>
+                  <span style={{ fontFamily: F.mono, fontSize: 9, color: "rgba(255,255,255,0.4)" }}>EUR</span>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 80px 80px 70px", padding: "7px 16px", borderBottom: `2px solid ${C.ink}`, gap: 6 }}>
+                  {["Line item", "Prior", "Current", "Change"].map((h, i) => (
+                    <span key={h} style={{ fontFamily: F.mono, fontSize: 10, letterSpacing: "0.06em", textTransform: "uppercase", color: C.neutral, textAlign: i === 0 ? "left" : "right" }}>{h}</span>
+                  ))}
+                </div>
+                {(result.impact.rows || []).map((r, i) => (
+                  <div key={i} style={{
+                    display: "grid", gridTemplateColumns: "1fr 80px 80px 70px", padding: "9px 16px", gap: 6,
+                    borderBottom: `1px solid ${C.rule}`, background: r.highlight ? C.tealLight : "transparent",
+                  }}>
+                    <span style={{ fontSize: 13 }}>{r.item}</span>
+                    <span style={{ fontFamily: F.mono, fontSize: 12.5, textAlign: "right", color: C.neutral }}>{fmt(r.prior)}</span>
+                    <span style={{ fontFamily: F.mono, fontSize: 12.5, textAlign: "right" }}>{fmt(r.current)}</span>
+                    <span style={{ fontFamily: F.mono, fontSize: 12.5, textAlign: "right", color: r.change > 0 ? C.green : r.change < 0 ? C.red : C.neutral }}>
+                      {r.change > 0 ? "+" + fmt(r.change) : fmt(r.change)}
+                    </span>
+                  </div>
+                ))}
+              </section>
+            )}
+
+            {/* Closing */}
+            <section style={{ padding: "18px 2px", borderTop: `2px solid ${C.ink}`, marginBottom: 8 }}>
+              <p style={{ fontFamily: F.serif, fontSize: 17, lineHeight: 1.6, color: C.ink }}>{result.closing}</p>
+            </section>
+
+            {/* Deterministic checks */}
+            <section style={{ background: "white", border: `1px solid ${C.rule}`, borderLeft: `3px solid ${C.green}`, padding: "16px 20px", marginBottom: 8 }}>
+              <Eyebrow>Deterministic checks</Eyebrow>
+              <p style={{ fontFamily: F.mono, fontSize: 12, lineHeight: 1.9, color: C.ink }}>
+                <span style={{ color: C.green, fontWeight: 500 }}>PASS</span> Debits equal credits in {result.entries.length === 1 ? "the entry" : `all ${result.entries.length} entries`}.<br />
+                <span style={{ color: C.green, fontWeight: 500 }}>PASS</span> All amounts are valid non negative figures.<br />
+                <span style={{ color: C.green, fontWeight: 500 }}>PASS</span> Impact deltas are arithmetically consistent.
+              </p>
+              <p style={{ fontFamily: F.mono, fontSize: 10.5, color: C.neutral, marginTop: 8 }}>
+                Verified in code, not by the model. An output that fails these checks is corrected or discarded, never shown.
+              </p>
+            </section>
+
+            {/* Second-pass review (L2) */}
+            {(reviewing || review) && (
+              <section style={{
+                background: "white",
+                border: `1px solid ${C.rule}`,
+                borderLeft: `3px solid ${reviewing ? C.tealMid : review.status === "clean" ? C.green : review.status === "issues" ? C.red : C.neutral}`,
+                padding: "16px 20px", marginBottom: 8,
+              }}>
+                <Eyebrow>Second-pass review</Eyebrow>
+
+                {reviewing && (
+                  <p style={{ fontFamily: F.mono, fontSize: 12, color: C.neutral, marginTop: 2 }}>
+                    An independent reviewer is checking the concept, the treatment and the arithmetic&hellip;
+                  </p>
+                )}
+
+                {!reviewing && review && review.status === "clean" && (
+                  <>
+                    <p style={{ fontFamily: F.mono, fontSize: 12, lineHeight: 1.9, color: C.ink }}>
+                      <span style={{ color: C.green, fontWeight: 500 }}>REVIEWED</span> No issues found.
+                    </p>
+                    <p style={{ fontSize: 13.5, color: C.muted, lineHeight: 1.7, marginTop: 6 }}>
+                      A second pass, independent from the one that wrote the entry, confirmed the treatment card, the rule applied, the grounding of every figure, and the arithmetic the automated checks do not cover.
+                    </p>
+                  </>
+                )}
+
+                {!reviewing && review && review.status === "issues" && (
+                  <>
+                    <p style={{ fontFamily: F.mono, fontSize: 12, color: C.ink, marginBottom: 10 }}>
+                      <span style={{ color: C.red, fontWeight: 500 }}>FLAGGED</span> The reviewer raised {review.findings.length === 1 ? "one point" : `${review.findings.length} points`} on the entry above.
+                    </p>
+                    {(review.findings || []).map((f, i) => (
+                      <div key={i} style={{ display: "flex", gap: 10, alignItems: "baseline", padding: "7px 0", borderTop: i === 0 ? "none" : `1px solid ${C.rule}` }}>
+                        <span style={{
+                          fontFamily: F.mono, fontSize: 9.5, letterSpacing: "0.08em", textTransform: "uppercase",
+                          color: f.severity === "error" ? C.red : C.orange, minWidth: 58,
+                        }}>
+                          {f.severity === "error" ? "Error" : "Warning"}
+                        </span>
+                        <span style={{ fontSize: 13.5, color: C.ink, lineHeight: 1.6 }}>
+                          <span style={{ fontFamily: F.mono, fontSize: 11.5, color: C.neutral }}>{f.area}. </span>
+                          {f.detail}
+                        </span>
+                      </div>
+                    ))}
+                  </>
+                )}
+
+                {!reviewing && review && review.status === "unavailable" && (
+                  <p style={{ fontFamily: F.mono, fontSize: 12, color: C.neutral }}>
+                    The reviewer pass could not complete. The entry above still passed the deterministic checks.
+                  </p>
+                )}
+
+                {!reviewing && review && review.status !== "unavailable" && (
+                  <p style={{ fontFamily: F.mono, fontSize: 10.5, color: C.neutral, marginTop: 10 }}>
+                    A separate reviewer pass, not the model that wrote the entry. This is the demonstration's four-eyes control.
+                  </p>
+                )}
+              </section>
+            )}
+          </div>
+        )}
+
+        {/* Fixed disclaimer */}
+        <footer style={{ marginTop: 36, paddingTop: 16, borderTop: `1px solid ${C.rule}` }}>
+          <p style={{ fontFamily: F.mono, fontSize: 10.5, color: C.neutral, letterSpacing: "0.03em" }}>
+            Educational demonstration. Not accounting, tax or investment advice. Nothing you type is stored.
+          </p>
+        </footer>
+      </div>
+
+      {/* Standalone footer */}
+      <footer className="l2l-footer">
+        <div className="l2l-footer-inner">
+          <div>
+            <p className="l2l-footer-brand-name">Language to Ledger</p>
+            <p className="l2l-footer-brand-desc">
+              A method for translating plain-language transactions into rigorous accounting records. Powered by <a href="https://doubleentry.life" target="_blank" rel="noopener" style={{ color: C.teal }}>Double Entry Life</a>.
+            </p>
+          </div>
+          <div className="l2l-footer-links">
+            <div className="l2l-footer-col">
+              <p className="l2l-footer-col-label">Connect</p>
+              <ul>
+                <li><a href="https://www.linkedin.com/in/biagio-tozzo-913166138" target="_blank" rel="noopener">LinkedIn</a></li>
+                <li><a href="https://substack.com/@doubleentrylife" target="_blank" rel="noopener">Substack</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div className="l2l-footer-bottom">
+          <span className="l2l-footer-copy">&#169; 2026 Biagio Tozzo. Educational demonstration.</span>
+          <div className="l2l-footer-connect-links">
+            <a href="https://www.linkedin.com/in/biagio-tozzo-913166138" target="_blank" rel="noopener" className="l2l-footer-linkedin">LinkedIn</a>
+            <a href="https://substack.com/@doubleentrylife" target="_blank" rel="noopener" className="l2l-footer-linkedin">Substack</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
