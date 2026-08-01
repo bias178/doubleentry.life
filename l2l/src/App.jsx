@@ -307,8 +307,10 @@ export default function LanguageToLedger() {
         button { cursor: pointer; }
         @media (prefers-reduced-motion: reduce) { * { transition: none; animation: none; } }
         a { text-decoration: none; }
+        .l2l-input { caret-color: ${C.teal}; }
+        .l2l-input::placeholder { font-style: italic; color: ${C.neutral}; opacity: 1; }
         .l2l-topbar { border-bottom: 1px solid ${C.rule}; position: sticky; top: 0; z-index: 100; background: ${C.bg}; }
-        .l2l-topbar-inner { max-width: 1080px; margin: 0 auto; padding: 0 2rem; min-height: 60px; display: flex; align-items: baseline; gap: 0.4rem 0.7rem; flex-wrap: wrap; }
+        .l2l-topbar-inner { max-width: 1080px; margin: 0 auto; padding: 1.15rem 2rem 1rem; display: flex; align-items: baseline; gap: 0.4rem 0.7rem; flex-wrap: wrap; }
         .l2l-wordmark { font-family: ${F.mono}; font-size: 1.02rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: ${C.ink}; }
         .l2l-wordmark .tl { color: ${C.teal}; }
         .l2l-wordmark .tk { color: ${C.ink}; }
@@ -319,7 +321,7 @@ export default function LanguageToLedger() {
         .l2l-footer { border-top: 1px solid ${C.rule}; background: ${C.bg}; margin-top: 60px; }
         .l2l-footer-inner { max-width: 1080px; margin: 0 auto; padding: 3rem 2rem; display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; }
         .l2l-footer-brand-name { font-family: ${F.mono}; font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: ${C.teal}; margin-bottom: 0.5rem; }
-        .l2l-footer-brand-desc { font-size: 0.8rem; color: ${C.neutral}; line-height: 1.6; max-width: 300px; }
+        .l2l-footer-brand-desc { font-size: 0.8rem; color: ${C.neutral}; line-height: 1.6; max-width: 440px; }
         .l2l-footer-links { display: flex; gap: 2rem; }
         .l2l-footer-col-label { font-family: ${F.mono}; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: ${C.neutral}; margin-bottom: 1rem; }
         .l2l-footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
@@ -331,8 +333,10 @@ export default function LanguageToLedger() {
         .l2l-footer-linkedin { font-family: ${F.mono}; font-size: 0.6rem; color: ${C.teal}; transition: opacity 0.15s; }
         .l2l-footer-linkedin:hover { opacity: 0.7; }
         @media (max-width: 720px) {
+          .l2l-topbar-inner { padding: 1rem 1.25rem 0.9rem; }
           .l2l-footer-inner { flex-direction: column; }
           .l2l-footer-links { flex-direction: column; gap: 1.5rem; }
+          .l2l-footer-brand-desc { max-width: none; }
         }
       `}</style>
 
@@ -430,7 +434,9 @@ export default function LanguageToLedger() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             rows={3}
-            placeholder={awaitingAnswer ? "Answer the question below the form" : "I bought a laptop for 900 euro, paying 12 monthly installments of 75 euro."}
+            autoFocus
+            className="l2l-input"
+            placeholder={awaitingAnswer ? "Answer the question below the form" : "Write what happened, in your own words."}
             style={{
               width: "100%", border: `1px solid ${C.tealMid}`, background: C.bg,
               padding: "12px 14px", fontFamily: F.body, fontSize: 15, lineHeight: 1.6,
