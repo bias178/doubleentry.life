@@ -183,4 +183,33 @@ export default async function handler(req, res) {
 
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
-  
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: MODEL,
+        max_tokens: MAX_TOKENS[role],
+        system,
+        messages: clean,
+      }),
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      // Error type only (for example authentication_error, not_found_error),
+      // never the full upstream message.
+      console.error("Upstream error", response.status, data?.error?.type, data?.error?.message);
+      return res.status(502).json({
+        error: "Upstream error",
+        detail: String(data?.error?.type || response.status),
+      });
+    }
+    // Return only the content blocks the client needs.
+    return res.status(200).json({ content: data.content });
+  } catch (error) {
+    console.error("Handler error", error?.message);
+    return res.status(500).json({ error: "Server error" });
+  }
+}
