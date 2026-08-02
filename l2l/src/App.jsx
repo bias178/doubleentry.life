@@ -307,6 +307,9 @@ export default function LanguageToLedger() {
         button { cursor: pointer; }
         @media (prefers-reduced-motion: reduce) { * { transition: none; animation: none; } }
         a { text-decoration: none; }
+        .l2l-content { max-width: 1080px; margin: 0 auto; padding: 2.25rem 2rem 2rem; }
+        .l2l-prose { text-align: justify; hyphens: auto; }
+        @media (max-width: 720px) { .l2l-content { padding: 1.75rem 1.25rem 1.5rem; } }
         .l2l-input { caret-color: ${C.teal}; }
         .l2l-input::placeholder { font-style: italic; color: ${C.neutral}; opacity: 1; }
         .l2l-topbar { border-bottom: 1px solid ${C.rule}; position: sticky; top: 0; z-index: 100; background: ${C.bg}; }
@@ -318,7 +321,7 @@ export default function LanguageToLedger() {
         .l2l-poweredby a { color: ${C.teal}; }
         .l2l-poweredby a .pk { color: ${C.ink}; }
         .l2l-poweredby a:hover { opacity: 0.7; }
-        .l2l-footer { border-top: 1px solid ${C.rule}; background: ${C.bg}; margin-top: 60px; }
+        .l2l-footer { border-top: 1px solid ${C.rule}; background: ${C.bg}; margin-top: 28px; }
         .l2l-footer-inner { max-width: 1080px; margin: 0 auto; padding: 3rem 2rem; display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; }
         .l2l-footer-brand-name { font-family: ${F.mono}; font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: ${C.teal}; margin-bottom: 0.5rem; }
         .l2l-footer-brand-desc { font-size: 0.8rem; color: ${C.neutral}; line-height: 1.6; max-width: 440px; }
@@ -346,10 +349,10 @@ export default function LanguageToLedger() {
         </div>
       </header>
 
-      <div style={{ maxWidth: 720, margin: "0 auto", padding: "40px 20px 80px" }}>
+      <div className="l2l-content">
         {/* Intro */}
         <header style={{ marginBottom: 36 }}>
-          <p style={{ fontSize: 15, color: C.muted, lineHeight: 1.7, maxWidth: 560 }}>
+          <p className="l2l-prose" style={{ fontSize: 15, color: C.muted, lineHeight: 1.7 }}>
             Describe a transaction in plain words, in English, Spanish, French, German or Italian. The engine reads it the way an accountant would and replies in English: a named concept, a double entry, its assumptions declared, and the impact on your statements.
           </p>
         </header>
@@ -403,7 +406,7 @@ export default function LanguageToLedger() {
             <h2 style={{ fontFamily: F.serif, fontSize: 24, fontWeight: 400, margin: "6px 0 12px" }}>
               In development
             </h2>
-            <p style={{ fontSize: 14.5, color: C.muted, lineHeight: 1.75, maxWidth: 580, marginBottom: 22 }}>
+            <p className="l2l-prose" style={{ fontSize: 14.5, color: C.muted, lineHeight: 1.75, marginBottom: 22 }}>
               The personal module is live and answers now. The enterprise module applies the same method to full company reporting under IAS and IFRS, and is being built one treatment card at a time. It does not run yet, because the system never produces an entry it cannot ground in a written rule. The scope below is what it will cover.
             </p>
             <div style={{ fontFamily: F.mono, fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: C.neutral, marginBottom: 12 }}>
@@ -495,7 +498,7 @@ export default function LanguageToLedger() {
         {error && (
           <section style={{ background: "white", borderLeft: `3px solid ${C.red}`, border: `1px solid ${C.rule}`, padding: 20, marginBottom: 24 }}>
             <Eyebrow>Engine error</Eyebrow>
-            <p style={{ fontSize: 14.5, lineHeight: 1.7, color: C.ink }}>{error}</p>
+            <p className="l2l-prose" style={{ fontSize: 14.5, lineHeight: 1.7, color: C.ink }}>{error}</p>
           </section>
         )}
 
@@ -506,7 +509,7 @@ export default function LanguageToLedger() {
             {result.reading && (
               <div style={{ marginBottom: 14 }}>
                 <div style={{ fontFamily: F.mono, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: C.neutral, marginBottom: 4 }}>On file</div>
-                <p style={{ fontSize: 13.5, lineHeight: 1.7, color: C.ink }}>{result.reading}</p>
+                <p className="l2l-prose" style={{ fontSize: 13.5, lineHeight: 1.7, color: C.ink }}>{result.reading}</p>
               </div>
             )}
             <p style={{ fontSize: 15, lineHeight: 1.7, marginBottom: 14 }}>{result.question}</p>
@@ -610,7 +613,7 @@ export default function LanguageToLedger() {
             {result.reading && (
               <section style={{ background: C.bgAlt, border: `1px solid ${C.rule}`, padding: "16px 22px", marginBottom: 14 }}>
                 <Eyebrow>The transaction as read</Eyebrow>
-                <p style={{ fontSize: 14.5, lineHeight: 1.7, color: C.ink }}>{result.reading}</p>
+                <p className="l2l-prose" style={{ fontSize: 14.5, lineHeight: 1.7, color: C.ink }}>{result.reading}</p>
                 <p style={{ fontFamily: F.mono, fontSize: 10.5, color: C.neutral, marginTop: 8 }}>
                   If this does not match what you meant, rephrase the transaction. The entry below is built only on this reading.
                 </p>
@@ -638,7 +641,7 @@ export default function LanguageToLedger() {
                   </span>
                 )}
               </div>
-              <p style={{ fontSize: 14.5, lineHeight: 1.75, color: C.muted }}>{result.concept?.definition}</p>
+              <p className="l2l-prose" style={{ fontSize: 14.5, lineHeight: 1.75, color: C.muted }}>{result.concept?.definition}</p>
             </section>
 
             {/* The entry */}
@@ -757,7 +760,7 @@ export default function LanguageToLedger() {
                     <p style={{ fontFamily: F.mono, fontSize: 12, lineHeight: 1.9, color: C.ink }}>
                       <span style={{ color: C.green, fontWeight: 500 }}>REVIEWED</span> No issues found.
                     </p>
-                    <p style={{ fontSize: 13.5, color: C.muted, lineHeight: 1.7, marginTop: 6 }}>
+                    <p className="l2l-prose" style={{ fontSize: 13.5, color: C.muted, lineHeight: 1.7, marginTop: 6 }}>
                       A second pass, independent from the one that wrote the entry, confirmed the treatment card, the rule applied, the grounding of every figure, and the arithmetic the automated checks do not cover.
                     </p>
                   </>
