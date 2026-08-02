@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="teal" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="rgb(32, 171, 191)" />
+      <stop offset="100%" stop-color="rgb(25, 140, 166)" />
+    </linearGradient>
+    <linearGradient id="mint" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="rgb(183, 227, 184)" />
+      <stop offset="100%" stop-color="rgb(155, 208, 173)" />
+    </linearGradient>
+    <mask id="knockout">
+      <rect x="0" y="0" width="512" height="512" fill="white" />
+    <rect x="41" y="88" width="110" height="384" rx="26" fill="black" />
+    <rect x="41" y="362" width="297" height="110" rx="26" fill="black" />
+    </mask>
+  </defs>
+  <rect x="0" y="0" width="256" height="512" fill="url(#teal)" />
+  <rect x="256" y="0" width="256" height="512" fill="url(#mint)" />
+  <g mask="url(#knockout)">
+    <rect x="187" y="54" width="82" height="356" rx="12" fill="rgb(253, 250, 227)" />
+    <rect x="187" y="328" width="269" height="82" rx="12" fill="rgb(253, 250, 227)" />
+  </g>
+    <rect x="55" y="102" width="82" height="356" rx="12" fill="rgb(253, 250, 227)" />
+    <rect x="55" y="376" width="269" height="82" rx="12" fill="rgb(253, 250, 227)" />
+</svg>
