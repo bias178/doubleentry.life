@@ -322,11 +322,6 @@ export default function LanguageToLedger() {
         .l2l-footer-inner { max-width: 1080px; margin: 0 auto; padding: 3rem 2rem; display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; }
         .l2l-footer-brand-name { font-family: ${F.mono}; font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: ${C.teal}; margin-bottom: 0.5rem; }
         .l2l-footer-brand-desc { font-size: 0.8rem; color: ${C.neutral}; line-height: 1.6; max-width: 440px; }
-        .l2l-footer-links { display: flex; gap: 2rem; }
-        .l2l-footer-col-label { font-family: ${F.mono}; font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: ${C.neutral}; margin-bottom: 1rem; }
-        .l2l-footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
-        .l2l-footer-col a { font-size: 0.8rem; color: ${C.muted}; transition: color 0.15s; }
-        .l2l-footer-col a:hover { color: ${C.teal}; }
         .l2l-footer-bottom { border-top: 1px solid ${C.rule}; padding: 1.25rem 2rem; max-width: 1080px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
         .l2l-footer-copy { font-family: ${F.mono}; font-size: 0.6rem; color: ${C.neutral}; }
         .l2l-footer-connect-links { display: flex; gap: 1rem; }
@@ -335,7 +330,6 @@ export default function LanguageToLedger() {
         @media (max-width: 720px) {
           .l2l-topbar-inner { padding: 1rem 1.25rem 0.9rem; }
           .l2l-footer-inner { flex-direction: column; }
-          .l2l-footer-links { flex-direction: column; gap: 1.5rem; }
           .l2l-footer-brand-desc { max-width: none; }
         }
       `}</style>
@@ -823,15 +817,6 @@ export default function LanguageToLedger() {
             <p className="l2l-footer-brand-desc">
               A method for translating plain-language transactions into rigorous accounting records. Powered by <a href="https://doubleentry.life" target="_blank" rel="noopener" style={{ color: C.teal }}>Double Entry Life</a>.
             </p>
-          </div>
-          <div className="l2l-footer-links">
-            <div className="l2l-footer-col">
-              <p className="l2l-footer-col-label">Connect</p>
-              <ul>
-                <li><a href="https://www.linkedin.com/in/biagio-tozzo-913166138" target="_blank" rel="noopener">LinkedIn</a></li>
-                <li><a href="https://substack.com/@doubleentrylife" target="_blank" rel="noopener">Substack</a></li>
-              </ul>
-            </div>
           </div>
         </div>
         <div className="l2l-footer-bottom">
