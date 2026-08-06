@@ -10,6 +10,34 @@ const ALLOWED_ORIGINS = [
 const MODEL = "claude-sonnet-4-6";
 const MAX_TOKENS = { prepare: 1000, review: 700 };
 
+// ---- Cost instrumentation ----
+// Rates in USD per million tokens for MODEL, checked 2 Aug 2026.
+// Re-verify at platform.claude.com/docs/en/about-claude/pricing before using
+// these figures in any estimate: they are model specific and they change.
+const PRICE_PER_MTOK = { input: 3.0, output: 15.0, cacheRead: 0.3 };
+
+function logUsage(role, usage) {
+  if (!usage) {
+    console.log(`LEDGER_COST role=${role} usage=unavailable`);
+    return;
+  }
+  const inTok = usage.input_tokens || 0;
+  const outTok = usage.output_tokens || 0;
+  const cacheRead = usage.cache_read_input_tokens || 0;
+  const cacheWrite = usage.cache_creation_input_tokens || 0;
+  const usd =
+    (inTok * PRICE_PER_MTOK.input +
+      outTok * PRICE_PER_MTOK.output +
+      cacheRead * PRICE_PER_MTOK.cacheRead) /
+    1e6;
+  // One structured line per call, easy to filter in the Vercel logs.
+  // A complete transaction is one prepare plus one review: sum the two.
+  console.log(
+    `LEDGER_COST role=${role} model=${MODEL} in=${inTok} out=${outTok} ` +
+      `cache_read=${cacheRead} cache_write=${cacheWrite} usd=${usd.toFixed(5)}`
+  );
+}
+
 // ---- Simple in-memory rate limit (per IP, per instance) ----
 // Not a substitute for Vercel WAF, but stops casual hammering at zero cost.
 const WINDOW_MS = 60 * 60 * 1000; // 1 hour
@@ -214,6 +242,7 @@ export default async function handler(req, res) {
         detail: String(data?.error?.type || response.status),
       });
     }
+    logUsage(role, data.usage);
     // Return only the content blocks the client needs.
     return res.status(200).json({ content: data.content });
   } catch (error) {
