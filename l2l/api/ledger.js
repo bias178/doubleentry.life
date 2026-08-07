@@ -16,7 +16,7 @@ const MAX_TOKENS = { prepare: 1000, review: 700 };
 // these figures in any estimate: they are model specific and they change.
 const PRICE_PER_MTOK = { input: 3.0, output: 15.0, cacheRead: 0.3 };
 
-function logUsage(role, usage) {
+function logUsage(role, usage, price = PRICE_PER_MTOK, model = MODEL) {
   if (!usage) {
     console.log(`LEDGER_COST role=${role} usage=unavailable`);
     return;
@@ -26,14 +26,11 @@ function logUsage(role, usage) {
   const cacheRead = usage.cache_read_input_tokens || 0;
   const cacheWrite = usage.cache_creation_input_tokens || 0;
   const usd =
-    (inTok * PRICE_PER_MTOK.input +
-      outTok * PRICE_PER_MTOK.output +
-      cacheRead * PRICE_PER_MTOK.cacheRead) /
-    1e6;
+    (inTok * price.input + outTok * price.output + cacheRead * price.cacheRead) / 1e6;
   // One structured line per call, easy to filter in the Vercel logs.
-  // A complete transaction is one prepare plus one review: sum the two.
+  // A complete transaction is one route plus one prepare plus one review.
   console.log(
-    `LEDGER_COST role=${role} model=${MODEL} in=${inTok} out=${outTok} ` +
+    `LEDGER_COST role=${role} model=${model} in=${inTok} out=${outTok} ` +
       `cache_read=${cacheRead} cache_write=${cacheWrite} usd=${usd.toFixed(5)}`
   );
 }
@@ -56,39 +53,48 @@ function rateLimited(ip) {
   return rec.count > MAX_CALLS;
 }
 
-const MATRIX = `Treatment Matrix (personal module, authoritative). Each card: ID, trigger, rule, what to ask, key errors to avoid. Cite the applied ID in concept.ruleId.
+// ---- Treatment matrix, addressable card by card ----
+// The full matrix is no longer sent on every call. A cheap routing stage
+// selects the relevant card(s); only those enter the preparer's context.
+// The header and the cross-cutting rule are always included: they are short
+// and they govern behaviour regardless of which card applies.
+const MATRIX_HEADER = "Treatment Matrix (personal module, authoritative). Each card: ID, trigger, rule, what to ask, key errors to avoid. Cite the applied ID in concept.ruleId.";
+const MATRIX_CROSS = "Cross-cutting:currency and any current market value (rates, indices, prices) always come from the user, never from your memory. If no card fits, ruleId \"none\", general principles.";
 
-T-01 Training/certification (IAS 38 analogy). Capitalize as intangible and amortize straight line when benefit is identifiable over more than 12 months; expense if generic or short lived. Useful life from the certification validity when stated or derivable, else ask; never assume arbitrarily. All connected costs including travel go in the capitalized amount (declared simplification). Only offer a treatment choice when genuinely borderline. Error: expensing without the recognition test; capitalizing without stating useful life.
+// Card ID -> full text.
+const CARDS = {
+  "T-01": "T-01 Training/certification (IAS 38 analogy). Capitalize as intangible and amortize straight line when benefit is identifiable over more than 12 months; expense if generic or short lived. Useful life from the certification validity when stated or derivable, else ask; never assume arbitrarily. All connected costs including travel go in the capitalized amount (declared simplification). Only offer a treatment choice when genuinely borderline. Error: expensing without the recognition test; capitalizing without stating useful life.",
+  "T-02": "T-02 Purchase in installments (IAS 16 + IFRS 9 analogy). Goods 100 euro or above: asset at full price on day one, liability for price minus down payment; each installment splits principal and interest. Below 100 euro: expense. Always ask the interest rate, never assume zero by silence. Depreciation is separate from repayment; useful life delegable to category. Error: the installment presented as the good's cost; asset recognized only for the financed part.",
+  "T-03": "T-03 Subscription/membership with committed term (IFRS 16 analogy). Default is monthly expense; always name the total commitment. Offer option 2: right of use asset and liability at present value, discounted at a user provided or declared rate, never a rate from memory. One time activation fee is spread over the term, never expensed at once. Error: treating the term as unrelated months; a discount rate presented as current market data.",
+  "T-04": "T-04 Loan/mortgage financed asset (IAS 16 + IFRS 9). Asset at cost including ancillary costs (declared broad simplification); loan as liability; cash for the difference. Before writing, reconcile funding: loan plus down payment plus any declared equity must cover the asset price (ancillary costs are extra, paid in cash). If the sources fall short, do not plug the gap with a second loan or an inflated cash outflow: return status question and ask where the missing funds come from or which figure is wrong. Installment splits principal and interest. Variable rate: ask index, current index value (user provided) and spread; declare future installments reprice. French amortization is the delegated standard. Error: asset booked at the loan amount; index value from memory; a funding shortfall closed with a fictitious second financing instead of a question.",
+  "T-05": "T-05 Investment purchase/sale, funds, securities, crypto (IFRS 9 cost model). Purchase at cost including buy fees. Held at cost: unrealized changes never recognized in v1, declare this. Sale: realized result = net proceeds (minus sell fees) minus carrying cost released; gain is income, loss is expense, always say realized. Partial sale from multiple tranches: average cost standard, FIFO as option. Recurring plan = repeated single purchase, show the first only. Crypto identical, no comment on volatility. Error: recognizing unrealized gains; buy fees as period expense.",
+  "T-06": "T-06 Refundable deposit (IFRS 9 analogy). Deposit paid is a long term receivable, not an expense; deposit received a long term liability; long term is the default. On settlement, only the portion actually withheld becomes an expense (or income), when it happens, never anticipated. Error: expensing the deposit; confusing it with a down payment (T-02).",
+  "T-07": "T-07 Refund/return/reimbursement. Touch the original cost only when the transaction is cancelled (full return: reverse it). Good or cost kept: incoming money is income of the period (partial refund on a kept asset, cashback, promo credits), the asset and its depreciation untouched. Expense advanced for a third party is a receivable from inception, closed by the reimbursement, never income. Error: reducing a kept asset's cost; an employer reimbursement booked as income.",
+  "T-08": "T-08 Repair vs improvement (IAS 16). Functional test, no threshold: restores original condition = repair, expensed; enhances capacity or extends useful life = improvement, capitalized. On a fully depreciated asset the test is only life extension. Improvement on a still depreciating asset: recalculate depreciation prospectively (remaining carrying amount plus improvement over new remaining life), never restate the past. Warranty repair: no entry. Insured repair: expense here, reimbursement via T-07. Error: capitalizing a large repair by size; restating past depreciation.",
+  "T-09": "T-09 Impairment from damage/breakage/obsolescence (IAS 36). When user stated value in use falls below carrying amount, the shortfall is an immediate impairment loss, outside the plan; total loss writes off the full carrying amount. Value in use always user provided, never estimated. Depreciation continues on the reduced base. Reversal capped at what carrying amount would be now without the impairment. Error: estimating recoverable value; reversal above the ceiling.",
+  "T-10": "T-10 Prepaid and accrued (accrual basis). Payment covering future periods is a prepaid asset released evenly, no threshold, never expensed at once. Cost incurred but not yet billed is an accrued liability at the user provided estimate; when the real invoice arrives, settle it and book the difference in the arrival period, never restate. Error: expensing a multi period payment at once; estimating the accrual instead of asking.",
+  "T-11": "T-11 Simple cash purchase (IAS 16 analogy). Durable good 100 euro or above with benefit beyond the month: asset, depreciated over useful life (delegable to category). Below 100 euro or consumables: expense. Services always expensed unless connected to another card. Error: capitalizing a service; inventing brand or components.",
+  "T-12": "T-12 Income received. Salary and bonuses at the net amount credited, no gross or withholding breakdown (declared simplification). Recognize in the period of receipt unless the user states a prior earning period, then mirror T-10 with accrued income. Monetary gift is income in a separate account from employment income. Side income in its own account. Employer reimbursement is not income, route to T-07. Error: grossing up salary; a gift netted against expenses.",
+  "T-13": "T-13 Sale of a used personal good (IAS 16 derecognition analogy). Realized result = net proceeds minus remaining carrying amount. Good previously expensed or never on the books: no cost invented, the entire net proceeds are income, declare this. Sell fees inside the realized result. Error: inventing a historical cost; proceeds booked as a plain cash inflow when there was a carrying amount.",
+  "T-14": "T-14 Personal loan given/received, no linked purchase (IFRS 9 analogy, IAS 36 for write off). Loan given is a receivable, not an expense; loan received a liability, not income; repayment closes them. Always ask whether interest bearing, noting personal loans usually are not; never assume by silence. Unrepaid loan given becomes a recognized loss at the user reported shortfall, it never just vanishes. Error: expensing a loan given; an unrecoverable receivable disappearing without a loss.",
+};
 
-T-02 Purchase in installments (IAS 16 + IFRS 9 analogy). Goods 100 euro or above: asset at full price on day one, liability for price minus down payment; each installment splits principal and interest. Below 100 euro: expense. Always ask the interest rate, never assume zero by silence. Depreciation is separate from repayment; useful life delegable to category. Error: the installment presented as the good's cost; asset recognized only for the financed part.
+// Trigger-only index. Cheap enough to send to the router and to the reviewer,
+// so the reviewer can challenge a cited card it did not receive in full.
+const CARD_INDEX = "T-01 Training/certification (IAS 38 analogy).\nT-02 Purchase in installments (IAS 16 + IFRS 9 analogy).\nT-03 Subscription/membership with committed term (IFRS 16 analogy).\nT-04 Loan/mortgage financed asset (IAS 16 + IFRS 9).\nT-05 Investment purchase/sale, funds, securities, crypto (IFRS 9 cost model).\nT-06 Refundable deposit (IFRS 9 analogy).\nT-07 Refund/return/reimbursement.\nT-08 Repair vs improvement (IAS 16).\nT-09 Impairment from damage/breakage/obsolescence (IAS 36).\nT-10 Prepaid and accrued (accrual basis).\nT-11 Simple cash purchase (IAS 16 analogy).\nT-12 Income received.\nT-13 Sale of a used personal good (IAS 16 derecognition analogy).\nT-14 Personal loan given/received, no linked purchase (IFRS 9 analogy, IAS 36 for write off).";
 
-T-03 Subscription/membership with committed term (IFRS 16 analogy). Default is monthly expense; always name the total commitment. Offer option 2: right of use asset and liability at present value, discounted at a user provided or declared rate, never a rate from memory. One time activation fee is spread over the term, never expensed at once. Error: treating the term as unrelated months; a discount rate presented as current market data.
+function buildMatrix(ids) {
+  const chosen = (ids || []).filter((id) => CARDS[id]);
+  if (chosen.length === 0) {
+    // No card selected: fall back to the full matrix rather than leaving the
+    // model to invent a treatment with no rule in context.
+    return [MATRIX_HEADER, ...Object.keys(CARDS).sort().map((k) => CARDS[k]), MATRIX_CROSS].join("\n\n");
+  }
+  return [MATRIX_HEADER, ...chosen.map((id) => CARDS[id]), MATRIX_CROSS].join("\n\n");
+}
 
-T-04 Loan/mortgage financed asset (IAS 16 + IFRS 9). Asset at cost including ancillary costs (declared broad simplification); loan as liability; cash for the difference. Before writing, reconcile funding: loan plus down payment plus any declared equity must cover the asset price (ancillary costs are extra, paid in cash). If the sources fall short, do not plug the gap with a second loan or an inflated cash outflow: return status question and ask where the missing funds come from or which figure is wrong. Installment splits principal and interest. Variable rate: ask index, current index value (user provided) and spread; declare future installments reprice. French amortization is the delegated standard. Error: asset booked at the loan amount; index value from memory; a funding shortfall closed with a fictitious second financing instead of a question.
 
-T-05 Investment purchase/sale, funds, securities, crypto (IFRS 9 cost model). Purchase at cost including buy fees. Held at cost: unrealized changes never recognized in v1, declare this. Sale: realized result = net proceeds (minus sell fees) minus carrying cost released; gain is income, loss is expense, always say realized. Partial sale from multiple tranches: average cost standard, FIFO as option. Recurring plan = repeated single purchase, show the first only. Crypto identical, no comment on volatility. Error: recognizing unrealized gains; buy fees as period expense.
-
-T-06 Refundable deposit (IFRS 9 analogy). Deposit paid is a long term receivable, not an expense; deposit received a long term liability; long term is the default. On settlement, only the portion actually withheld becomes an expense (or income), when it happens, never anticipated. Error: expensing the deposit; confusing it with a down payment (T-02).
-
-T-07 Refund/return/reimbursement. Touch the original cost only when the transaction is cancelled (full return: reverse it). Good or cost kept: incoming money is income of the period (partial refund on a kept asset, cashback, promo credits), the asset and its depreciation untouched. Expense advanced for a third party is a receivable from inception, closed by the reimbursement, never income. Error: reducing a kept asset's cost; an employer reimbursement booked as income.
-
-T-08 Repair vs improvement (IAS 16). Functional test, no threshold: restores original condition = repair, expensed; enhances capacity or extends useful life = improvement, capitalized. On a fully depreciated asset the test is only life extension. Improvement on a still depreciating asset: recalculate depreciation prospectively (remaining carrying amount plus improvement over new remaining life), never restate the past. Warranty repair: no entry. Insured repair: expense here, reimbursement via T-07. Error: capitalizing a large repair by size; restating past depreciation.
-
-T-09 Impairment from damage/breakage/obsolescence (IAS 36). When user stated value in use falls below carrying amount, the shortfall is an immediate impairment loss, outside the plan; total loss writes off the full carrying amount. Value in use always user provided, never estimated. Depreciation continues on the reduced base. Reversal capped at what carrying amount would be now without the impairment. Error: estimating recoverable value; reversal above the ceiling.
-
-T-10 Prepaid and accrued (accrual basis). Payment covering future periods is a prepaid asset released evenly, no threshold, never expensed at once. Cost incurred but not yet billed is an accrued liability at the user provided estimate; when the real invoice arrives, settle it and book the difference in the arrival period, never restate. Error: expensing a multi period payment at once; estimating the accrual instead of asking.
-
-T-11 Simple cash purchase (IAS 16 analogy). Durable good 100 euro or above with benefit beyond the month: asset, depreciated over useful life (delegable to category). Below 100 euro or consumables: expense. Services always expensed unless connected to another card. Error: capitalizing a service; inventing brand or components.
-
-T-12 Income received. Salary and bonuses at the net amount credited, no gross or withholding breakdown (declared simplification). Recognize in the period of receipt unless the user states a prior earning period, then mirror T-10 with accrued income. Monetary gift is income in a separate account from employment income. Side income in its own account. Employer reimbursement is not income, route to T-07. Error: grossing up salary; a gift netted against expenses.
-
-T-13 Sale of a used personal good (IAS 16 derecognition analogy). Realized result = net proceeds minus remaining carrying amount. Good previously expensed or never on the books: no cost invented, the entire net proceeds are income, declare this. Sell fees inside the realized result. Error: inventing a historical cost; proceeds booked as a plain cash inflow when there was a carrying amount.
-
-T-14 Personal loan given/received, no linked purchase (IFRS 9 analogy, IAS 36 for write off). Loan given is a receivable, not an expense; loan received a liability, not income; repayment closes them. Always ask whether interest bearing, noting personal loans usually are not; never assume by silence. Unrepaid loan given becomes a recognized loss at the user reported shortfall, it never just vanishes. Error: expensing a loan given; an unrecoverable receivable disappearing without a loss.
-
-Cross-cutting: currency and any current market value (rates, indices, prices) always come from the user, never from your memory. If no card fits, ruleId "none", general principles.`;
-
-const SYSTEM_PROMPT = `You are Language to Ledger, an educational demonstration by Double Entry Life (doubleentry.life). You translate a personal financial transaction, described in natural language, into a rigorous double-entry accounting record.
+const SYSTEM_PROMPT = (MATRIX) => `You are Language to Ledger, an educational demonstration by Double Entry Life (doubleentry.life). You translate a personal financial transaction, described in natural language, into a rigorous double-entry accounting record.
 
 The user may write in English, Spanish, French, German or Italian. You must understand all five. Every field of your output is ALWAYS in English, regardless of the input language, including questions and refusals.
 
@@ -139,7 +145,7 @@ Style rules (strict):
 - impact: only the rows touched by the transaction plus the relevant total row. Set "highlight" true on the row that carries the core of the transaction. Use null for prior or current when the value cannot be known from the input; "change" is always the delta caused by the transaction.
 - Direct tone, zero rhetoric, no unsolicited advice, no motivational language.`;
 
-const REVIEWER_PROMPT = `You are the reviewer in Language to Ledger, an educational accounting demonstration. A first model (the preparer) has read a personal transaction and produced a double-entry record. Your job is an independent second pass, the four-eyes principle: you judge the preparer's work, you do NOT rewrite it. You never produce journal entries yourself.
+const REVIEWER_PROMPT = (MATRIX) => `You are the reviewer in Language to Ledger, an educational accounting demonstration. A first model (the preparer) has read a personal transaction and produced a double-entry record. Your job is an independent second pass, the four-eyes principle: you judge the preparer's work, you do NOT rewrite it. You never produce journal entries yourself.
 
 You receive the preparer's grounded restatement of the transaction ("reading"), its declared assumptions, and its full output. You review on two fronts.
 
@@ -147,14 +153,85 @@ Arithmetic beyond the automated checks. A deterministic layer has already confir
 
 Accounting merit. Judge whether the treatment is right, not just balanced. Was the correct matrix card applied for this transaction? Does concept.ruleId match what the case actually calls for? Was the card's rule followed rather than a general instinct? Above all, grounding: does every amount in the entries trace back to the reading or to a declared assumption? A figure that appears in the entries but not in the reading and not in the assumptions is an invented number, the single most serious finding, even when the entry balances.
 
-Use the treatment matrix below as your authority for merit.
+Use the treatment matrix below as your authority for merit. You receive in full only the card or cards the routing stage selected, plus the trigger line of every card in the module. If the preparer cited a card you did not receive in full, and the trigger index suggests a different card fits the transaction better, raise it as a finding: state which card you would expect and why.
 
 ${MATRIX}
+
+Trigger index, every card in the module:
+${CARD_INDEX}
 
 Respond ONLY with a single minified JSON object, no markdown, no fences, English only:
 {"status":"clean"|"issues","findings":[{"severity":"error"|"warning","area":string,"detail":string}]}
 
 "clean" with an empty findings array means the entry is sound: correct card, rule applied, every figure grounded, arithmetic right. Use "issues" when anything is wrong. "error" is a real accounting or grounding fault (wrong card, invented figure, broken derivation); "warning" is a defensible but questionable choice or a missing declared assumption. "area" is a short tag (for example "Grounding", "Rule ID", "Present value", "Funding"). "detail" is one plain sentence naming the problem specifically. Maximum 4 findings, the most important first. Do not invent problems to appear thorough: if the work is sound, say so.`;
+
+// ---- Routing stage ----
+// A cheap first pass that reads the transaction and names the relevant card(s).
+// It produces no accounting judgement: it recognises a case and returns IDs.
+const ROUTER_PROMPT = `You route a personal financial transaction to the treatment card that governs it. You do not produce accounting entries, explanations or advice. You return card IDs only.
+
+Below is the trigger line of every card in the personal module.
+
+${CARD_INDEX}
+
+Read the user's transaction and decide which card governs it.
+
+Respond ONLY with a single minified JSON object, no markdown, no fences:
+{"ids":[string],"confident":boolean}
+
+Rules.
+Return the single best card in "ids" with "confident": true when one card clearly governs the case.
+When two cards could plausibly govern it, or the transaction sits on the boundary between them, return both, most likely first, with "confident": false. Never return more than two.
+When the transaction is a follow-up answer to a question rather than a new transaction, route on the original transaction it refers to.
+When no card fits, return {"ids":[],"confident":false}; the full matrix will be loaded.
+Prefer returning two cards over guessing one: a wrong single card removes the governing rule from the next stage entirely.`;
+
+const ROUTER_MODEL = "claude-haiku-4-5-20251001";
+const ROUTER_PRICE_PER_MTOK = { input: 1.0, output: 5.0, cacheRead: 0.1 };
+
+async function routeCards(messages) {
+  // Route on the user's text only; the router needs no assistant turns.
+  const userText = messages
+    .filter((m) => m.role === "user")
+    .map((m) => m.content)
+    .join("\n")
+    .slice(0, 4000);
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: ROUTER_MODEL,
+        max_tokens: 60,
+        system: ROUTER_PROMPT,
+        messages: [{ role: "user", content: userText }],
+      }),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      console.error("Router upstream error", response.status, data?.error?.type);
+      return null; // fall back to the full matrix
+    }
+    logUsage("route", data.usage, ROUTER_PRICE_PER_MTOK, ROUTER_MODEL);
+    const raw = (data.content || [])
+      .filter((b) => b.type === "text")
+      .map((b) => b.text)
+      .join("")
+      .replace(/```json|```/g, "")
+      .trim();
+    const parsed = JSON.parse(raw);
+    const ids = Array.isArray(parsed.ids) ? parsed.ids.filter((id) => CARDS[id]).slice(0, 2) : [];
+    console.log(`LEDGER_ROUTE ids=${ids.join(",") || "none"} confident=${!!parsed.confident}`);
+    return ids;
+  } catch (e) {
+    console.error("Router failed", e?.message);
+    return null; // fall back to the full matrix
+  }
+}
 
 export default async function handler(req, res) {
   const origin = req.headers.origin || "";
@@ -215,7 +292,29 @@ export default async function handler(req, res) {
       content: String(m.content ?? "").slice(0, 6000),
     }));
 
-    const system = role === "prepare" ? SYSTEM_PROMPT : REVIEWER_PROMPT;
+    // Card selection.
+    // For the preparer, a routing call picks the governing card(s).
+    // For the reviewer, no routing call is needed: the preparer's output that
+    // the reviewer is judging already names the card it applied, so the cited
+    // IDs are read straight from the payload. The reviewer also receives the
+    // trigger index of every card, so it can still challenge the citation.
+    let cardIds;
+    if (role === "prepare") {
+      cardIds = await routeCards(clean);
+    } else {
+      const cited = (JSON.stringify(clean).match(/T-\d\d/g) || [])
+        .filter((id, i, a) => a.indexOf(id) === i)
+        .filter((id) => CARDS[id])
+        .slice(0, 2);
+      cardIds = cited.length ? cited : null;
+      console.log(`LEDGER_ROUTE role=review cited=${cited.join(",") || "none"}`);
+    }
+    // A null result loads the full matrix: better to pay for the whole matrix
+    // than to leave the model without the rule that governs the case.
+    const matrixText = buildMatrix(cardIds);
+
+    const system =
+      role === "prepare" ? SYSTEM_PROMPT(matrixText) : REVIEWER_PROMPT(matrixText);
 
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
