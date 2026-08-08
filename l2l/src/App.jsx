@@ -78,11 +78,26 @@ const PROFILE_LABELS = {
   developmentCostPolicy: "Development cost policy",
 };
 
-// The engine speaks the v2 schema (fields / key / message / onFile, with options
-// carrying label and consequence). The interface was written against the earlier
-// shape. Normalise once here rather than duplicating the mapping across the view.
-function normaliseQuestion(parsed) {
-  if (!parsed || parsed.status !== "question") return parsed;
+// The engine speaks the v2 schema (impact as a flat array; questions as fields
+// with key, scope and options carrying label and consequence). The view was
+// written against an earlier shape. Normalise once here rather than duplicating
+// the mapping across the view.
+function normaliseResult(parsed) {
+  if (!parsed) return parsed;
+
+  // Entry results: the engine returns impact as a flat array, the view renders
+  // a statement plus rows.
+  if (parsed.status === "entry" && Array.isArray(parsed.impact)) {
+    parsed = {
+      ...parsed,
+      impact: {
+        statement: parsed.impactStatement || "Balance sheet",
+        rows: parsed.impact,
+      },
+    };
+  }
+
+  if (parsed.status !== "question") return parsed;
   const src = Array.isArray(parsed.fields) ? parsed.fields : parsed.missing;
   if (!Array.isArray(src)) return parsed;
   return {
@@ -297,7 +312,7 @@ export default function LanguageToLedger() {
             (clean ? clean.slice(0, 300) : "(empty response, no text block)")
         );
       }
-      parsed = normaliseQuestion(parsed);
+      parsed = normaliseResult(parsed);
       const checkErrors = validateResult(parsed);
       if (checkErrors.length > 0) {
         if (attempt < 2) {
