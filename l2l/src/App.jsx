@@ -78,6 +78,34 @@ const PROFILE_LABELS = {
   developmentCostPolicy: "Development cost policy",
 };
 
+// The engine speaks the v2 schema (fields / key / message / onFile, with options
+// carrying label and consequence). The interface was written against the earlier
+// shape. Normalise once here rather than duplicating the mapping across the view.
+function normaliseQuestion(parsed) {
+  if (!parsed || parsed.status !== "question") return parsed;
+  const src = Array.isArray(parsed.fields) ? parsed.fields : parsed.missing;
+  if (!Array.isArray(src)) return parsed;
+  return {
+    ...parsed,
+    question: parsed.message || parsed.question || "",
+    missing: src.map((f, i) => ({
+      id: f.key || f.id || `field_${i}`,
+      label: f.label || "",
+      hint: f.hint || "",
+      scope: f.scope || "transaction",
+      options:
+        Array.isArray(f.options) && f.options.length > 0
+          ? f.options.map((o, j) => ({
+              value: o.value || `opt_${j}`,
+              label: o.label || "",
+              explanation: o.consequence || o.explanation || "",
+              standard: o.common === true || o.standard === true,
+            }))
+          : null,
+    })),
+  };
+}
+
 function fmt(n) {
   if (n === null || n === undefined) return "";
   const neg = n < 0;
@@ -269,6 +297,7 @@ export default function LanguageToLedger() {
             (clean ? clean.slice(0, 300) : "(empty response, no text block)")
         );
       }
+      parsed = normaliseQuestion(parsed);
       const checkErrors = validateResult(parsed);
       if (checkErrors.length > 0) {
         if (attempt < 2) {
@@ -515,6 +544,13 @@ export default function LanguageToLedger() {
               <div style={{ marginBottom: 14 }}>
                 <div style={{ fontFamily: F.mono, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: C.neutral, marginBottom: 4 }}>On file</div>
                 <p className="l2l-prose" style={{ fontSize: 13.5, lineHeight: 1.7, color: C.ink }}>{result.reading}</p>
+                {Array.isArray(result.onFile) && result.onFile.length > 0 && (
+                  <ul style={{ margin: "8px 0 0", paddingLeft: 18 }}>
+                    {result.onFile.map((o, i) => (
+                      <li key={i} style={{ fontSize: 13, lineHeight: 1.7, color: C.muted }}>{o}</li>
+                    ))}
+                  </ul>
+                )}
               </div>
             )}
             <p style={{ fontSize: 15, lineHeight: 1.7, marginBottom: 14 }}>{result.question}</p>
@@ -522,8 +558,16 @@ export default function LanguageToLedger() {
               <div>
                 {result.missing.map((m) => (
                   <div key={m.id} style={{ marginBottom: 16 }}>
-                    <label htmlFor={"f-" + m.id} style={{ display: "block", fontFamily: F.mono, fontSize: 11.5, color: C.tealDark, marginBottom: 6 }}>
-                      {m.label}
+                    <label htmlFor={"f-" + m.id} style={{ display: "block", marginBottom: 6 }}>
+                      <span style={{ fontFamily: F.mono, fontSize: 11.5, color: C.tealDark }}>{m.label}</span>
+                      {m.scope && m.scope !== "transaction" && (
+                        <span style={{
+                          fontFamily: F.mono, fontSize: 9, letterSpacing: "0.06em", textTransform: "uppercase",
+                          color: m.scope === "estimate" ? C.orange : C.neutral, marginLeft: 8,
+                        }}>
+                          {m.scope === "estimate" ? "Management estimate" : "Entity policy"}
+                        </span>
+                      )}
                     </label>
                     {m.options && m.options.length > 0 ? (
                       <div>
