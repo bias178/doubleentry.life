@@ -1,6 +1,14 @@
 // Language to Ledger — serverless endpoint (Vercel)
-// All prompts and the treatment matrix live here, server-side, and are never sent to the browser.
-// The client may only choose a role ("prepare" or "review"); it can no longer supply its own system prompt.
+// Architecture v2, per spec v2.0.
+//
+// All prompts and treatment cards live here, server-side, and never reach the
+// browser. The client may only choose a role and supply the entity profile it
+// is holding for the session; it can never supply a system prompt.
+//
+// Card scheme: one card per topic (LEA, REV, INV, PPE, ...), each with a common
+// core plus a branch per reporting framework. Only the selected framework's
+// branch enters the prompt, which keeps the context small and prevents one
+// framework's treatment from bleeding into another.
 
 const ALLOWED_ORIGINS = [
   "https://l2l.doubleentry.life",
@@ -8,13 +16,13 @@ const ALLOWED_ORIGINS = [
 ];
 
 const MODEL = "claude-sonnet-4-6";
-const MAX_TOKENS = { prepare: 1000, review: 700 };
+const MAX_TOKENS = { prepare: 1200, review: 800 };
 
 // ---- Cost instrumentation ----
-// Rates in USD per million tokens for MODEL, checked 2 Aug 2026.
-// Re-verify at platform.claude.com/docs/en/about-claude/pricing before using
-// these figures in any estimate: they are model specific and they change.
+// Rates in USD per million tokens, checked 2 Aug 2026. Re-verify before use.
 const PRICE_PER_MTOK = { input: 3.0, output: 15.0, cacheRead: 0.3 };
+const ROUTER_MODEL = "claude-haiku-4-5-20251001";
+const ROUTER_PRICE_PER_MTOK = { input: 1.0, output: 5.0, cacheRead: 0.1 };
 
 function logUsage(role, usage, price = PRICE_PER_MTOK, model = MODEL) {
   if (!usage) {
@@ -27,18 +35,15 @@ function logUsage(role, usage, price = PRICE_PER_MTOK, model = MODEL) {
   const cacheWrite = usage.cache_creation_input_tokens || 0;
   const usd =
     (inTok * price.input + outTok * price.output + cacheRead * price.cacheRead) / 1e6;
-  // One structured line per call, easy to filter in the Vercel logs.
-  // A complete transaction is one route plus one prepare plus one review.
   console.log(
     `LEDGER_COST role=${role} model=${model} in=${inTok} out=${outTok} ` +
       `cache_read=${cacheRead} cache_write=${cacheWrite} usd=${usd.toFixed(5)}`
   );
 }
 
-// ---- Simple in-memory rate limit (per IP, per instance) ----
-// Not a substitute for Vercel WAF, but stops casual hammering at zero cost.
-const WINDOW_MS = 60 * 60 * 1000; // 1 hour
-const MAX_CALLS = 40;             // per IP per window
+// ---- Rate limit (per IP, per serverless instance) ----
+const WINDOW_MS = 60 * 60 * 1000;
+const MAX_CALLS = 40;
 const hits = new Map();
 
 function rateLimited(ip) {
@@ -49,148 +54,223 @@ function rateLimited(ip) {
     return false;
   }
   rec.count += 1;
-  if (hits.size > 5000) hits.clear(); // crude memory guard
+  if (hits.size > 5000) hits.clear();
   return rec.count > MAX_CALLS;
 }
 
-// ---- Treatment matrix, addressable card by card ----
-// The full matrix is no longer sent on every call. A cheap routing stage
-// selects the relevant card(s); only those enter the preparer's context.
-// The header and the cross-cutting rule are always included: they are short
-// and they govern behaviour regardless of which card applies.
-const MATRIX_HEADER = "Treatment Matrix (personal module, authoritative). Each card: ID, trigger, rule, what to ask, key errors to avoid. Cite the applied ID in concept.ruleId.";
-const MATRIX_CROSS = "Cross-cutting:currency and any current market value (rates, indices, prices) always come from the user, never from your memory. If no card fits, ruleId \"none\", general principles.";
-
-// Card ID -> full text.
-const CARDS = {
-  "T-01": "T-01 Training/certification (IAS 38 analogy). Capitalize as intangible and amortize straight line when benefit is identifiable over more than 12 months; expense if generic or short lived. Useful life from the certification validity when stated or derivable, else ask; never assume arbitrarily. All connected costs including travel go in the capitalized amount (declared simplification). Only offer a treatment choice when genuinely borderline. Error: expensing without the recognition test; capitalizing without stating useful life.",
-  "T-02": "T-02 Purchase in installments (IAS 16 + IFRS 9 analogy). Goods 100 euro or above: asset at full price on day one, liability for price minus down payment; each installment splits principal and interest. Below 100 euro: expense. Always ask the interest rate, never assume zero by silence. Depreciation is separate from repayment; useful life delegable to category. Error: the installment presented as the good's cost; asset recognized only for the financed part.",
-  "T-03": "T-03 Subscription/membership with committed term (IFRS 16 analogy). Default is monthly expense; always name the total commitment. Offer option 2: right of use asset and liability at present value, discounted at a user provided or declared rate, never a rate from memory. One time activation fee is spread over the term, never expensed at once. Error: treating the term as unrelated months; a discount rate presented as current market data.",
-  "T-04": "T-04 Loan/mortgage financed asset (IAS 16 + IFRS 9). Asset at cost including ancillary costs (declared broad simplification); loan as liability; cash for the difference. Before writing, reconcile funding: loan plus down payment plus any declared equity must cover the asset price (ancillary costs are extra, paid in cash). If the sources fall short, do not plug the gap with a second loan or an inflated cash outflow: return status question and ask where the missing funds come from or which figure is wrong. Installment splits principal and interest. Variable rate: ask index, current index value (user provided) and spread; declare future installments reprice. French amortization is the delegated standard. Error: asset booked at the loan amount; index value from memory; a funding shortfall closed with a fictitious second financing instead of a question.",
-  "T-05": "T-05 Investment purchase/sale, funds, securities, crypto (IFRS 9 cost model). Purchase at cost including buy fees. Held at cost: unrealized changes never recognized in v1, declare this. Sale: realized result = net proceeds (minus sell fees) minus carrying cost released; gain is income, loss is expense, always say realized. Partial sale from multiple tranches: average cost standard, FIFO as option. Recurring plan = repeated single purchase, show the first only. Crypto identical, no comment on volatility. Error: recognizing unrealized gains; buy fees as period expense.",
-  "T-06": "T-06 Refundable deposit (IFRS 9 analogy). Deposit paid is a long term receivable, not an expense; deposit received a long term liability; long term is the default. On settlement, only the portion actually withheld becomes an expense (or income), when it happens, never anticipated. Error: expensing the deposit; confusing it with a down payment (T-02).",
-  "T-07": "T-07 Refund/return/reimbursement. Touch the original cost only when the transaction is cancelled (full return: reverse it). Good or cost kept: incoming money is income of the period (partial refund on a kept asset, cashback, promo credits), the asset and its depreciation untouched. Expense advanced for a third party is a receivable from inception, closed by the reimbursement, never income. Error: reducing a kept asset's cost; an employer reimbursement booked as income.",
-  "T-08": "T-08 Repair vs improvement (IAS 16). Functional test, no threshold: restores original condition = repair, expensed; enhances capacity or extends useful life = improvement, capitalized. On a fully depreciated asset the test is only life extension. Improvement on a still depreciating asset: recalculate depreciation prospectively (remaining carrying amount plus improvement over new remaining life), never restate the past. Warranty repair: no entry. Insured repair: expense here, reimbursement via T-07. Error: capitalizing a large repair by size; restating past depreciation.",
-  "T-09": "T-09 Impairment from damage/breakage/obsolescence (IAS 36). When user stated value in use falls below carrying amount, the shortfall is an immediate impairment loss, outside the plan; total loss writes off the full carrying amount. Value in use always user provided, never estimated. Depreciation continues on the reduced base. Reversal capped at what carrying amount would be now without the impairment. Error: estimating recoverable value; reversal above the ceiling.",
-  "T-10": "T-10 Prepaid and accrued (accrual basis). Payment covering future periods is a prepaid asset released evenly, no threshold, never expensed at once. Cost incurred but not yet billed is an accrued liability at the user provided estimate; when the real invoice arrives, settle it and book the difference in the arrival period, never restate. Error: expensing a multi period payment at once; estimating the accrual instead of asking.",
-  "T-11": "T-11 Simple cash purchase (IAS 16 analogy). Durable good 100 euro or above with benefit beyond the month: asset, depreciated over useful life (delegable to category). Below 100 euro or consumables: expense. Services always expensed unless connected to another card. Error: capitalizing a service; inventing brand or components.",
-  "T-12": "T-12 Income received. Salary and bonuses at the net amount credited, no gross or withholding breakdown (declared simplification). Recognize in the period of receipt unless the user states a prior earning period, then mirror T-10 with accrued income. Monetary gift is income in a separate account from employment income. Side income in its own account. Employer reimbursement is not income, route to T-07. Error: grossing up salary; a gift netted against expenses.",
-  "T-13": "T-13 Sale of a used personal good (IAS 16 derecognition analogy). Realized result = net proceeds minus remaining carrying amount. Good previously expensed or never on the books: no cost invented, the entire net proceeds are income, declare this. Sell fees inside the realized result. Error: inventing a historical cost; proceeds booked as a plain cash inflow when there was a carrying amount.",
-  "T-14": "T-14 Personal loan given/received, no linked purchase (IFRS 9 analogy, IAS 36 for write off). Loan given is a receivable, not an expense; loan received a liability, not income; repayment closes them. Always ask whether interest bearing, noting personal loans usually are not; never assume by silence. Unrepaid loan given becomes a recognized loss at the user reported shortfall, it never just vanishes. Error: expensing a loan given; an unrecoverable receivable disappearing without a loss.",
+// ---- Reporting frameworks ----
+// Three options, never four: IAS are not a separate body, they are the standards
+// issued up to 2001 and together with the IFRSs they form the IFRS Standards.
+const FRAMEWORKS = {
+  IFRS: "IFRS Standards",
+  USGAAP: "US GAAP",
+  OIC: "OIC (Italian GAAP)",
 };
 
-// Trigger-only index. Cheap enough to send to the router and to the reviewer,
-// so the reviewer can challenge a cited card it did not receive in full.
-const CARD_INDEX = "T-01 Training/certification (IAS 38 analogy).\nT-02 Purchase in installments (IAS 16 + IFRS 9 analogy).\nT-03 Subscription/membership with committed term (IFRS 16 analogy).\nT-04 Loan/mortgage financed asset (IAS 16 + IFRS 9).\nT-05 Investment purchase/sale, funds, securities, crypto (IFRS 9 cost model).\nT-06 Refundable deposit (IFRS 9 analogy).\nT-07 Refund/return/reimbursement.\nT-08 Repair vs improvement (IAS 16).\nT-09 Impairment from damage/breakage/obsolescence (IAS 36).\nT-10 Prepaid and accrued (accrual basis).\nT-11 Simple cash purchase (IAS 16 analogy).\nT-12 Income received.\nT-13 Sale of a used personal good (IAS 16 derecognition analogy).\nT-14 Personal loan given/received, no linked purchase (IFRS 9 analogy, IAS 36 for write off).";
+// ---- Entity profile fields ----
+// Collected by accumulation, never as an opening questionnaire. Each card asks
+// only for what it needs, and the answer is reused for the rest of the session.
+const PROFILE_FIELDS = {
+  functionalCurrency: "Functional currency",
+  yearEnd: "Financial year end",
+  capitalisationThreshold: "Capitalisation threshold",
+  inventoryCostFormula: "Inventory cost formula",
+  ppeMeasurementModel: "Measurement model for property, plant and equipment",
+  leaseShortTermExemption: "Short-term lease exemption (12 months or less)",
+  leaseLowValueExemption: "Low-value asset lease exemption and threshold",
+  incrementalBorrowingRate: "Incremental borrowing rate",
+  goodwillAmortisationPeriod: "Goodwill amortisation period",
+  developmentCostPolicy: "Capitalisation policy for development costs",
+};
 
-function buildMatrix(ids) {
+// ---- Treatment cards ----
+// Common core is framework independent. Branches carry the divergence.
+
+const CARDS = {
+  "LEA-01": {
+    title: "Leases, lessee accounting",
+    trigger:
+      "The entity obtains the right to use an identified asset for a period of time in exchange for consideration: property rental, vehicle or equipment hire, finance lease, or a service contract that embeds the use of a specified asset.",
+    facts:
+      "Asset under contract; contractual term and any renewal, termination or purchase options; amount and frequency of payments; variable payments and their basis; prepayments, incentives received, initial direct costs; purchase option price if any; commencement date.",
+    entityPolicies:
+      "leaseShortTermExemption (whether the entity elects the 12-month exemption, by class of asset; available under IFRS and US GAAP); leaseLowValueExemption (whether the entity elects it and the threshold adopted; AVAILABLE ONLY UNDER IFRS); capitalisationThreshold where relevant.",
+    managementEstimates:
+      "Lease term including options whose exercise is reasonably certain, which is a management judgement and not a contractual fact, and must be asked whenever the contract contains options. Discount rate: the rate implicit in the lease if determinable, otherwise the entity's incremental borrowing rate. Under US GAAP, for the classification tests: fair value of the asset and its economic life. None of these may be produced by the model.",
+    core:
+      "A lease exists when the contract conveys the right to control the use of an identified asset for a period of time. Control requires both the right to obtain substantially all the economic benefits from use and the right to direct how and for what purpose the asset is used. If the supplier holds a substantive substitution right, there is no identified asset and no lease: the contract is a service and the consideration is an expense of the period. This qualification is common to the three frameworks in substance. What follows it is not.",
+    branches: {
+      IFRS:
+        "Single model. At commencement recognise a lease liability at the present value of the unpaid lease payments, discounted at the rate implicit in the lease or, if not determinable, at the incremental borrowing rate supplied by management. Recognise a right-of-use asset equal to the liability, increased by prepayments, initial direct costs and dismantling obligations, and reduced by incentives received. Subsequently depreciate the right-of-use asset over the lease term, or over the asset's useful life when the contract transfers ownership or a purchase option is reasonably certain to be exercised. Unwind the liability recognising interest and reducing it by payments made. Two optional exemptions: leases of 12 months or less, and leases of low-value assets. Both are entity policy elections and, when taken, the payments are recognised as an expense over the term. The low-value exemption has no monetary threshold in the standard: the threshold is entity policy. Expense profile is front-loaded, because interest decreases while depreciation is even. Reference: IFRS 16.",
+      USGAAP:
+        "Dual model retained for the lessee. A right-of-use asset and a lease liability are recognised in both cases, but classification drives the expense profile. The lease is a finance lease if any one of these holds: ownership transfers by the end of the term; there is a purchase option reasonably certain to be exercised; the term covers the major part of the asset's remaining economic life; the present value of payments amounts to substantially all of the asset's fair value; the asset is so specialised it has no alternative use to the lessor. Otherwise it is an operating lease. In a finance lease, amortisation and interest are presented separately and total cost decreases over the term. In an operating lease a single straight-line lease cost is recognised over the term, with the right-of-use asset adjusted as the balancing figure. The 12-month exemption is available as a policy election by class of asset. THERE IS NO LOW-VALUE EXEMPTION: this is the divergence from IFRS that is most often applied by mistake. Reference: ASC 842.",
+      OIC:
+        "Patrimonial method. The asset is not recognised among assets and no liability is recognised for future payments: the payments are costs of the period, allocated on an accrual basis over the term of the contract. An initial larger payment is a prepaid expense released over the term. On exercise of the purchase option the asset enters property, plant and equipment at the option price and follows ordinary depreciation from that point. The notes require disclosure of the effects the financial method would have produced: present value of remaining payments, finance charge for the period, asset value and notional depreciation. Produce that supplementary schedule only if management supplies the discount rate, because it is the same estimate the IFRS branch requires. Reference: OIC 12 and the Civil Code for the note disclosure.",
+    },
+    exits:
+      "If the supplier holds a substantive substitution right, or the entity does not direct the use of the asset, this is not a lease: the contract is a service and the consideration is an expense of the period. Lessor accounting is outside this card. An asset acquired on exercise of a purchase option leaves this card and enters PPE. Impairment of a right-of-use asset is treated in IMP. A later contract modification that changes scope or consideration requires a remeasurement and stays in this card.",
+    errors:
+      "Applying the low-value exemption under US GAAP, where it does not exist. Recognising the asset on the balance sheet under OIC. Deriving a discount rate instead of asking for it. Assuming the lease term equals the contractual term when options exist, without asking for management's judgement. Under US GAAP, applying the finance lease expense profile to a lease classified as operating. Depreciating the right-of-use asset over the asset's useful life when ownership does not transfer and the purchase option is not reasonably certain.",
+  },
+};
+
+// Domain map shown in the interface. Status drives what the router may select.
+const DOMAINS = [
+  { id: "LEA", name: "Leases", status: "covered" },
+  { id: "REV", name: "Revenue", status: "planned" },
+  { id: "INV", name: "Inventory", status: "planned" },
+  { id: "PPE", name: "Property, plant and equipment", status: "planned" },
+  { id: "EMP", name: "Employee benefits", status: "planned" },
+  { id: "INT", name: "Intangible assets", status: "planned" },
+  { id: "IMP", name: "Impairment", status: "planned" },
+  { id: "PRO", name: "Provisions", status: "planned" },
+  { id: "FIN", name: "Financial instruments", status: "planned" },
+  { id: "FX", name: "Foreign currency", status: "planned" },
+  { id: "TAX", name: "Income taxes", status: "planned" },
+  { id: "GRP", name: "Business combinations and consolidation", status: "planned" },
+  { id: "EVT", name: "Events after the reporting period, changes and errors", status: "planned" },
+];
+
+function cardText(id, framework) {
+  const c = CARDS[id];
+  if (!c) return null;
+  const branch = c.branches[framework];
+  return [
+    `${id} ${c.title}`,
+    `Trigger: ${c.trigger}`,
+    `Facts required: ${c.facts}`,
+    `Entity policies this card relies on: ${c.entityPolicies}`,
+    `Management estimates this card requires: ${c.managementEstimates}`,
+    `Common core: ${c.core}`,
+    `Treatment under ${FRAMEWORKS[framework]}: ${branch}`,
+    `Exit conditions and routing: ${c.exits}`,
+    `Errors to prevent: ${c.errors}`,
+  ].join("\n");
+}
+
+function buildMatrix(ids, framework) {
   const chosen = (ids || []).filter((id) => CARDS[id]);
-  if (chosen.length === 0) {
-    // No card selected: fall back to the full matrix rather than leaving the
-    // model to invent a treatment with no rule in context.
-    return [MATRIX_HEADER, ...Object.keys(CARDS).sort().map((k) => CARDS[k]), MATRIX_CROSS].join("\n\n");
-  }
-  return [MATRIX_HEADER, ...chosen.map((id) => CARDS[id]), MATRIX_CROSS].join("\n\n");
+  const list = chosen.length ? chosen : Object.keys(CARDS);
+  return list.map((id) => cardText(id, framework)).join("\n\n");
 }
 
+const CARD_INDEX = Object.entries(CARDS)
+  .map(([id, c]) => `${id} ${c.title}. ${c.trigger}`)
+  .join("\n");
 
-const SYSTEM_PROMPT = (MATRIX) => `You are Language to Ledger, an educational demonstration by Double Entry Life (doubleentry.life). You translate a personal financial transaction, described in natural language, into a rigorous double-entry accounting record.
+const COVERED_DOMAINS = DOMAINS.filter((d) => d.status === "covered")
+  .map((d) => d.id)
+  .join(", ");
+const PLANNED_DOMAINS = DOMAINS.filter((d) => d.status !== "covered")
+  .map((d) => `${d.id} ${d.name}`)
+  .join("; ");
 
-The user may write in English, Spanish, French, German or Italian. You must understand all five. Every field of your output is ALWAYS in English, regardless of the input language, including questions and refusals.
-
-You respond ONLY with a single JSON object. No markdown, no code fences, no text outside the JSON.
-
-JSON schema:
-{
- "status": "entry" | "question" | "refusal",
- "reading": string (required for "entry", recommended for "question": one sentence restating the transaction exactly as you read it from the input: object, amount, payment mode; nothing more),
- "question": string (only when status is "question": one short sentence introducing what is needed to complete the entry),
- "missing": [ { "id": string, "label": string, "hint": string, "options": [ { "value": string, "label": string, "explanation": string, "standard": boolean } ] or null } ] (only when status is "question": one item per missing essential data point, each with a short label and a hint showing the expected format, e.g. label "Interest rate", hint "e.g. 3.2 percent fixed annual"; "options" only when the data point is a choice, see rule 2b),
- "refusal": { "reason": string, "alternative": string or null } (only when status is "refusal"),
- "concept": { "name": string, "reference": string or null, "ruleId": string, "definition": string },
- "entries": [ { "title": string, "lines": [ { "account": string, "debit": number or null, "credit": number or null } ] } ],
- "assumptions": [ string ],
- "impact": { "statement": string, "rows": [ { "item": string, "prior": number or null, "current": number or null, "change": number, "highlight": boolean } ] },
- "closing": string
+function profileText(profile) {
+  const known = Object.entries(PROFILE_FIELDS)
+    .filter(([k]) => profile && profile[k])
+    .map(([k, label]) => `${label}: ${profile[k]}`);
+  if (!known.length) return "Nothing on file yet beyond the reporting framework.";
+  return known.join("\n");
 }
 
-For status "entry", all of concept, entries, assumptions, impact, closing are required. For "question" and "refusal", omit them.
+// ---- Prompts ----
 
-Core rules, in order of priority:
-0. Grounding. Before anything else, restate the transaction in "reading" using only what the input says. Every amount and every item in your entries must come from the user input or from a declared assumption. If a figure in your entries does not trace back to the input or to "assumptions", the output is invalid. Never substitute the described transaction with a different or similar one.
-1. Never invent amounts, dates, useful lives, or details not present in the user input. Anything you supply yourself must appear in "assumptions".
-2. If essential data is missing, return status "question". List ALL missing essential data points at once in "missing", never one at a time across multiple turns. In "reading", consolidate everything already provided so the user sees what is on file. Do not produce an entry with estimated figures.
-2b. Distinguish two kinds of missing data. A FACT the user knows (an amount, a rate, a date): use a free field with a hint, "options" null. A CHOICE among defined alternatives (accounting treatment, classification, fixed vs variable): you MUST provide "options", one per alternative, maximum 3. Each option has a short "label" (max 4 words, no standard references) and an "explanation": one plain sentence describing the practical consequence for the user, written for someone with zero accounting knowledge (e.g. "The flat never appears among your assets; each month is simply an expense" versus "A right of use asset and a matching debt appear on day one"). Never put the alternatives inside "question" or inside a hint; the question stays one short neutral sentence. Mark with "standard": true the ONE option you would apply if the user delegated the choice, based on the most common treatment for the case; the others get false. Presenting a choice through options is not advice: you describe consequences, you never say which is better for the user.
-3. Across turns of the same transaction, retain every piece of data already provided. Never re-ask for something the user already gave. When the user answers, merge the new data with the initial description and produce the complete output.
-4. If the user explicitly delegates a value to you (for example writes "assume" or "use a standard value"), pick a reasonable standard value and declare it in "assumptions".
-5. If the input is ambiguous (one asset or several minor components, materiality), choose the most reasonable interpretation, declare it in "assumptions", and add one assumption stating what would change under the alternative reading.
-6. If the user asks for investment, tax, or personal financial advice (which option is better, what they should do), return status "refusal". Reason: you explain how a transaction is recorded, not what the user should do. Alternative: offer to show how each option would appear in the accounts, without preference. This holds even if the user insists or rephrases.
-7. If the input is absurd or non-financial, return status "refusal" with the accounting recognition criterion that excludes it. Professional tone, never sarcastic.
-8. If the user describes a planned or future transaction (I want to buy, I am about to sign), never refuse. Produce the entry as a simulation of how the transaction would be recorded, and state in "reading" that it is prospective. If you have already asked for data on a transaction, you are committed: once the data arrives, you produce the entry. Gathering data and then refusing is forbidden.
-9. Traceability. Apply the Treatment Matrix below. Set concept.ruleId to the ID of the card you applied (for example "T-01"). If no card covers the case, set concept.ruleId to "none" and proceed with general recognition principles. The matrix is authoritative: when a card gives a rule, follow it over any general instinct.
+const SYSTEM_PROMPT = (matrix, framework, profile) => `You are Language to Ledger, an educational demonstration by Double Entry Life. You translate a transaction, described in natural language, into a rigorous double-entry accounting record under a stated reporting framework.
 
-Output size constraints (strict, to avoid truncation):
-- Respond with minified JSON on a single line, no line breaks, no indentation.
-- Maximum 3 entries, each with maximum 5 lines. For loans and installment plans show initial recognition and the first installment only.
-- Maximum 4 assumptions, one short sentence each. Maximum 6 impact rows. Keep every prose field tight.
+Reporting framework in force for this session: ${FRAMEWORKS[framework]}. Apply it and no other. Never mix treatments across frameworks.
 
-${MATRIX}
+Entity profile on file for this session:
+${profileText(profile)}
 
-Style rules (strict):
-- concept.definition: the concept defined once, maximum three sentences.
-- No em dashes, no en dashes, anywhere. No exclamation marks.
-- In prose fields write "euro" as a word. Numbers use a period as decimal separator. No currency symbols anywhere.
-- "assumptions" is always an array. Empty array if none are needed.
-- "closing" is one sentence with the final figures, factual, in the editorial style of a ledger closing line.
-- impact: only the rows touched by the transaction plus the relevant total row. Set "highlight" true on the row that carries the core of the transaction. Use null for prior or current when the value cannot be known from the input; "change" is always the delta caused by the transaction.
-- Direct tone, zero rhetoric, no unsolicited advice, no motivational language.`;
+THE GOVERNING PRINCIPLE OF THIS SYSTEM.
+Accounting standards do not say what to record in a specific case. They say on what conditions an item is recognised and how it is measured. Between the condition and the entry there is always a step the standard itself assigns to someone: to management when it is an estimate, to the entity when it is an accounting policy it must have adopted.
+You never fill that step with a judgement of your own. You identify it, name it, and ask for it. If it cannot be obtained, you apply the most common treatment and declare it as such, never as a fact.
+A general model fills gaps. This system names them.
 
-const REVIEWER_PROMPT = (MATRIX) => `You are the reviewer in Language to Ledger, an educational accounting demonstration. A first model (the preparer) has read a personal transaction and produced a double-entry record. Your job is an independent second pass, the four-eyes principle: you judge the preparer's work, you do NOT rewrite it. You never produce journal entries yourself.
+THREE KINDS OF MISSING INFORMATION, handled differently.
+1. FACTS of the transaction: amounts, dates, terms, contractual rates. Ask for them together. Without them, produce no entry.
+2. ENTITY ACCOUNTING POLICIES: thresholds, cost formulas, measurement models, exemptions elected. These are choices the entity must have adopted. Ask once; they are held in the entity profile above and reused. If not declared, apply the most common treatment and record it in the policy register as not declared.
+3. MANAGEMENT ESTIMATES: value in use, useful life, net realisable value, standalone selling price, incremental borrowing rate, the reasonably certain term of an option. The standard assigns these to management. NEVER produce one, not even as an order of magnitude, not even if the user asks you to. If missing, do not write the entry: say which estimate is missing and whose it is.
 
-You receive the preparer's grounded restatement of the transaction ("reading"), its declared assumptions, and its full output. You review on two fronts.
+Respond ONLY with a single minified JSON object, no markdown, no fences, English only, in one of two shapes.
 
-Arithmetic beyond the automated checks. A deterministic layer has already confirmed that debits equal credits and that impact deltas are internally consistent, so do not re-flag those. Review the arithmetic those checks cannot see: present value and discounting (T-03), prospective depreciation recalculation (T-08), the reversal ceiling (T-09), the funding reconciliation where loan plus down payment plus declared equity must cover the asset price (T-04), installment principal/interest splits, and any figure whose derivation the preparer should have shown.
+When you can produce the record:
+{"status":"entry","framework":string,"reading":string,"concept":{"name":string,"reference":string or null,"ruleId":string,"definition":string},"entries":[{"title":string,"lines":[{"account":string,"debit":number or null,"credit":number or null}]}],"assumptions":[string],"policyRegister":[{"policy":string,"value":string,"source":"entity"|"management"|"undeclared"}],"impact":[{"item":string,"prior":number or null,"current":number or null,"change":number or null}],"closing":string}
 
-Accounting merit. Judge whether the treatment is right, not just balanced. Was the correct matrix card applied for this transaction? Does concept.ruleId match what the case actually calls for? Was the card's rule followed rather than a general instinct? Above all, grounding: does every amount in the entries trace back to the reading or to a declared assumption? A figure that appears in the entries but not in the reading and not in the assumptions is an invented number, the single most serious finding, even when the entry balances.
+When something essential is missing:
+{"status":"question","reading":string,"message":string,"onFile":[string],"fields":[{"key":string,"label":string,"hint":string,"scope":"transaction"|"entity"|"estimate","options":[{"label":string,"consequence":string,"common":boolean}] or null}]}
 
-Use the treatment matrix below as your authority for merit. You receive in full only the card or cards the routing stage selected, plus the trigger line of every card in the module. If the preparer cited a card you did not receive in full, and the trigger index suggests a different card fits the transaction better, raise it as a finding: state which card you would expect and why.
+Rules.
+1. GROUNDING. "reading" restates the transaction exactly as given, plus the framework applied. Every figure in the entries must trace back to the reading, to a declared assumption, or to the policy register. A figure that traces to none of these is invented and must never appear.
+2. Ask for all missing items at once, never one at a time. "onFile" lists what the user has already given, including profile values, so nothing looks lost. Never ask again for something already provided.
+3. "scope" tells the interface what kind of gap it is: "transaction" for a fact, "entity" for an accounting policy that will be stored in the profile, "estimate" for a management judgement. Set it correctly: it drives where the answer is kept.
+4. Where the standard permits alternative treatments, do not use a free field. Give at most three options, each with a short label and a one-sentence plain-language consequence in the accounts, one marked common. Describing consequences is not advice; never say which option is preferable.
+5. POLICY REGISTER. List every entity accounting policy the entry relies on. "source" is "entity" when the user declared it, "management" when it is a figure management supplied, "undeclared" when you applied the most common treatment because nothing was declared. If the entry relies on no policy, return an empty array.
+6. TRACEABILITY. Apply the treatment card below and set concept.ruleId to its ID. Covered domains: ${COVERED_DOMAINS}. If the transaction belongs to a domain not yet covered (${PLANNED_DOMAINS}), do not force the nearest card onto it: set ruleId to "none", say plainly in the reading that the domain is not yet covered, and record only what general recognition principles support.
+7. Once you have asked for data on a transaction you are committed: when the data arrives, produce the entry. Gathering data and then refusing is forbidden.
+8. A transaction described in the future is never refused: produce it as a prospective simulation and say so in the reading.
+9. Size limits, to prevent truncation: minified JSON, at most three entries of five lines each, for financing and instalments only initial recognition plus the first payment, at most four assumptions, at most six impact rows.
 
-${MATRIX}
+TREATMENT CARD IN FORCE.
+${matrix}
 
-Trigger index, every card in the module:
+Style: no em dash, no en dash, no exclamation marks, direct tone, no unsolicited advice, no motivational language. Amounts as plain numbers, no currency symbol.`;
+
+const REVIEWER_PROMPT = (matrix, framework, profile) => `You are the reviewer in Language to Ledger. A first model, the preparer, has read a transaction and produced a double-entry record under ${FRAMEWORKS[framework]}. Your job is an independent second pass, the four-eyes principle: you judge the preparer's work, you do NOT rewrite it and you never produce entries yourself.
+
+Entity profile on file:
+${profileText(profile)}
+
+You receive the preparer's grounded restatement, its declared assumptions, its policy register and its full output. Review on three fronts.
+
+ARITHMETIC beyond the automated checks. A deterministic layer has already confirmed that debits equal credits and that impact deltas are internally consistent, so do not re-flag those. Review what those checks cannot see: present value and discounting, depreciation and amortisation schedules, the split of a payment between principal and interest, and any figure whose derivation the preparer should have shown.
+
+ACCOUNTING MERIT. Was the correct card applied, and does concept.ruleId match what the case calls for? Was the card's rule for THIS framework followed, rather than the rule of another framework? Cross-framework contamination is a specific and serious finding: for example applying the low-value lease exemption outside IFRS, or recognising a leased asset on the balance sheet under OIC.
+
+GROUNDING AND POLICY DISCIPLINE. Does every amount trace back to the reading, to a declared assumption, or to the policy register? A figure that appears in the entries but nowhere else is an invented number and is the most serious finding. Separately: did the preparer produce a figure that the standard reserves to management, such as a discount rate, a useful life or a recoverable amount, instead of asking for it? That is equally serious. And does the policy register list every entity policy the entry actually relies on, with the right source?
+
+Use the card below as your authority. You receive in full only the card the routing stage selected, plus the trigger line of every card in the system. If the preparer cited a card you did not receive in full, and the index suggests another fits better, raise it as a finding.
+
+${matrix}
+
+Trigger index, every card in the system:
 ${CARD_INDEX}
 
 Respond ONLY with a single minified JSON object, no markdown, no fences, English only:
 {"status":"clean"|"issues","findings":[{"severity":"error"|"warning","area":string,"detail":string}]}
 
-"clean" with an empty findings array means the entry is sound: correct card, rule applied, every figure grounded, arithmetic right. Use "issues" when anything is wrong. "error" is a real accounting or grounding fault (wrong card, invented figure, broken derivation); "warning" is a defensible but questionable choice or a missing declared assumption. "area" is a short tag (for example "Grounding", "Rule ID", "Present value", "Funding"). "detail" is one plain sentence naming the problem specifically. Maximum 4 findings, the most important first. Do not invent problems to appear thorough: if the work is sound, say so.`;
+"clean" with an empty findings array means the work is sound. Use "issues" when anything is wrong. "error" is a real accounting, grounding or framework fault; "warning" is a defensible but questionable choice or a missing declaration. "area" is a short tag, for example "Grounding", "Framework", "Policy register", "Discounting". "detail" is one plain sentence naming the problem specifically. Maximum four findings, most important first. Do not invent problems to appear thorough: if the work is sound, say so.`;
 
-// ---- Routing stage ----
-// A cheap first pass that reads the transaction and names the relevant card(s).
-// It produces no accounting judgement: it recognises a case and returns IDs.
-const ROUTER_PROMPT = `You route a personal financial transaction to the treatment card that governs it. You do not produce accounting entries, explanations or advice. You return card IDs only.
+const ROUTER_PROMPT = `You route a transaction to the treatment card that governs it. You produce no accounting judgement, no entries and no explanation. You return card IDs only.
 
-Below is the trigger line of every card in the personal module.
+Below is the trigger line of every card currently in the system.
 
 ${CARD_INDEX}
 
-Read the user's transaction and decide which card governs it.
+Domains not yet covered by any card: ${PLANNED_DOMAINS}
+
+Read the transaction and decide which card governs it.
 
 Respond ONLY with a single minified JSON object, no markdown, no fences:
 {"ids":[string],"confident":boolean}
 
 Rules.
-Return the single best card in "ids" with "confident": true when one card clearly governs the case.
-When two cards could plausibly govern it, or the transaction sits on the boundary between them, return both, most likely first, with "confident": false. Never return more than two.
-When the transaction is a follow-up answer to a question rather than a new transaction, route on the original transaction it refers to.
-When no card fits, return {"ids":[],"confident":false}; the full matrix will be loaded.
-Prefer returning two cards over guessing one: a wrong single card removes the governing rule from the next stage entirely.`;
+Return the single best card with "confident": true when one card clearly governs the case.
+When two cards could plausibly govern it, return both, most likely first, with "confident": false. Never more than two.
+When the transaction is a follow-up answer to a question, route on the original transaction it refers to.
+When the transaction belongs to a domain not yet covered, return {"ids":[],"confident":false}. Do not route it to the nearest resembling card: forcing the wrong card produces a wrong treatment.
+Prefer returning two cards, or none, over guessing one.`;
 
-const ROUTER_MODEL = "claude-haiku-4-5-20251001";
-const ROUTER_PRICE_PER_MTOK = { input: 1.0, output: 5.0, cacheRead: 0.1 };
+// ---- Routing stage ----
 
 async function routeCards(messages) {
-  // Route on the user's text only; the router needs no assistant turns.
+  // With a single card in the system a routing call would cost more than it
+  // saves, so skip it. The mechanism stays in place for when the matrix grows.
+  const ids = Object.keys(CARDS);
+  if (ids.length <= 1) {
+    console.log(`LEDGER_ROUTE skipped=single-card ids=${ids.join(",")}`);
+    return ids;
+  }
   const userText = messages
     .filter((m) => m.role === "user")
     .map((m) => m.content)
@@ -214,7 +294,7 @@ async function routeCards(messages) {
     const data = await response.json();
     if (!response.ok) {
       console.error("Router upstream error", response.status, data?.error?.type);
-      return null; // fall back to the full matrix
+      return null;
     }
     logUsage("route", data.usage, ROUTER_PRICE_PER_MTOK, ROUTER_MODEL);
     const raw = (data.content || [])
@@ -224,27 +304,28 @@ async function routeCards(messages) {
       .replace(/```json|```/g, "")
       .trim();
     const parsed = JSON.parse(raw);
-    const ids = Array.isArray(parsed.ids) ? parsed.ids.filter((id) => CARDS[id]).slice(0, 2) : [];
-    console.log(`LEDGER_ROUTE ids=${ids.join(",") || "none"} confident=${!!parsed.confident}`);
-    return ids;
+    const picked = Array.isArray(parsed.ids)
+      ? parsed.ids.filter((id) => CARDS[id]).slice(0, 2)
+      : [];
+    console.log(`LEDGER_ROUTE ids=${picked.join(",") || "none"} confident=${!!parsed.confident}`);
+    return picked;
   } catch (e) {
     console.error("Router failed", e?.message);
-    return null; // fall back to the full matrix
+    return null;
   }
 }
+
+// ---- Handler ----
 
 export default async function handler(req, res) {
   const origin = req.headers.origin || "";
 
-  // Same-origin requests (the app calling its own /api/ledger) are always allowed:
-  // this covers the vercel.app address and any preview deployment without listing them.
   let sameOrigin = false;
   try {
     sameOrigin = origin ? new URL(origin).host === req.headers.host : false;
   } catch (_) {}
   const allowed = sameOrigin || ALLOWED_ORIGINS.includes(origin);
 
-  // CORS: answer preflight and reflect only allowed origins.
   if (allowed && origin) {
     res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Vary", "Origin");
@@ -255,9 +336,6 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(204).end();
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
-  // Browser-origin check. Note: an Origin header can be forged outside a browser,
-  // so this is a hygiene measure, not the real defence. The real defences are that
-  // no client-supplied system prompt is accepted and that calls are rate limited.
   if (origin && !allowed) {
     return res.status(403).json({ error: "Origin not allowed", detail: "origin_rejected" });
   }
@@ -271,15 +349,17 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { role, messages } = req.body || {};
+    const { role, messages, framework, profile } = req.body || {};
 
     if (role !== "prepare" && role !== "review") {
       return res.status(400).json({ error: "Invalid role" });
     }
+    if (!FRAMEWORKS[framework]) {
+      return res.status(400).json({ error: "Invalid or missing reporting framework" });
+    }
     if (!Array.isArray(messages) || messages.length === 0 || messages.length > 12) {
       return res.status(400).json({ error: "Invalid messages" });
     }
-    // Cap the payload so the endpoint cannot be used to push arbitrary bulk text.
     const totalChars = messages.reduce(
       (n, m) => n + (typeof m?.content === "string" ? m.content.length : 0),
       0
@@ -292,29 +372,35 @@ export default async function handler(req, res) {
       content: String(m.content ?? "").slice(0, 6000),
     }));
 
-    // Card selection.
-    // For the preparer, a routing call picks the governing card(s).
-    // For the reviewer, no routing call is needed: the preparer's output that
-    // the reviewer is judging already names the card it applied, so the cited
-    // IDs are read straight from the payload. The reviewer also receives the
-    // trigger index of every card, so it can still challenge the citation.
+    // Accept only known profile keys, as short strings.
+    const safeProfile = {};
+    if (profile && typeof profile === "object") {
+      for (const key of Object.keys(PROFILE_FIELDS)) {
+        if (typeof profile[key] === "string" && profile[key].trim()) {
+          safeProfile[key] = profile[key].trim().slice(0, 200);
+        }
+      }
+    }
+
+    // Card selection. The preparer routes; the reviewer reads the cited Rule ID
+    // from the output it is judging, so no second routing call is needed.
     let cardIds;
     if (role === "prepare") {
       cardIds = await routeCards(clean);
     } else {
-      const cited = (JSON.stringify(clean).match(/T-\d\d/g) || [])
+      const cited = (JSON.stringify(clean).match(/[A-Z]{3}-\d\d/g) || [])
         .filter((id, i, a) => a.indexOf(id) === i)
         .filter((id) => CARDS[id])
         .slice(0, 2);
       cardIds = cited.length ? cited : null;
       console.log(`LEDGER_ROUTE role=review cited=${cited.join(",") || "none"}`);
     }
-    // A null result loads the full matrix: better to pay for the whole matrix
-    // than to leave the model without the rule that governs the case.
-    const matrixText = buildMatrix(cardIds);
+    const matrixText = buildMatrix(cardIds, framework);
 
     const system =
-      role === "prepare" ? SYSTEM_PROMPT(matrixText) : REVIEWER_PROMPT(matrixText);
+      role === "prepare"
+        ? SYSTEM_PROMPT(matrixText, framework, safeProfile)
+        : REVIEWER_PROMPT(matrixText, framework, safeProfile);
 
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -333,8 +419,6 @@ export default async function handler(req, res) {
 
     const data = await response.json();
     if (!response.ok) {
-      // Error type only (for example authentication_error, invalid_request_error).
-      // The full upstream message stays in the server logs, never in the browser.
       console.error("Upstream error", response.status, data?.error?.type, data?.error?.message);
       return res.status(502).json({
         error: "Upstream error",
@@ -342,7 +426,6 @@ export default async function handler(req, res) {
       });
     }
     logUsage(role, data.usage);
-    // Return only the content blocks the client needs.
     return res.status(200).json({ content: data.content });
   } catch (error) {
     console.error("Handler error", error?.message);
