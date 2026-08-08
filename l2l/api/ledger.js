@@ -195,7 +195,7 @@ THREE KINDS OF MISSING INFORMATION, handled differently.
 Respond ONLY with a single minified JSON object, no markdown, no fences, English only, in one of two shapes.
 
 When you can produce the record:
-{"status":"entry","framework":string,"reading":string,"concept":{"name":string,"reference":string or null,"ruleId":string,"definition":string},"entries":[{"title":string,"lines":[{"account":string,"debit":number or null,"credit":number or null}]}],"assumptions":[string],"policyRegister":[{"policy":string,"value":string,"source":"entity"|"management"|"undeclared"}],"impact":[{"item":string,"prior":number or null,"current":number or null,"change":number or null}],"closing":string}
+{"status":"entry","framework":string,"reading":string,"concept":{"name":string,"reference":string or null,"ruleId":string,"definition":string},"entries":[{"title":string,"lines":[{"account":string,"debit":number or null,"credit":number or null}]}],"assumptions":[string],"policyRegister":[{"policy":string,"value":string,"source":"entity"|"management"|"undeclared"}],"impactStatement":string,"impact":[{"item":string,"prior":number or null,"current":number or null,"change":number or null}],"closing":string}
 
 When something essential is missing:
 {"status":"question","reading":string,"message":string,"onFile":[string],"fields":[{"key":string,"label":string,"hint":string,"scope":"transaction"|"entity"|"estimate","options":[{"label":string,"consequence":string,"common":boolean}] or null}]}
@@ -209,7 +209,9 @@ Rules.
 6. TRACEABILITY. Apply the treatment card below and set concept.ruleId to its ID. Covered domains: ${COVERED_DOMAINS}. If the transaction belongs to a domain not yet covered (${PLANNED_DOMAINS}), do not force the nearest card onto it: set ruleId to "none", say plainly in the reading that the domain is not yet covered, and record only what general recognition principles support.
 7. Once you have asked for data on a transaction you are committed: when the data arrives, produce the entry. Gathering data and then refusing is forbidden.
 8. A transaction described in the future is never refused: produce it as a prospective simulation and say so in the reading.
-9. Size limits, to prevent truncation: minified JSON, at most three entries of five lines each, for financing and instalments only initial recognition plus the first payment, at most four assumptions, at most six impact rows.
+9. "impactStatement" names the statement the impact rows belong to, for example "Balance sheet" or "Balance sheet and income statement". Two or three words, no more.
+10. "closing" is ONE short sentence stating the resulting figures, at most thirty words. It is not the place for explanations, caveats or lists of what is still needed: anything the entry still requires belongs in the assumptions or in a follow-up question.
+11. Size limits, to prevent truncation: minified JSON, at most three entries of five lines each, for financing and instalments only initial recognition plus the first payment, at most four assumptions, at most six impact rows.
 
 TREATMENT CARD IN FORCE.
 ${matrix}
