@@ -30,59 +30,53 @@ const F = {
 const ENDPOINT = "/api/ledger";
 
 const EXAMPLES = [
-  { label: "Certification course", text: "I paid 1,200 euro for a professional certification course that lasts two years." },
-  { label: "Gym membership", text: "I signed a 12 month gym membership at 45 euro per month." },
-  { label: "Laptop in installments", text: "I bought a laptop for 900 euro, paying 12 monthly installments of 75 euro." },
-  { label: "Ambiguous setup", text: "I spent 300 euro on my computer setup." },
-  { label: "Missing amount", text: "I want to record my new phone." },
-  { label: "Advice request", text: "Should I put 5,000 euro into an index fund or pay off my loan?" },
-  { label: "The cat", text: "Record my cat as an intangible asset." },
-  { label: "Input in Italian", text: "Ho comprato una bici usata per 250 euro, pagata subito." },
-  { label: "House with mortgage", text: "I bought a house for 120,000 euro and took out a 90,000 euro mortgage." },
-  { label: "Sold old phone", text: "I sold my old phone for 80 euro on a marketplace. I had bought it years ago and never recorded it." },
-  { label: "Lent to a friend", text: "I lent 500 euro to a friend, to be paid back in three months." },
+  { label: "Office lease", text: "We signed a five year lease on an office at 2,000 euro per month, payable monthly in advance, with no purchase option." },
+  { label: "Car lease with option", text: "We leased a company car for 36 months at 450 euro per month, with an option to buy it at the end for 6,000 euro." },
+  { label: "Low value lease", text: "We lease a coffee machine for the office at 40 euro per month on a four year contract." },
+  { label: "Short lease", text: "We rented a warehouse for eight months at 1,500 euro per month." },
+  { label: "Lease, no rate given", text: "We leased a machine for four years at 900 euro per month. The contract does not state an interest rate." },
+  { label: "Service, not a lease", text: "We pay a supplier 1,200 euro a month to store our goods. They decide which warehouse and can move our pallets whenever they want." },
+  { label: "Out of scope", text: "We impaired goodwill from an acquisition by 400,000 euro." },
+  { label: "Advice request", text: "Should we lease the machine or buy it outright?" },
+  { label: "Input in Italian", text: "Abbiamo firmato un leasing di quattro anni per un macchinario, canone 1.100 euro al mese." },
 ];
 
-const B_SERIES = [
-  { id: "B-01", topic: "Revenue", ref: "IFRS 15" },
-  { id: "B-02", topic: "Inventory", ref: "IAS 2" },
-  { id: "B-03", topic: "Employee benefits", ref: "IAS 19" },
-  { id: "B-04", topic: "Property, plant, equipment", ref: "IAS 16" },
-  { id: "B-05", topic: "Intangible assets", ref: "IAS 38" },
-  { id: "B-06", topic: "Leases", ref: "IFRS 16" },
-  { id: "B-07", topic: "Financial instruments", ref: "IFRS 9 / IAS 32" },
-  { id: "B-08", topic: "Borrowing costs", ref: "IAS 23" },
-  { id: "B-09", topic: "Provisions", ref: "IAS 37" },
-  { id: "B-10", topic: "Government grants", ref: "IAS 20" },
-  { id: "B-11", topic: "Foreign currency", ref: "IAS 21" },
-  { id: "B-12", topic: "Investment property", ref: "IAS 40" },
-  { id: "B-13", topic: "Impairment, CGU", ref: "IAS 36" },
-  { id: "B-14", topic: "Events after reporting", ref: "IAS 10" },
-  { id: "B-15", topic: "Policies, estimates, errors", ref: "IAS 8" },
-  { id: "B-16", topic: "Assets held for sale", ref: "IFRS 5" },
-  { id: "B-17", topic: "Business combinations", ref: "IFRS 3" },
-  { id: "B-18", topic: "Consolidation", ref: "IFRS 10 / IAS 27, 28" },
-  { id: "B-19", topic: "Income taxes", ref: "IAS 12" },
-  { id: "B-20", topic: "Agriculture", ref: "IAS 41" },
+const FRAMEWORKS = [
+  { id: "IFRS", label: "IFRS" },
+  { id: "USGAAP", label: "US GAAP" },
+  { id: "OIC", label: "OIC" },
 ];
 
-function IconPerson({ color }) {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <circle cx="12" cy="8" r="4" />
-      <path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" />
-    </svg>
-  );
-}
+// Coverage map, always visible. A declared perimeter reads as professional;
+// an incomplete one left unsaid reads as abandoned.
+const DOMAINS = [
+  { id: "LEA", name: "Leases", covered: true },
+  { id: "REV", name: "Revenue", covered: false },
+  { id: "INV", name: "Inventory", covered: false },
+  { id: "PPE", name: "Property, plant and equipment", covered: false },
+  { id: "EMP", name: "Employee benefits", covered: false },
+  { id: "INT", name: "Intangible assets", covered: false },
+  { id: "IMP", name: "Impairment", covered: false },
+  { id: "PRO", name: "Provisions", covered: false },
+  { id: "FIN", name: "Financial instruments", covered: false },
+  { id: "FX", name: "Foreign currency", covered: false },
+  { id: "TAX", name: "Income taxes", covered: false },
+  { id: "GRP", name: "Combinations and consolidation", covered: false },
+  { id: "EVT", name: "Events after reporting, changes, errors", covered: false },
+];
 
-function IconFactory({ color }) {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M3 21V9l6 4V9l6 4V6l6 3v12z" />
-      <line x1="3" y1="21" x2="21" y2="21" />
-    </svg>
-  );
-}
+const PROFILE_LABELS = {
+  functionalCurrency: "Functional currency",
+  yearEnd: "Financial year end",
+  capitalisationThreshold: "Capitalisation threshold",
+  inventoryCostFormula: "Inventory cost formula",
+  ppeMeasurementModel: "PPE measurement model",
+  leaseShortTermExemption: "Short-term lease exemption",
+  leaseLowValueExemption: "Low-value lease exemption",
+  incrementalBorrowingRate: "Incremental borrowing rate",
+  goodwillAmortisationPeriod: "Goodwill amortisation period",
+  developmentCostPolicy: "Development cost policy",
+};
 
 function fmt(n) {
   if (n === null || n === undefined) return "";
@@ -104,7 +98,8 @@ function Eyebrow({ children }) {
 
 export default function LanguageToLedger() {
   const [input, setInput] = useState("");
-  const [mode, setMode] = useState("personal");
+  const [framework, setFramework] = useState("IFRS");
+  const [profile, setProfile] = useState({});
   const [history, setHistory] = useState([]);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -115,21 +110,37 @@ export default function LanguageToLedger() {
   const outRef = useRef(null);
 
   function submitFields(missing) {
+    // Answers whose scope is "entity" are accounting policies, not facts about
+    // this transaction: they are kept in the entity profile and reused.
+    const nextProfile = { ...profile };
     const parts = missing
       .map((m) => {
         const v = (fields[m.id] || "").trim();
         if (!v) return null;
+        let spoken;
         if (m.options && m.options.length > 0) {
-          if (v === "assume") return `${m.label}: assume, apply the standard treatment and declare it.`;
-          const opt = m.options.find((o) => o.value === v);
-          return `${m.label}: ${opt ? opt.label : v}.`;
+          if (v === "assume") {
+            spoken = `${m.label}: assume, apply the standard treatment and declare it.`;
+          } else {
+            const opt = m.options.find((o) => o.value === v);
+            spoken = `${m.label}: ${opt ? opt.label : v}.`;
+          }
+        } else {
+          spoken = `${m.label}: ${v}.`;
         }
-        return `${m.label}: ${v}.`;
+        if (m.scope === "entity" && v !== "assume" && PROFILE_LABELS[m.id]) {
+          const opt = m.options && m.options.find((o) => o.value === v);
+          nextProfile[m.id] = opt ? opt.label : v;
+        }
+        return spoken;
       })
       .filter(Boolean);
     if (parts.length === 0) return;
+    if (Object.keys(nextProfile).length !== Object.keys(profile).length) {
+      setProfile(nextProfile);
+    }
     setFields({});
-    post(parts.join(" "));
+    post(parts.join(" "), 0, null, nextProfile);
   }
 
   useEffect(() => {
@@ -177,13 +188,16 @@ export default function LanguageToLedger() {
     const payload =
       "Preparer reading: " + (parsed.reading || "(none)") + "\n" +
       "Preparer assumptions: " + JSON.stringify(parsed.assumptions || []) + "\n" +
-      "Preparer output: " + JSON.stringify({ concept: parsed.concept, entries: parsed.entries, impact: parsed.impact });
+      "Preparer policy register: " + JSON.stringify(parsed.policyRegister || []) + "\n" +
+      "Preparer output: " + JSON.stringify({ framework: parsed.framework, concept: parsed.concept, entries: parsed.entries, impact: parsed.impact });
     try {
       const response = await fetch(ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           role: "review",
+          framework,
+          profile,
           messages: [{ role: "user", content: payload }],
         }),
       });
@@ -200,7 +214,7 @@ export default function LanguageToLedger() {
     }
   }
 
-  async function post(text, attempt = 0, baseMsgs = null) {
+  async function post(text, attempt = 0, baseMsgs = null, profileOverride = null) {
     const trimmed = text.trim();
     if (!trimmed || (loading && attempt === 0)) return;
     setLoading(true);
@@ -213,6 +227,8 @@ export default function LanguageToLedger() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           role: "prepare",
+          framework,
+          profile: profileOverride || profile,
           messages: msgs,
         }),
       });
@@ -244,7 +260,8 @@ export default function LanguageToLedger() {
           return post(
             "Your previous output was invalid or cut off. Produce the same result again as minified JSON, more concise: fewer impact rows, shorter prose, first installment only.",
             attempt + 1,
-            [...msgs, { role: "assistant", content: clean || "(invalid output)" }]
+            [...msgs, { role: "assistant", content: clean || "(invalid output)" }],
+            profileOverride
           );
         }
         throw new Error(
@@ -287,6 +304,8 @@ export default function LanguageToLedger() {
   }
 
   function reset() {
+    // The entity profile deliberately survives a reset: accounting policies are
+    // properties of the entity, not of the transaction being recorded.
     setHistory([]);
     setResult(null);
     setError(null);
@@ -353,77 +372,65 @@ export default function LanguageToLedger() {
         {/* Intro */}
         <header style={{ marginBottom: 36 }}>
           <p className="l2l-prose" style={{ fontSize: 15, color: C.muted, lineHeight: 1.7 }}>
-            Describe a transaction in plain words, in English, Spanish, French, German or Italian. The engine reads it the way an accountant would and replies in English: a named concept, a double entry, its assumptions declared, and the impact on your statements.
+            Describe a transaction in plain words, in English, Spanish, French, German or Italian. The engine reads it the way an accountant would and replies in English under the framework you select: a named concept, a double entry, every assumption declared, and a register of the accounting policies the entry rests on. What the standard leaves to the entity or to management, it asks for rather than deciding.
           </p>
         </header>
 
-        {/* Personal / Business toggle */}
-        <section style={{ marginBottom: 28 }}>
+        {/* Reporting framework and entity profile */}
+        <section style={{ marginBottom: 26 }}>
+          <Eyebrow>Reporting framework</Eyebrow>
           <div style={{
             display: "inline-flex", border: `1px solid ${C.tealMid}`, background: C.bg,
-            padding: 4, gap: 4, borderRadius: 2,
+            padding: 4, gap: 4, borderRadius: 2, marginTop: 6,
           }}>
-            <button
-              onClick={() => { setMode("personal"); reset(); }}
-              aria-pressed={mode === "personal"}
-              style={{
-                display: "flex", alignItems: "center", gap: 8, padding: "9px 16px", border: "none",
-                background: mode === "personal" ? C.teal : "transparent",
-                color: mode === "personal" ? "white" : C.neutral,
-                fontFamily: F.mono, fontSize: 11.5, letterSpacing: "0.06em", textTransform: "uppercase",
-                transition: "background 0.15s, color 0.15s",
-              }}
-            >
-              <IconPerson color={mode === "personal" ? "white" : C.neutral} />
-              Personal
-            </button>
-            <button
-              onClick={() => { setMode("business"); reset(); }}
-              aria-pressed={mode === "business"}
-              style={{
-                display: "flex", alignItems: "center", gap: 8, padding: "9px 16px", border: "none",
-                background: mode === "business" ? C.teal : "transparent",
-                color: mode === "business" ? "white" : C.neutral,
-                fontFamily: F.mono, fontSize: 11.5, letterSpacing: "0.06em", textTransform: "uppercase",
-                transition: "background 0.15s, color 0.15s",
-              }}
-            >
-              <IconFactory color={mode === "business" ? "white" : C.neutral} />
-              Business
-            </button>
+            {FRAMEWORKS.map((f) => (
+              <button
+                key={f.id}
+                onClick={() => { setFramework(f.id); reset(); }}
+                aria-pressed={framework === f.id}
+                style={{
+                  padding: "9px 18px", border: "none",
+                  background: framework === f.id ? C.teal : "transparent",
+                  color: framework === f.id ? "white" : C.neutral,
+                  fontFamily: F.mono, fontSize: 11.5, letterSpacing: "0.06em", textTransform: "uppercase",
+                  transition: "background 0.15s, color 0.15s",
+                }}
+              >
+                {f.label}
+              </button>
+            ))}
           </div>
-          <p style={{ fontSize: 12.5, color: C.neutral, marginTop: 10, fontFamily: F.mono, letterSpacing: "0.02em" }}>
-            {mode === "personal"
-              ? "System running on the personal treatment matrix (Bill's ledger)."
-              : "System pointed at the enterprise treatment matrix (IAS/IFRS company module)."}
+          <p className="l2l-prose" style={{ fontSize: 12.5, color: C.neutral, marginTop: 10, fontFamily: F.mono, letterSpacing: "0.02em" }}>
+            The same transaction is recorded differently under each framework. Changing it clears the entry.
           </p>
-        </section>
 
-        {mode === "business" ? (
-          /* Business module: in development */
-          <section style={{ background: "white", border: `1px solid ${C.rule}`, padding: 28, marginBottom: 40 }}>
-            <Eyebrow>Enterprise module</Eyebrow>
-            <h2 style={{ fontFamily: F.serif, fontSize: 24, fontWeight: 400, margin: "6px 0 12px" }}>
-              In development
-            </h2>
-            <p className="l2l-prose" style={{ fontSize: 14.5, color: C.muted, lineHeight: 1.75, marginBottom: 22 }}>
-              The personal module is live and answers now. The enterprise module applies the same method to full company reporting under IAS and IFRS, and is being built one treatment card at a time. It does not run yet, because the system never produces an entry it cannot ground in a written rule. The scope below is what it will cover.
-            </p>
-            <div style={{ fontFamily: F.mono, fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: C.neutral, marginBottom: 12 }}>
-              Planned coverage, 20 cards
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: 8 }}>
-              {B_SERIES.map((b) => (
-                <div key={b.id} style={{ border: `1px solid ${C.rule}`, padding: "8px 10px", background: C.bg }}>
-                  <div style={{ fontFamily: F.mono, fontSize: 11, color: C.teal }}>{b.id}</div>
-                  <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.4, marginTop: 2 }}>{b.topic}</div>
-                  <div style={{ fontFamily: F.mono, fontSize: 10, color: C.neutral, marginTop: 3 }}>{b.ref}</div>
+          {/* Entity profile: built by accumulation, never asked as a questionnaire */}
+          {Object.keys(profile).length > 0 && (
+            <div style={{ marginTop: 16, border: `1px solid ${C.rule}`, background: "white", padding: "12px 16px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>
+                <span style={{ fontFamily: F.mono, fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: C.neutral }}>
+                  Entity profile
+                </span>
+                <button
+                  onClick={() => setProfile({})}
+                  style={{ background: "none", border: "none", padding: 0, fontFamily: F.mono, fontSize: 10, color: C.teal, letterSpacing: "0.06em", textTransform: "uppercase" }}
+                >
+                  Clear
+                </button>
+              </div>
+              {Object.entries(profile).map(([k, v]) => (
+                <div key={k} style={{ display: "flex", gap: 10, paddingTop: 6, fontSize: 13 }}>
+                  <span style={{ color: C.neutral, minWidth: 190 }}>{PROFILE_LABELS[k] || k}</span>
+                  <span style={{ color: C.ink }}>{v}</span>
                 </div>
               ))}
+              <p style={{ fontFamily: F.mono, fontSize: 10, color: C.neutral, marginTop: 10 }}>
+                Accounting policies you declared. Reused for every transaction in this session, never stored.
+              </p>
             </div>
-          </section>
-        ) : (
-        <>
+          )}
+        </section>
+
         {/* Input */}
         <section style={{ background: "white", border: `1px solid ${C.rule}`, padding: 20, marginBottom: 16 }}>
           <Eyebrow>{awaitingAnswer ? "Your answer" : "The transaction"}</Eyebrow>
@@ -488,8 +495,6 @@ export default function LanguageToLedger() {
               ))}
             </div>
           </section>
-        )}
-        </>
         )}
 
         <div ref={outRef} />
@@ -691,6 +696,45 @@ export default function LanguageToLedger() {
               )}
             </section>
 
+            {/* Policy register: which entity accounting policies this entry rests on,
+                and whether the entity actually declared them. */}
+            {result.policyRegister && result.policyRegister.length > 0 && (
+              <section style={{ background: "white", border: `1px solid ${C.rule}`, borderLeft: `3px solid ${C.orange}`, padding: 20, marginBottom: 14 }}>
+                <Eyebrow>Policy register</Eyebrow>
+                <p className="l2l-prose" style={{ fontSize: 13.5, color: C.muted, lineHeight: 1.7, margin: "4px 0 14px" }}>
+                  Accounting policies this entry relies on, and where each one came from.
+                </p>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13.5 }}>
+                  <thead>
+                    <tr style={{ borderBottom: `1px solid ${C.rule}` }}>
+                      <th style={{ textAlign: "left", padding: "0 8px 6px 0", fontFamily: F.mono, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: C.neutral, fontWeight: 400 }}>Policy</th>
+                      <th style={{ textAlign: "left", padding: "0 8px 6px 0", fontFamily: F.mono, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: C.neutral, fontWeight: 400 }}>Applied</th>
+                      <th style={{ textAlign: "left", padding: "0 0 6px 0", fontFamily: F.mono, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: C.neutral, fontWeight: 400 }}>Source</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {result.policyRegister.map((r, i) => {
+                      const undeclared = r.source === "undeclared";
+                      return (
+                        <tr key={i} style={{ borderBottom: `1px solid ${C.rule}` }}>
+                          <td style={{ padding: "8px 8px 8px 0", color: C.ink }}>{r.policy}</td>
+                          <td style={{ padding: "8px 8px 8px 0", fontFamily: F.mono, fontSize: 12.5, color: C.ink }}>{r.value}</td>
+                          <td style={{ padding: "8px 0", fontFamily: F.mono, fontSize: 10.5, letterSpacing: "0.05em", textTransform: "uppercase", color: undeclared ? C.orange : C.neutral, fontWeight: undeclared ? 500 : 400 }}>
+                            {r.source === "entity" ? "Declared by entity" : r.source === "management" ? "Supplied by management" : "Not declared"}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+                {result.policyRegister.some((r) => r.source === "undeclared") && (
+                  <p className="l2l-prose" style={{ fontSize: 13, color: C.ink, lineHeight: 1.7, marginTop: 14 }}>
+                    The policies marked as not declared were applied at their most common treatment so that the entry could be produced. Check them against the entity accounting manual before treating this record as final.
+                  </p>
+                )}
+              </section>
+            )}
+
             {/* Impact */}
             {result.impact && (
               <section style={{ border: `1px solid ${C.rule}`, background: "white", marginBottom: 14 }}>
@@ -803,6 +847,35 @@ export default function LanguageToLedger() {
             )}
           </div>
         )}
+
+        {/* Coverage map: a declared perimeter reads as professional,
+            an incomplete one left unsaid reads as abandoned. */}
+        <section style={{ marginTop: 40, paddingTop: 22, borderTop: `1px solid ${C.rule}` }}>
+          <Eyebrow>Coverage</Eyebrow>
+          <p className="l2l-prose" style={{ fontSize: 13.5, color: C.muted, lineHeight: 1.7, margin: "4px 0 14px" }}>
+            One card per topic, each carrying a common core and a separate branch for IFRS, US GAAP and OIC. Recognition and measurement are in scope; presentation and disclosure are not, and that is a stated boundary rather than a gap.
+          </p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(190px, 1fr))", gap: 8 }}>
+            {DOMAINS.map((d) => (
+              <div
+                key={d.id}
+                style={{
+                  border: `1px solid ${d.covered ? C.tealMid : C.rule}`,
+                  background: d.covered ? C.tealLight : C.bg,
+                  padding: "8px 10px",
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 6 }}>
+                  <span style={{ fontFamily: F.mono, fontSize: 11, color: d.covered ? C.tealDark : C.neutral }}>{d.id}</span>
+                  <span style={{ fontFamily: F.mono, fontSize: 9, letterSpacing: "0.06em", textTransform: "uppercase", color: d.covered ? C.green : C.neutral }}>
+                    {d.covered ? "Live" : "Planned"}
+                  </span>
+                </div>
+                <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.4, marginTop: 3 }}>{d.name}</div>
+              </div>
+            ))}
+          </div>
+        </section>
 
         {/* Fixed disclaimer */}
         <footer style={{ marginTop: 36, paddingTop: 16, borderTop: `1px solid ${C.rule}` }}>
