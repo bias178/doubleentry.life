@@ -10,8 +10,8 @@
     </linearGradient>
     <mask id="knockout">
       <rect x="0" y="0" width="512" height="512" fill="white" />
-    <rect x="41" y="88" width="110" height="384" rx="26" fill="black" />
-    <rect x="41" y="362" width="297" height="110" rx="26" fill="black" />
+      <rect x="41" y="88" width="110" height="384" rx="26" fill="black" />
+      <rect x="41" y="362" width="297" height="110" rx="26" fill="black" />
     </mask>
   </defs>
   <rect x="0" y="0" width="256" height="512" fill="url(#teal)" />
