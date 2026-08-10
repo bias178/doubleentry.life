@@ -143,6 +143,9 @@ export default function LanguageToLedger() {
   const [input, setInput] = useState("");
   const [framework, setFramework] = useState("IFRS");
   const [profile, setProfile] = useState({});
+  // Management estimates persist across a change of framework: they belong to the
+  // transaction and to management's judgement, not to the reporting framework.
+  const [estimates, setEstimates] = useState({});
   const [history, setHistory] = useState([]);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -156,6 +159,7 @@ export default function LanguageToLedger() {
     // Answers whose scope is "entity" are accounting policies, not facts about
     // this transaction: they are kept in the entity profile and reused.
     const nextProfile = { ...profile };
+    const nextEstimates = { ...estimates };
     const parts = missing
       .map((m) => {
         const v = (fields[m.id] || "").trim();
@@ -171,9 +175,12 @@ export default function LanguageToLedger() {
         } else {
           spoken = `${m.label}: ${v}.`;
         }
+        const chosen = m.options && m.options.find((o) => o.value === v);
         if (m.scope === "entity" && v !== "assume" && PROFILE_LABELS[m.id]) {
-          const opt = m.options && m.options.find((o) => o.value === v);
-          nextProfile[m.id] = opt ? opt.label : v;
+          nextProfile[m.id] = chosen ? chosen.label : v;
+        }
+        if (m.scope === "estimate" && v !== "assume") {
+          nextEstimates[m.label || m.id] = chosen ? chosen.label : v;
         }
         return spoken;
       })
@@ -182,8 +189,11 @@ export default function LanguageToLedger() {
     if (Object.keys(nextProfile).length !== Object.keys(profile).length) {
       setProfile(nextProfile);
     }
+    if (Object.keys(nextEstimates).length !== Object.keys(estimates).length) {
+      setEstimates(nextEstimates);
+    }
     setFields({});
-    post(parts.join(" "), 0, null, nextProfile);
+    post(parts.join(" "), 0, null, nextProfile, nextEstimates);
   }
 
   useEffect(() => {
@@ -241,6 +251,7 @@ export default function LanguageToLedger() {
           role: "review",
           framework,
           profile,
+          estimates,
           messages: [{ role: "user", content: payload }],
         }),
       });
@@ -257,7 +268,7 @@ export default function LanguageToLedger() {
     }
   }
 
-  async function post(text, attempt = 0, baseMsgs = null, profileOverride = null) {
+  async function post(text, attempt = 0, baseMsgs = null, profileOverride = null, estimatesOverride = null) {
     const trimmed = text.trim();
     if (!trimmed || (loading && attempt === 0)) return;
     setLoading(true);
@@ -272,6 +283,7 @@ export default function LanguageToLedger() {
           role: "prepare",
           framework,
           profile: profileOverride || profile,
+          estimates: estimatesOverride || estimates,
           messages: msgs,
         }),
       });
@@ -304,7 +316,8 @@ export default function LanguageToLedger() {
             "Your previous output was invalid or cut off. Produce the same result again as minified JSON, more concise: fewer impact rows, shorter prose, first installment only.",
             attempt + 1,
             [...msgs, { role: "assistant", content: clean || "(invalid output)" }],
-            profileOverride
+            profileOverride,
+            estimatesOverride
           );
         }
         throw new Error(
@@ -470,6 +483,33 @@ export default function LanguageToLedger() {
               ))}
               <p style={{ fontFamily: F.mono, fontSize: 10, color: C.neutral, marginTop: 10 }}>
                 Accounting policies you declared. Reused for every transaction in this session, never stored.
+              </p>
+            </div>
+          )}
+
+          {/* Management estimates: kept so the same transaction can be compared
+              across frameworks on identical inputs. */}
+          {Object.keys(estimates).length > 0 && (
+            <div style={{ marginTop: 12, border: `1px solid ${C.rule}`, borderLeft: `3px solid ${C.orange}`, background: "white", padding: "12px 16px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>
+                <span style={{ fontFamily: F.mono, fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: C.neutral }}>
+                  Management estimates
+                </span>
+                <button
+                  onClick={() => setEstimates({})}
+                  style={{ background: "none", border: "none", padding: 0, fontFamily: F.mono, fontSize: 10, color: C.teal, letterSpacing: "0.06em", textTransform: "uppercase" }}
+                >
+                  Clear
+                </button>
+              </div>
+              {Object.entries(estimates).map(([k, v]) => (
+                <div key={k} style={{ display: "flex", gap: 10, paddingTop: 6, fontSize: 13 }}>
+                  <span style={{ color: C.neutral, minWidth: 190 }}>{k}</span>
+                  <span style={{ color: C.ink }}>{v}</span>
+                </div>
+              ))}
+              <p style={{ fontFamily: F.mono, fontSize: 10, color: C.neutral, marginTop: 10 }}>
+                Judgements you supplied as management. Held across a change of framework so the same transaction is compared on identical inputs.
               </p>
             </div>
           )}
@@ -779,7 +819,13 @@ export default function LanguageToLedger() {
                           <td style={{ padding: "8px 8px 8px 0", color: C.ink }}>{r.policy}</td>
                           <td style={{ padding: "8px 8px 8px 0", fontFamily: F.mono, fontSize: 12.5, color: C.ink }}>{r.value}</td>
                           <td style={{ padding: "8px 0", fontFamily: F.mono, fontSize: 10.5, letterSpacing: "0.05em", textTransform: "uppercase", color: undeclared ? C.orange : C.neutral, fontWeight: undeclared ? 500 : 400 }}>
-                            {r.source === "entity" ? "Declared by entity" : r.source === "management" ? "Supplied by management" : "Not declared"}
+                            {r.source === "entity"
+                              ? "Declared by entity"
+                              : r.source === "management"
+                              ? "Supplied by management"
+                              : r.source === "framework"
+                              ? "Required by framework"
+                              : "Not declared"}
                           </td>
                         </tr>
                       );
