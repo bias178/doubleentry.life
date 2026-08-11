@@ -88,10 +88,14 @@ var BILL_STATE = {
     ]
   },
 
-  // Balance sheet - current. EP.28 is a P&L episode (budget variance); it does
-  // not introduce a new balance-sheet event, so the snapshot stays at the last
-  // canonical figures. Net assets 7,220.
-  savings:    5884,
+  // Balance sheet - current (as at 11 Aug 2026). Cash is updated on the solar
+  // month, not per episode. Between the EP.26 snapshot (mid-July) and now, one
+  // month closed: July's salary landed at month end and July's surplus (185, the
+  // old baseline, since the utilities split takes effect from August) is banked.
+  // So savings rise 5,884 -> 6,069, net assets 7,220 -> 7,405. The August energy
+  // bill is received but paid at month end, so it does not touch cash yet; the
+  // reduced August surplus (143) lands at the next monthly update.
+  savings:    6069,
   deposit:    1200,
   phoneBookValue: 136,
 
@@ -148,7 +152,7 @@ BILL_STATE.prior_netAssets   = BILL_STATE.prior_totalAssets;
 //   lifts utilities to 115 and drops the typical surplus 185 -> 160. Consumption
 //   variance +17 is one-off (August actual 143, not baselined). Prior block moves
 //   to Aug 2025 (parents home, 900 in / 405 out / 495 surplus). Balance sheet
-//   unchanged: EP.28 is a P&L episode. Net assets 7,220.
+//   Cash updated for July surplus banked (+185). Net assets 7,405.
 // EP.27 28 Jul 2026: reallocation at delta zero. 3,000 (liquidated fund proceeds)
 //   to a savings account at 2.10% nominal, 2,884 kept as operating buffer.
 //   Net assets unchanged at 7,220.
