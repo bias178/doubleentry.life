@@ -88,16 +88,19 @@ var BILL_STATE = {
     ]
   },
 
-  // Balance sheet - current (as at 11 Aug 2026). Cash is updated on the solar
-  // month, not per episode. Between the EP.26 snapshot (mid-July) and now, one
-  // month closed: July's salary landed at month end and July's surplus (185, the
-  // old baseline, since the utilities split takes effect from August) is banked.
-  // So savings rise 5,884 -> 6,069, net assets 7,220 -> 7,405. The August energy
-  // bill is received but paid at month end, so it does not touch cash yet; the
-  // reduced August surplus (143) lands at the next monthly update.
+  // Balance sheet - current (as at 11 Aug 2026). Updated on the solar month, not
+  // per episode. Two effects run in parallel and both must be posted:
+  //  - Cash: July's salary landed at month end and July's surplus (185, the old
+  //    baseline; the utilities split takes effect from August) is banked, so
+  //    savings rise 5,884 -> 6,069. The August energy bill is received but paid
+  //    at month end, so it does not touch cash yet.
+  //  - Depreciation: the smartphone amortises 11/month straight-line (213 at
+  //    Jan 2026 close to 136 at Jul, over 7 months). One month accrues, so book
+  //    value 136 -> 125.
+  // Net assets: 7,220 -> 7,394 (cash +185, depreciation -11).
   savings:    6069,
   deposit:    1200,
-  phoneBookValue: 136,
+  phoneBookValue: 125,
 
   // Balance sheet - prior year close (FY2025, Dec 2025)
   prior_savings: 4544,
@@ -152,7 +155,7 @@ BILL_STATE.prior_netAssets   = BILL_STATE.prior_totalAssets;
 //   lifts utilities to 115 and drops the typical surplus 185 -> 160. Consumption
 //   variance +17 is one-off (August actual 143, not baselined). Prior block moves
 //   to Aug 2025 (parents home, 900 in / 405 out / 495 surplus). Balance sheet
-//   Cash updated for July surplus banked (+185). Net assets 7,405.
+//   Cash +185 (July surplus banked), smartphone depreciation -11. Net assets 7,394.
 // EP.27 28 Jul 2026: reallocation at delta zero. 3,000 (liquidated fund proceeds)
 //   to a savings account at 2.10% nominal, 2,884 kept as operating buffer.
 //   Net assets unchanged at 7,220.
