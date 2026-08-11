@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EP.28 / The energy bill came in at 132 against a budget of 90. Whose fault is it? / Double Entry Life</title>
+  <meta name="description" content="August 2026. Bill's energy bill arrives at 132 euro against a budget of 90. A single number, 42 over. A controller does not treat it as one number: 25 is price variance he cannot control, 17 is consumption variance he can. React to the total and you mismanage both." />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root{--teal:#2a7a7a;--teal-light:#e6f2f2;--teal-mid:#c0dede;--red:#c0392b;--green:#1a6b3c;--ink:#1a1a1a;--ink-muted:#5a5a6a;--paper:#fafaf8;--neutral:#6b6b7a;--rule:#e2e2e0;--font-serif:'DM Serif Display',Georgia,serif;--font-mono:'IBM Plex Mono',monospace;--font-sans:'Inter',system-ui,sans-serif;--max-w:1080px;--col:660px;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{font-size:16px;scroll-behavior:smooth;}
+    body{font-family:var(--font-sans);background:var(--paper);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;}
+    a{color:inherit;text-decoration:none;}
+    .nav{border-bottom:1px solid var(--rule);position:sticky;top:0;z-index:100;background:var(--paper);}
+    .nav-inner{max-width:var(--max-w);margin:0 auto;padding:0 2rem;height:56px;display:flex;align-items:center;justify-content:space-between;}
+    .nav-logo{font-family:var(--font-mono);font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--teal);}
+    .nav-logo span{color:var(--ink);}
+    .nav-links{display:flex;gap:2rem;list-style:none;}
+    .nav-links a{font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--neutral);transition:color 0.15s;}
+    .nav-links a:hover{color:var(--teal);}
+    .nav-hamburger{display:none;background:none;border:none;cursor:pointer;padding:4px;flex-direction:column;gap:5px;}
+    .nav-hamburger span{display:block;width:22px;height:1.5px;background:var(--ink);}
+    .nav-mobile{display:none;position:absolute;top:56px;left:0;right:0;background:var(--paper);border-bottom:1px solid var(--rule);padding:1.5rem 2rem;z-index:99;}
+    .nav-mobile.open{display:block;}
+    .nav-mobile ul{list-style:none;display:flex;flex-direction:column;gap:1.25rem;}
+    .nav-mobile a{font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--neutral);}
+    .article-header{border-bottom:1px solid var(--rule);background:white;}
+    .article-header-inner{max-width:var(--max-w);margin:0 auto;padding:3.5rem 2rem 2.5rem;}
+    .article-meta{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+    .article-ep-badge{font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--teal);background:var(--teal-light);padding:0.25rem 0.65rem;border-radius:2px;}
+    .article-fy-badge{font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--neutral);border:1px solid var(--rule);padding:0.25rem 0.65rem;border-radius:2px;}
+    .article-concept{font-family:var(--font-mono);font-size:0.6rem;color:var(--neutral);}
+    .article-date{font-family:var(--font-mono);font-size:0.6rem;color:var(--neutral);margin-left:auto;}
+    .article-title{font-family:var(--font-serif);font-size:clamp(1.85rem,4vw,2.75rem);line-height:1.1;color:var(--ink);max-width:24ch;margin-bottom:1.25rem;}
+    .article-deck{font-size:1rem;color:var(--ink-muted);max-width:54ch;line-height:1.75;}
+    .article-layout{max-width:var(--max-w);margin:0 auto;padding:3.5rem 2rem;display:grid;grid-template-columns:var(--col) 1fr;gap:5rem;align-items:start;}
+    .article-prose{}
+    .article-intro{font-family:var(--font-serif);font-size:1.12rem;line-height:1.75;color:var(--ink);margin-bottom:1.5rem;}
+    .article-section{margin-bottom:2.5rem;}
+    .article-section-label{display:flex;align-items:center;gap:0.65rem;margin-bottom:0.85rem;}
+    .article-section-icon{font-size:1rem;line-height:1;}
+    .article-section-title{font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--neutral);}
+    .article-section p{font-size:1rem;color:var(--ink-muted);line-height:1.8;margin-bottom:1rem;}
+    .article-section p:last-child{margin-bottom:0;}
+    .article-tip{background:var(--teal-light);border-left:3px solid var(--teal);padding:1.1rem 1.4rem;margin-bottom:2.5rem;}
+    .article-tip-label{font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--teal);margin-bottom:0.5rem;}
+    .article-tip p{font-size:0.95rem;color:var(--ink);line-height:1.7;}
+    .article-closing{border-top:1px solid var(--rule);padding-top:1.5rem;margin-top:1rem;}
+    .article-closing p{font-family:var(--font-mono);font-size:0.65rem;color:var(--neutral);line-height:1.7;}
+    .article-bio{border-top:1px solid var(--rule);padding-top:1.25rem;margin-top:1rem;}
+    .article-bio p{font-family:var(--font-mono);font-size:0.65rem;color:var(--neutral);line-height:1.7;}
+    /* BillBoard */
+    .article-sidebar{position:sticky;top:5rem;display:flex;flex-direction:column;gap:1.5rem;}
+    .billboard{width:100%;background:white;border-radius:2.4rem;border:2px solid var(--teal-mid);box-shadow:0 4px 32px rgba(42,122,122,0.1);overflow:hidden;}
+    .bb-topbar{background:var(--teal);padding:0.65rem 1rem;display:flex;justify-content:center;}
+    .bb-topbar-label{font-family:var(--font-mono);font-size:0.5rem;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.8);}
+    .bb-screen{background:#f4f8f8;border:1px solid var(--teal-mid);margin:0.75rem;border-radius:0.85rem;overflow:hidden;display:flex;flex-direction:column;}
+    .bb-tabs{display:flex;border-bottom:1px solid var(--teal-mid);}
+    .bb-tab{flex:1;padding:0.5rem 0;font-family:var(--font-mono);font-size:0.52rem;letter-spacing:0.05em;text-transform:uppercase;text-align:center;color:var(--teal);cursor:pointer;background:none;border:none;border-right:1px solid var(--teal-mid);transition:background 0.15s,color 0.15s;}
+    .bb-tab:last-child{border-right:none;}
+    .bb-tab.active{background:var(--teal);color:white;}
+    .bb-panel{display:none;padding:0.75rem;}
+    .bb-panel.active{display:block;}
+    /* Ledger panel */
+    .bb-ledger-title{font-family:var(--font-mono);font-size:0.52rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--neutral);margin-bottom:0.5rem;}
+    .bb-row{display:flex;justify-content:space-between;padding:0.28rem 0.2rem;font-family:var(--font-mono);font-size:0.6rem;border-bottom:1px solid rgba(0,0,0,0.04);}
+    .bb-row.highlight{background:var(--teal-light);border-radius:2px;margin:0 -0.2rem;padding:0.28rem 0.4rem;}
+    .bb-row-label{color:var(--neutral);}
+    .bb-row-val{color:var(--ink);}
+    .bb-row-val.neg{color:var(--red);}
+    .bb-row-val.pos{color:var(--green);}
+    .bb-row-val.muted{color:var(--neutral);}
+    .bb-row-val.neutral{color:var(--neutral);}
+    .bb-divider{border:none;border-top:1px solid var(--teal-mid);margin:0.3rem 0;}
+    .bb-total{display:flex;justify-content:space-between;padding:0.35rem 0.2rem;font-family:var(--font-mono);font-size:0.65rem;font-weight:600;border-top:2px solid var(--teal);}
+    /* Vitals panel */
+    .bb-vitals{display:flex;flex-direction:column;gap:0.85rem;padding-top:0.25rem;}
+    .bb-vital-header{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:0.52rem;color:var(--neutral);margin-bottom:0.28rem;}
+    .bb-vital-compare{font-size:0.48rem;color:var(--teal);}
+    .bb-vital-track{height:5px;background:var(--rule);border-radius:3px;overflow:hidden;position:relative;}
+    .bb-vital-before{position:absolute;height:100%;background:var(--teal-mid);border-radius:3px;}
+    .bb-vital-after{position:absolute;height:100%;background:var(--teal);border-radius:3px;width:0;transition:width 1s ease 0.3s;}
+    /* Insight panel */
+    .bb-concept{font-family:var(--font-serif);font-size:0.9rem;color:var(--ink);margin-bottom:0.5rem;line-height:1.3;}
+    .bb-insight-body{font-size:0.65rem;color:var(--ink-muted);line-height:1.7;margin-bottom:0.6rem;}
+    .bb-insight-divider{border:none;border-top:1px solid var(--rule);margin:0.5rem 0;}
+    .bb-bio{font-family:var(--font-mono);font-size:0.52rem;color:var(--neutral);line-height:1.65;}
+    /* Bill image in screen */
+    .bb-bill-wrap{display:flex;flex-direction:column;align-items:center;padding:0.5rem 0.75rem 0.25rem;}
+    .bb-bill-img{width:56px;height:56px;object-fit:contain;image-rendering:pixelated;}
+    .bb-bill-name{font-family:var(--font-mono);font-size:0.48rem;color:var(--teal);letter-spacing:0.18em;font-weight:700;margin-top:0.2rem;}
+    /* Physical buttons */
+    .bb-buttons{display:flex;justify-content:center;align-items:center;gap:0.9rem;padding:0.65rem 0 1rem;background:white;border-top:1px solid var(--rule);}
+    .bb-btn{width:28px;height:28px;border-radius:50%;background:#ebebeb;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.55rem;color:var(--neutral);transition:background 0.15s;}
+    .bb-btn:hover{background:#d8d8d8;}
+    .bb-btn.center{width:34px;height:34px;background:var(--teal);color:white;}
+    .bb-btn.center:hover{background:#1f5e5e;}
+    .bb-botbar{background:var(--teal);padding:0.35rem 1rem;display:flex;justify-content:center;}
+    .bb-botbar-label{font-family:var(--font-mono);font-size:0.44rem;color:rgba(255,255,255,0.6);letter-spacing:0.08em;text-transform:uppercase;}
+    .sidebar-fy-link{font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--teal);border-bottom:1px solid var(--teal-mid);padding-bottom:2px;text-align:center;display:block;}
+    /* EP nav */
+    .ep-nav{border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);background:white;}
+    .ep-nav-inner{max-width:var(--max-w);margin:0 auto;display:grid;grid-template-columns:1fr 1fr;}
+    .ep-nav-cell{padding:1.25rem 2rem;display:flex;flex-direction:column;gap:0.3rem;transition:background 0.15s;}
+    .ep-nav-cell:hover{background:var(--teal-light);}
+    .ep-nav-cell.next{text-align:right;border-left:1px solid var(--rule);}
+    .ep-nav-cell.disabled{opacity:0.3;pointer-events:none;}
+    .ep-nav-direction{font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--neutral);}
+    .ep-nav-ep{font-family:var(--font-mono);font-size:0.62rem;color:var(--teal);}
+    .ep-nav-title{font-family:var(--font-serif);font-size:0.95rem;color:var(--ink);line-height:1.2;}
+    /* Footer */
+    .footer{border-top:1px solid var(--rule);}
+    .footer-inner{max-width:var(--max-w);margin:0 auto;padding:3rem 2rem;display:flex;justify-content:space-between;align-items:flex-start;gap:2rem;}
+    .footer-brand-name{font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--teal);margin-bottom:0.5rem;}
+    .footer-brand-desc{font-size:0.8rem;color:var(--neutral);line-height:1.6;}
+    .footer-links{display:flex;gap:2rem;}
+    .footer-col-label{font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--neutral);margin-bottom:1rem;}
+    .footer-col ul{list-style:none;display:flex;flex-direction:column;gap:0.6rem;}
+    .footer-col a{font-size:0.8rem;color:var(--ink-muted);transition:color 0.15s;}
+    .footer-col a:hover{color:var(--teal);}
+    .footer-bottom{border-top:1px solid var(--rule);padding:1.25rem 2rem;max-width:var(--max-w);margin:0 auto;display:flex;justify-content:space-between;align-items:center;}
+    .footer-copy{font-family:var(--font-mono);font-size:0.6rem;color:var(--neutral);}
+    .footer-linkedin{font-family:var(--font-mono);font-size:0.6rem;color:var(--teal);transition:opacity 0.15s;}
+    .footer-linkedin:hover{opacity:0.7;}
+    @media(max-width:860px){.article-layout{grid-template-columns:1fr;gap:3rem;}.article-sidebar{position:static;}.ep-nav-inner{grid-template-columns:1fr;}.ep-nav-cell.next{text-align:left;border-left:none;border-top:1px solid var(--rule);}.footer-inner{flex-direction:column;}.footer-links{flex-direction:column;gap:1.5rem;}.nav-links{display:none;}.nav-hamburger{display:flex;}.nav{position:relative;}}
+    @media(prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important;}}
+  </style>
+</head>
+<body>
+<nav class="nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">Double&nbsp;<span>Entry</span>&nbsp;Life</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="fy2026.html">FY 2026</a></li>
+        <li><a href="fy2025.html">FY 2025</a></li>
+        <li><a href="fy2024.html">FY 2024</a></li>
+        <li><a href="start.html">Meet Bill</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+      <button class="nav-hamburger" aria-label="Open menu" aria-expanded="false" onclick="var o=this.getAttribute('aria-expanded')==='true';this.setAttribute('aria-expanded',String(!o));document.getElementById('nav-mobile').classList.toggle('open',!o);">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-mobile" id="nav-mobile"><ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="fy2026.html">FY 2026</a></li>
+      <li><a href="fy2025.html">FY 2025</a></li>
+      <li><a href="fy2024.html">FY 2024</a></li>
+      <li><a href="start.html">Meet Bill</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul></div>
+  </nav>
+  <header class="article-header"><div class="article-header-inner">
+    <div class="article-meta">
+      <span class="article-ep-badge">EP.28</span>
+      <span class="article-fy-badge">FY 2026</span>
+      <span class="article-concept">Budget Variance Analysis</span>
+      <span class="article-date">11 Aug 2026</span>
+    </div>
+    <h1 class="article-title">The energy bill came in at 132 against a budget of 90. Whose fault is it?</h1>
+    <p class="article-deck">August 2026. Bill's energy bill arrives at 132 euro. His budget said 90. Forty-two over, and the easy move is to treat it as one problem. A controller does the opposite: he splits it into the part to accept and the part to act on.</p>
+  </div></header>
+  <div class="article-layout">
+    <article class="article-prose">
+      <p class="article-intro">The energy bill lands in Bill's inbox on a Tuesday in August: 132 euro for electricity and gas. His monthly budget carries 90 for utilities, a line he set months ago and rarely thinks about. This month it is 42 short.</p>
+      <p class="article-intro">His first instinct is the wrong one: the bill is too high, cut back next month. It treats 42 as a single failure. It is not one number. It is two, and they belong to different people.</p>
+      <div class="article-section"><div class="article-section-label"><span class="article-section-icon">&#128214;</span><span class="article-section-title">What accounting says</span></div>
+        <p>The concept is controllable versus uncontrollable variance. A variance is the gap between what was budgeted and what happened. What makes it useful is not its size but its decomposition: the part driven by prices, which Bill does not set, and the part driven by his own consumption, which he does.</p>
+        <p>Bill splits it. If his consumption this month had matched the budget exactly, the higher market rate alone would have pushed the bill to 115. That portion, 25 euro over budget, is price variance: the same energy-price pressure that pushed the ECB to raise rates in June, not his decision and not his to manage. The remaining 17 euro is consumption variance: he used more than he planned. That one is his. React to the total, 42, and you overreact to the 25 you cannot change while underreacting to the 17 you can.</p>
+        <p>The ledger records the two separately, because they call for different responses. The 25 of price variance is information: it tells Bill the market moved, and the only action it justifies is revising next month's budget line upward so the number stops surprising him. The 17 of consumption variance is action: shorter showers, the heating off when he is out, the things actually within reach. A budget that lumps them together tells him neither.</p>
+      </div>
+      <div class="article-section"><div class="article-section-label"><span class="article-section-icon">&#128269;</span><span class="article-section-title">In real life</span></div>
+        <p>The bill still gets paid in full: 132 leaves the account. Bill raises his utility budget from 90 to 115 to absorb the 25 he cannot fight, which drops his monthly baseline from 185 to 160 for good. The 17 he can fix does not belong in the baseline: it lands on August alone, where the surplus comes in at 143. Next month, if he holds consumption to plan, it returns to 160. The annoyance is smaller and it points somewhere.</p>
+      </div>
+      <div class="article-tip"><p class="article-tip-label">The tip</p><p>When a number comes in over budget, split it before you react. The part driven by prices you do not set is information, and it belongs in a revised budget. The part driven by your own behaviour is action. React to the total and you mismanage both.</p></div>
+      <div class="article-closing"><p>Budget variance, August 2026: energy bill 132 against a budget of 90. Total variance 42, split into price variance 25 (structural, market rate, baselined) and consumption variance 17 (one-off). Monthly baseline surplus 185 to 160; August actual 143. The ledger records both variances separately.</p></div>
+      <div class="article-bio"><p>Bill is 26. Every episode, we read his personal ledger through accounting eyes. / <a href="fy2026.html" style="color:var(--teal)">FY 2026 ledger</a></p></div>
+    </article>
+    <aside class="article-sidebar">
+      <div class="billboard" role="region" aria-label="BillBoard">
+        <div class="bb-topbar"><span class="bb-topbar-label">Dashboard</span></div>
+        <div class="bb-screen">
+          <div class="bb-bill-wrap"><img class="bb-bill-img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANwAAADcCAYAAAAbWs+BAAA1cklEQVR4nO29ebxlV1nn/X3W2nufc+5UdWuuVCoJlZEMhEoIRBIwzEML2CoNgu3QdtuvrU2/2tIqr0NrO7xt64tTY6My+BEDr9MrikZBlEGZMjAFkqKSSqqSVGq8dacz7b3Wet4/1t7nnFsJpKpSBa2s7wfqXs6w9z6H/bvPs55pQSKRSCQSiUQikUgkEolEIpFIJBKJRCKRSCQSiUQikUgkEolEIpFIJBKJRCKRSCQSiUQikUgkEolEIpFIJBKJRCKRSCQSiUQikUgkEolEIpFIJBKJRCKRSCQSiUQikUgkEolEIpFIJBKJRCKRSCQSiUQikUgkEolEIpFIJBKJRCKRSCQSiUQikUgkEolEIpFIJBKJRCKRSCQSp4R8rS/g6xDD/z7fewD0a30RiUQicU743+Uv7dcDAmhRFFeWZfYUonV5gu/f1j+9TrxWAB0/N4l/nPc+3nMoYCB8HgYHxsdMnGuyr/UF/DNHGN/5GeDQ7Aeskf+A1vf8pIya/6H1vS+1ztTWkpjQRP3c6GFh4lQnaac+1+jtAqiAyn8K8JbRtUX8Yw+QOFskwZ1blPGN7ADKikNgPKgDsrW39sn3+VcyPJPGUb/C4/LYx1UdSAb2SH1djsRXhSS4s0tzVxsg5ORXOzGvFhFvRTMXjH/WNv+ia7cGO3SIMTI2OyIjfYmgaC0jQeI/OpbfhA6lsVbxLaiu8VIVECPKwiq63EOsEQSVtvXmk8f0dYf6nSsM5AHUgGmp/HqP3uGJsyRrdxZJgju7TN6cWhm7G81/stGUKuyYcXz7parH+5jMRGcwepOqCiLjIwgCqqigImtXexrlKfWbQy22xuvU5kWiihYG2b+gsu+oJ8+EoJgpq9x1vP0KVfOKYKJYfYAe+vvAocf5PImzQBLc2SUjWoYMcDk4NerQ4IyQVQg+qFnoI4tDKCwissaINXZl0nDRiK3R3MRDNM8oqGq9EhSpTZOAqhQGuk5ZdZDXonRBCBriek2bVWDQHJdXkBOttBLXdGsiLokzJ0UpnzwC2G/8RvjoR9v/bwhyfWbwquhzzmf2e64MW5ZKNDNRBbkouYlxx0e
