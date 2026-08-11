@@ -203,15 +203,15 @@
           </div>
           <div class="about-sidebar-stat-row">
             <span class="about-sidebar-stat-label">Net monthly income</span>
-            <span class="about-sidebar-stat-val">1,400</span>
+            <span class="about-sidebar-stat-val" id="bs-glance-income">1,400</span>
           </div>
           <div class="about-sidebar-stat-row">
             <span class="about-sidebar-stat-label">Monthly surplus</span>
-            <span class="about-sidebar-stat-val">185</span>
+            <span class="about-sidebar-stat-val" id="bs-glance-surplus">160</span>
           </div>
           <div class="about-sidebar-stat-row">
             <span class="about-sidebar-stat-label">Net worth</span>
-            <span class="about-sidebar-stat-val" style="color:#1a6b3c">+7,220</span>
+            <span class="about-sidebar-stat-val" style="color:#1a6b3c" id="bs-glance-networth">+7,405</span>
           </div>
         </div>
       </div>
@@ -287,6 +287,18 @@
       var totalEl = document.getElementById('stat-total-episodes');
       if (totalEl && typeof BILL_STATE !== 'undefined') {
         totalEl.textContent = BILL_STATE.totalEpisodes;
+      }
+      // Bill at a glance: surplus, net worth and income from BILL_STATE, so the
+      // card follows the latest entry and never drifts.
+      if (typeof BILL_STATE !== 'undefined') {
+        function fmtPlain(n){ var sg=n<0?'-':''; return sg+Math.abs(Math.round(n)).toLocaleString('en-US'); }
+        function fmtSigned(n){ var sg=n<0?'-':'+'; return sg+Math.abs(Math.round(n)).toLocaleString('en-US'); }
+        var gS=document.getElementById('bs-glance-surplus');
+        var gN=document.getElementById('bs-glance-networth');
+        var gI=document.getElementById('bs-glance-income');
+        if(gS) gS.textContent = fmtPlain(BILL_STATE.surplus);
+        if(gN) gN.textContent = fmtSigned(BILL_STATE.netAssets);
+        if(gI) gI.textContent = fmtPlain(BILL_STATE.income);
       }
 
       // Bill's age, recalculated from his birth month/year on every load
