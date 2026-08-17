@@ -61,6 +61,87 @@ function rateLimited(ip) {
   return rec.count > MAX_CALLS;
 }
 
+// ---- Deterministic finance arithmetic ----
+//
+// A language model cannot compute an annuity factor reliably, and a second model
+// asked to check the first anchors on the first one's figure instead of
+// recomputing. Both were observed: the preparer produced a factor of 34.3851
+// where the correct value is 35.1860, and the reviewer "independently
+// recomputed" 34.3856, so a 360 unit error passed while a 0.20 rounding
+// difference was flagged.
+//
+// The model therefore no longer computes. It declares what it needs computed,
+// this code computes it, and the model builds the entries from the figures
+// returned. The class of error is removed rather than corrected.
+
+function monthlyRate(annualRate, convention) {
+  if (convention === "simple") return annualRate / 12;
+  return Math.pow(1 + annualRate, 1 / 12) - 1; // compounded, the default
+}
+
+function annuityFactor(periods, ratePerPeriod, timing) {
+  if (ratePerPeriod === 0) return periods;
+  const factor = (1 - Math.pow(1 + ratePerPeriod, -periods)) / ratePerPeriod;
+  return timing === "advance" ? factor * (1 + ratePerPeriod) : factor;
+}
+
+const round2 = (x) => Math.round(x * 100) / 100;
+
+function computeLeaseMeasurement(req) {
+  const payment = Number(req.payment);
+  const periods = Math.round(Number(req.periods));
+  const annualRate = Number(req.annualRate);
+  const timing = req.timing === "advance" ? "advance" : "arrears";
+  const convention = req.rateConvention === "simple" ? "simple" : "compounded";
+  const optionAmount = req.optionAmount ? Number(req.optionAmount) : 0;
+  const includeOption = req.includeOption === true && optionAmount > 0;
+
+  if (!isFinite(payment) || payment <= 0) return { error: "invalid payment" };
+  if (!isFinite(periods) || periods <= 0 || periods > 600) return { error: "invalid periods" };
+  if (!isFinite(annualRate) || annualRate < 0 || annualRate > 1) {
+    return { error: "invalid annual rate: express it as a decimal, 0.015 for 1.5 percent" };
+  }
+
+  const i = monthlyRate(annualRate, convention);
+  const factor = annuityFactor(periods, i, timing);
+  const pvPayments = payment * factor;
+  const pvOption = includeOption ? optionAmount / Math.pow(1 + i, periods) : 0;
+  const liability = pvPayments + pvOption;
+
+  // With payments in advance the first payment falls at commencement, so
+  // interest accrues on the balance net of it.
+  const balanceForInterest = timing === "advance" ? liability - payment : liability;
+  const firstInterest = balanceForInterest * i;
+  const firstPrincipal = timing === "advance" ? payment : payment - firstInterest;
+
+  return {
+    ok: true,
+    monthlyRate: i,
+    annuityFactor: factor,
+    presentValueOfPayments: round2(pvPayments),
+    presentValueOfOption: round2(pvOption),
+    liabilityAtCommencement: round2(liability),
+    firstPeriodInterest: round2(firstInterest),
+    firstPeriodPrincipal: round2(firstPrincipal),
+    liabilityAfterFirstPeriod: round2(
+      timing === "advance" ? liability - payment + firstInterest : liability - firstPrincipal
+    ),
+    straightLineDepreciationPerPeriod: round2(liability / periods),
+    workings:
+      `Monthly rate from ${(annualRate * 100).toFixed(3)} percent per annum, ` +
+      `${convention === "simple" ? "simple division by 12" : "compounded as (1+r)^(1/12)-1"}: ` +
+      `${i.toFixed(9)}. Annuity factor for ${periods} periods ` +
+      `${timing === "advance" ? "in advance" : "in arrears"}: ${factor.toFixed(6)}. ` +
+      `Present value of payments ${round2(pvPayments).toFixed(2)}` +
+      (includeOption
+        ? `, present value of the ${optionAmount} option at period ${periods} ${round2(pvOption).toFixed(2)}`
+        : "") +
+      `. Liability at commencement ${round2(liability).toFixed(2)}. ` +
+      `First period interest ${round2(firstInterest).toFixed(2)}, principal ${round2(firstPrincipal).toFixed(2)}. ` +
+      `Computed in code, not by the model.`,
+  };
+}
+
 // ---- Reporting frameworks ----
 // Three options, never four: IAS are not a separate body, they are the standards
 // issued up to 2001 and together with the IFRSs they form the IFRS Standards.
@@ -215,6 +296,10 @@ Respond ONLY with a single minified JSON object, no markdown, no fences, English
 When you can produce the record:
 {"status":"entry","framework":string,"reading":string,"concept":{"name":string,"reference":string or null,"ruleId":string,"definition":string},"entries":[{"title":string,"lines":[{"account":string,"debit":number or null,"credit":number or null}]}],"assumptions":[string],"policyRegister":[{"policy":string,"value":string,"source":"entity"|"management"|"framework"|"undeclared"}],"impactStatement":string,"impact":[{"item":string,"prior":number or null,"current":number or null,"change":number or null}],"closing":string}
 
+When the treatment requires a present value, an annuity or an unwind schedule, do not compute it. Ask the code to compute it and stop:
+{"status":"calculate","reading":string,"request":{"kind":"lease","payment":number,"periods":number,"annualRate":number,"timing":"arrears"|"advance","rateConvention":"compounded"|"simple","optionAmount":number or null,"includeOption":boolean}}
+The rate is a decimal: 0.015 for 1.5 percent. "periods" is the number of payment periods, months for a monthly lease. "includeOption" is true only when management judged exercise reasonably certain. You will be called again with the computed figures and will then produce the entry using them unchanged.
+
 When something essential is missing:
 {"status":"question","reading":string,"message":string,"onFile":[string],"fields":[{"key":string,"label":string,"hint":string,"scope":"transaction"|"entity"|"estimate","options":[{"label":string,"consequence":string,"common":boolean}] or null}]}
 
@@ -227,7 +312,7 @@ Rules.
 6. TRACEABILITY. Apply the card below; set concept.ruleId to its ID. Covered: ${COVERED_DOMAINS}. If the transaction belongs to an uncovered domain (${PLANNED_DOMAINS}), do not force the nearest card: set ruleId "none", say so in the reading, and record only what general recognition principles support.
 7. Once you have asked for data you are committed: when it arrives, produce the entry.
 8. DATES. Today is given above; judge past and future against it. If a date the treatment depends on is missing, ask for it rather than choosing one; if you adopt one to illustrate, say so in the assumptions. A genuinely future transaction is produced as a prospective simulation, declared in the reading.
-9. DISCOUNTING PRECISION. Carry full precision and round only the final figure. Never round an annuity factor or monthly rate before multiplying: on a 36 month lease a three-decimal factor moves the present value by tens of units. Never assert a rounding difference is immaterial unless you computed it. State which convention converts an annual rate to a monthly one, simple division or compounded.
+9. YOU DO NOT DO ARITHMETIC OF THIS KIND. Never compute a present value, an annuity factor, a discount rate conversion, an interest and principal split or a depreciation charge yourself. You are demonstrably unreliable at it: a factor you compute can be wrong by two percent and look plausible. Return status "calculate" with the request instead, and wait. When the figures come back, use them EXACTLY as given, to the cent, in the entries, the impact table and the closing line, and reproduce the supplied "workings" text as one of your assumptions without rewriting it. Never adjust, re-derive or round a figure the code returned. Simple addition and subtraction of figures already given to you is fine; anything involving a rate, a power or a series is not.
 10. ENTRIES MUST NOT OVERLAP. Each entry covers a distinct period or event. Never show a single period and then an aggregate including it. Aggregates belong in the impact table, not in journal entries.
 11. ASSUMPTIONS ARE CONCLUSIONS, NOT WORKING. Each assumption states what you assumed and why, as a finished sentence. Never show deliberation: no "wait", no "recalculated", no corrected figure followed by a better one, no alternative computations. If you change your mind while computing, only the final position appears. A reader must never see the model thinking.
 12. FIGURES MUST AGREE ACROSS BLOCKS. The same quantity carries one value everywhere: a liability of X in an entry is X in the impact table, in the closing line and in the assumptions. Before responding, check the entries against the impact table figure by figure. A disagreement between blocks is a defect, not a rounding difference.
@@ -251,8 +336,7 @@ ${estimatesText(estimates)}
 
 You receive the preparer's restatement, assumptions, policy register and output. Review on three fronts.
 
-ARITHMETIC the automated checks cannot see. Debits equal credits and impact deltas are already verified, so do not re-flag those. Look at present value and discounting, depreciation schedules, principal and interest splits.
-RECOMPUTE, DO NOT ECHO. Work every figure out yourself before raising it, and state your own result: "recomputed X, the preparer shows Y". Never repeat a rate, factor or total the preparer asserted and treat it as verified. A finding without an independent figure is worthless. If your recomputation agrees, raise nothing.
+FIGURES ARE NOT YOURS TO CHECK. Present values, annuity factors, rate conversions, interest and principal splits and depreciation charges are computed in code before the entry is written, not by the preparer. Do not recompute them and do not raise findings about them: you are no better at that arithmetic than the preparer was, and in testing you reproduced its error while flagging a trivial rounding difference. What you must check instead is whether the figures the code returned were used unchanged: if a number in the entries, the impact table or the closing line differs from the computed figure, or if the same quantity carries two values in different blocks, that is a finding. Whether the calculation was the right one to request, the correct term, timing and inclusion of an option, is accounting merit and belongs below.
 
 ACCOUNTING MERIT. Correct card, correct ruleId, and the rule of THIS framework rather than another. Cross-framework contamination is serious: the low-value lease exemption outside IFRS, or a leased asset on the balance sheet under OIC.
 BEFORE MARKING "error", find the sentence in the card that the treatment contradicts. If there is none it is at most a "warning", and if the card supports the preparer raise nothing. A false error destroys trust in every other finding. Note in particular: under US GAAP an operating lease recognises a single straight-line cost while the liability still accretes and the right-of-use asset absorbs the balance, so an accretion figure and a right-of-use reduction in one entry is correct operating-lease mechanics, not finance-lease mechanics.
@@ -296,6 +380,24 @@ When two cards could plausibly govern it, return both, most likely first, with "
 When the transaction is a follow-up answer to a question, route on the original transaction it refers to.
 When the transaction belongs to a domain not yet covered, return {"ids":[],"confident":false}. Do not route it to the nearest resembling card: forcing the wrong card produces a wrong treatment.
 Prefer returning two cards, or none, over guessing one.`;
+
+
+function textOf(content) {
+  return (content || [])
+    .filter((b) => b.type === "text")
+    .map((b) => b.text)
+    .join("");
+}
+
+// Returns the calculation request if the model asked for one, otherwise null.
+function parseCalculationRequest(content) {
+  try {
+    const raw = textOf(content).replace(/```json|```/g, "").trim();
+    const parsed = JSON.parse(raw);
+    if (parsed && parsed.status === "calculate" && parsed.request) return parsed.request;
+  } catch (_) {}
+  return null;
+}
 
 // ---- Routing stage ----
 
@@ -463,7 +565,7 @@ export default async function handler(req, res) {
       }),
     });
 
-    const data = await response.json();
+    let data = await response.json();
     if (!response.ok) {
       console.error("Upstream error", response.status, data?.error?.type, data?.error?.message);
       return res.status(502).json({
@@ -472,6 +574,65 @@ export default async function handler(req, res) {
       });
     }
     logUsage(role, data.usage);
+
+    // If the preparer asked for a calculation, run it here and call the model
+    // back with the figures. This stays inside the one request the client made:
+    // the arithmetic round trip is invisible from outside, and the model never
+    // gets the chance to compute the figure itself.
+    if (role === "prepare") {
+      const asked = parseCalculationRequest(data.content);
+      if (asked) {
+        const computed = computeLeaseMeasurement(asked);
+        if (computed.error) {
+          console.error("Calculation rejected", computed.error, JSON.stringify(asked));
+        }
+        console.log(
+          `LEDGER_CALC kind=${asked.kind || "lease"} ` +
+            (computed.ok
+              ? `liability=${computed.liabilityAtCommencement} factor=${computed.annuityFactor.toFixed(6)}`
+              : `error=${computed.error}`)
+        );
+        const followUp = computed.ok
+          ? "Computed figures, to be used exactly as given:\n" +
+            JSON.stringify(computed) +
+            "\nNow produce the entry with status \"entry\". Use these figures unchanged, " +
+            "and include the \"workings\" text as one of your assumptions, verbatim."
+          : "The calculation request was rejected: " +
+            computed.error +
+            ". Correct the request and return status \"calculate\" again, or if the fault " +
+            "cannot be corrected return status \"question\" asking the user for the figure.";
+
+        const second = await fetch("https://api.anthropic.com/v1/messages", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": process.env.ANTHROPIC_API_KEY,
+            "anthropic-version": "2023-06-01",
+          },
+          body: JSON.stringify({
+            model: MODEL,
+            max_tokens: MAX_TOKENS.prepare,
+            system,
+            messages: [
+              ...clean,
+              { role: "assistant", content: textOf(data.content) },
+              { role: "user", content: followUp },
+            ],
+          }),
+        });
+        const secondData = await second.json();
+        if (!second.ok) {
+          console.error("Upstream error on calc follow-up", second.status, secondData?.error?.type);
+          return res.status(502).json({
+            error: "Upstream error",
+            detail: String(secondData?.error?.type || second.status),
+          });
+        }
+        logUsage("prepare-post-calc", secondData.usage);
+        data = secondData;
+      }
+    }
+
     return res.status(200).json({ content: data.content });
   } catch (error) {
     console.error("Handler error", error?.message);
