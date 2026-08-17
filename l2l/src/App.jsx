@@ -85,6 +85,15 @@ const PROFILE_LABELS = {
 function normaliseResult(parsed) {
   if (!parsed) return parsed;
 
+  // The server resolves a "calculate" response internally by running the
+  // arithmetic and calling the model back, so one should never reach here. If it
+  // does, fail loudly rather than rendering an empty screen.
+  if (parsed.status === "calculate") {
+    throw new Error(
+      "ENGINE:The engine asked for a calculation that was not carried out. Post the transaction again."
+    );
+  }
+
   // Entry results: the engine returns impact as a flat array, the view renders
   // a statement plus rows.
   if (parsed.status === "entry" && Array.isArray(parsed.impact)) {
@@ -141,6 +150,7 @@ function Eyebrow({ children }) {
 
 export default function LanguageToLedger() {
   const [input, setInput] = useState("");
+  const [lastPosted, setLastPosted] = useState("");
   const [framework, setFramework] = useState("IFRS");
   const [profile, setProfile] = useState({});
   // Management estimates persist across a change of framework: they belong to the
@@ -153,6 +163,7 @@ export default function LanguageToLedger() {
   const [fields, setFields] = useState({});
   const [review, setReview] = useState(null);
   const [reviewing, setReviewing] = useState(false);
+  const [frameworkChanged, setFrameworkChanged] = useState(false);
   const outRef = useRef(null);
 
   function submitFields(missing) {
@@ -232,6 +243,35 @@ export default function LanguageToLedger() {
         }
       }
     });
+
+    // Cross-block consistency. Each entry balancing on its own says nothing about
+    // whether the impact table describes the same transaction: a figure can be
+    // right inside an entry and contradict the impact row for the same account.
+    // Match on account and item names and compare the magnitudes.
+    const norm = (x) =>
+      String(x || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+    const posted = new Map();
+    parsed.entries.forEach((en) => {
+      (en.lines || []).forEach((l) => {
+        const k = norm(l.account);
+        if (!k) return;
+        const amt = (typeof l.debit === "number" ? l.debit : 0) + (typeof l.credit === "number" ? l.credit : 0);
+        posted.set(k, Math.max(posted.get(k) || 0, Math.abs(amt)));
+      });
+    });
+    ((parsed.impact && parsed.impact.rows) || []).forEach((r) => {
+      const k = norm(r.item);
+      if (!k || !posted.has(k)) return;
+      const inEntries = posted.get(k);
+      const inImpact = Math.abs(typeof r.change === "number" ? r.change : r.current);
+      if (!isFinite(inImpact) || inImpact === 0 || inEntries === 0) return;
+      // Tolerate a rounding unit, flag anything larger.
+      if (Math.abs(inImpact - inEntries) > 1.01) {
+        errors.push(
+          `"${r.item}" is ${inEntries.toFixed(2)} in the entries but ${inImpact.toFixed(2)} in the impact table. The same quantity must carry one value in both.`
+        );
+      }
+    });
     return errors;
   }
 
@@ -273,7 +313,7 @@ export default function LanguageToLedger() {
     if (!trimmed || (loading && attempt === 0)) return;
     setLoading(true);
     setError(null);
-    if (attempt === 0) { setReview(null); setReviewing(false); }
+    if (attempt === 0) { setReview(null); setReviewing(false); setFrameworkChanged(false); }
     const msgs = [...(baseMsgs !== null ? baseMsgs : history), { role: "user", content: trimmed }];
     try {
       const response = await fetch(ENDPOINT, {
@@ -344,6 +384,7 @@ export default function LanguageToLedger() {
       } else {
         setHistory([]);
       }
+      setLastPosted(trimmed);
       setInput("");
       if (parsed.status === "entry") {
         runReview(parsed);
@@ -443,7 +484,17 @@ export default function LanguageToLedger() {
             {FRAMEWORKS.map((f) => (
               <button
                 key={f.id}
-                onClick={() => { setFramework(f.id); reset(); }}
+                onClick={() => {
+                  if (f.id === framework) return;
+                  setFramework(f.id);
+                  // Clear the previous entry, which belonged to the old framework,
+                  // but keep what the user typed so the same transaction can be
+                  // re-posted on identical inputs.
+                  const carried = input || lastPosted;
+                  reset();
+                  setInput(carried);
+                  setFrameworkChanged(true);
+                }}
                 aria-pressed={framework === f.id}
                 style={{
                   padding: "9px 18px", border: "none",
@@ -483,6 +534,14 @@ export default function LanguageToLedger() {
               ))}
               <p style={{ fontFamily: F.mono, fontSize: 10, color: C.neutral, marginTop: 10 }}>
                 Accounting policies you declared. Reused for every transaction in this session, never stored.
+              </p>
+            </div>
+          )}
+
+          {frameworkChanged && (
+            <div style={{ marginTop: 12, border: `1px solid ${C.tealMid}`, background: C.tealLight, padding: "12px 16px" }}>
+              <p style={{ fontSize: 13.5, color: C.ink, lineHeight: 1.7 }}>
+                Framework changed. The previous entry belonged to the framework you left, so it has been cleared. Your transaction text and the estimates on file have been kept: post it again to see how it is recorded under {FRAMEWORKS.find((f) => f.id === framework)?.label}.
               </p>
             </div>
           )}
