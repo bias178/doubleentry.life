@@ -270,6 +270,92 @@ function today() {
   return new Date().toISOString().slice(0, 10);
 }
 
+// ---- Deterministic checks (level 1) ----
+//
+// These live here, not in the browser, for three reasons: a failure has to appear
+// in the server logs, a retry should resolve where the data already is rather
+// than crossing the network again, and a control that runs in the client is a
+// control the client could switch off. The whole point of this layer is that it
+// does not depend on anyone's good will.
+
+function normaliseAccount(x) {
+  return String(x || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+function runDeterministicChecks(parsed) {
+  const errors = [];
+  if (!parsed || parsed.status !== "entry") return errors;
+  if (!Array.isArray(parsed.entries) || parsed.entries.length === 0) {
+    errors.push("Status is entry but no journal entries were produced.");
+    return errors;
+  }
+
+  // Each entry balances, and every amount is a valid non-negative number.
+  parsed.entries.forEach((en, i) => {
+    let d = 0;
+    let c = 0;
+    (en.lines || []).forEach((l) => {
+      if (l.debit !== null && l.debit !== undefined) {
+        if (typeof l.debit !== "number" || !isFinite(l.debit) || l.debit < 0) {
+          errors.push(`Entry ${i + 1}: invalid debit on "${l.account}".`);
+        } else d += l.debit;
+      }
+      if (l.credit !== null && l.credit !== undefined) {
+        if (typeof l.credit !== "number" || !isFinite(l.credit) || l.credit < 0) {
+          errors.push(`Entry ${i + 1}: invalid credit on "${l.account}".`);
+        } else c += l.credit;
+      }
+    });
+    if (Math.abs(d - c) > 0.005) {
+      errors.push(
+        `Entry ${i + 1} ("${en.title}") does not balance: debits ${d.toFixed(2)}, credits ${c.toFixed(2)}.`
+      );
+    }
+  });
+
+  // Impact rows are internally consistent.
+  const rows = Array.isArray(parsed.impact) ? parsed.impact : (parsed.impact && parsed.impact.rows) || [];
+  rows.forEach((r) => {
+    if (
+      r.prior !== null && r.prior !== undefined &&
+      r.current !== null && r.current !== undefined &&
+      typeof r.change === "number"
+    ) {
+      if (Math.abs(r.change - (r.current - r.prior)) > 0.005) {
+        errors.push(
+          `Impact row "${r.item}": change ${r.change} does not equal current minus prior (${(r.current - r.prior).toFixed(2)}).`
+        );
+      }
+    }
+  });
+
+  // Cross-block consistency: a figure can be right inside an entry and still
+  // contradict the impact row for the same account.
+  const posted = new Map();
+  parsed.entries.forEach((en) => {
+    (en.lines || []).forEach((l) => {
+      const k = normaliseAccount(l.account);
+      if (!k) return;
+      const amt = (typeof l.debit === "number" ? l.debit : 0) + (typeof l.credit === "number" ? l.credit : 0);
+      posted.set(k, Math.max(posted.get(k) || 0, Math.abs(amt)));
+    });
+  });
+  rows.forEach((r) => {
+    const k = normaliseAccount(r.item);
+    if (!k || !posted.has(k)) return;
+    const inEntries = posted.get(k);
+    const inImpact = Math.abs(typeof r.change === "number" ? r.change : r.current);
+    if (!isFinite(inImpact) || inImpact === 0 || inEntries === 0) return;
+    if (Math.abs(inImpact - inEntries) > 1.01) {
+      errors.push(
+        `"${r.item}" is ${inEntries.toFixed(2)} in the entries but ${inImpact.toFixed(2)} in the impact table. The same quantity must carry one value in both.`
+      );
+    }
+  });
+
+  return errors;
+}
+
 // ---- Prompts ----
 
 const SYSTEM_PROMPT = (matrix, framework, profile, estimates) => `You are Language to Ledger, an educational demonstration by Double Entry Life. You translate a transaction, described in natural language, into a rigorous double-entry accounting record under a stated reporting framework.
@@ -381,6 +467,26 @@ When the transaction is a follow-up answer to a question, route on the original 
 When the transaction belongs to a domain not yet covered, return {"ids":[],"confident":false}. Do not route it to the nearest resembling card: forcing the wrong card produces a wrong treatment.
 Prefer returning two cards, or none, over guessing one.`;
 
+
+function callModel(system, messages, maxTokens) {
+  return fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": process.env.ANTHROPIC_API_KEY,
+      "anthropic-version": "2023-06-01",
+    },
+    body: JSON.stringify({ model: MODEL, max_tokens: maxTokens, system, messages }),
+  });
+}
+
+function parseJsonOutput(content) {
+  try {
+    return JSON.parse(textOf(content).replace(/```json|```/g, "").trim());
+  } catch (_) {
+    return null;
+  }
+}
 
 function textOf(content) {
   return (content || [])
@@ -550,20 +656,7 @@ export default async function handler(req, res) {
         ? SYSTEM_PROMPT(matrixText, framework, safeProfile, safeEstimates)
         : REVIEWER_PROMPT(matrixText, framework, safeProfile, safeEstimates);
 
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": process.env.ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model: MODEL,
-        max_tokens: MAX_TOKENS[role],
-        system,
-        messages: clean,
-      }),
-    });
+    const response = await callModel(system, clean, MAX_TOKENS[role]);
 
     let data = await response.json();
     if (!response.ok) {
@@ -602,24 +695,15 @@ export default async function handler(req, res) {
             ". Correct the request and return status \"calculate\" again, or if the fault " +
             "cannot be corrected return status \"question\" asking the user for the figure.";
 
-        const second = await fetch("https://api.anthropic.com/v1/messages", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-api-key": process.env.ANTHROPIC_API_KEY,
-            "anthropic-version": "2023-06-01",
-          },
-          body: JSON.stringify({
-            model: MODEL,
-            max_tokens: MAX_TOKENS.prepare,
-            system,
-            messages: [
-              ...clean,
-              { role: "assistant", content: textOf(data.content) },
-              { role: "user", content: followUp },
-            ],
-          }),
-        });
+        const second = await callModel(
+          system,
+          [
+            ...clean,
+            { role: "assistant", content: textOf(data.content) },
+            { role: "user", content: followUp },
+          ],
+          MAX_TOKENS.prepare
+        );
         const secondData = await second.json();
         if (!second.ok) {
           console.error("Upstream error on calc follow-up", second.status, secondData?.error?.type);
@@ -630,6 +714,47 @@ export default async function handler(req, res) {
         }
         logUsage("prepare-post-calc", secondData.usage);
         data = secondData;
+      }
+    }
+
+
+    // Deterministic checks and, if needed, the correction cycle. Both happen
+    // here so a retry is visible in the logs and costs one server-side call
+    // rather than a full round trip through the browser.
+    if (role === "prepare") {
+      let history = [...clean, { role: "assistant", content: textOf(data.content) }];
+      for (let attempt = 1; attempt <= 2; attempt++) {
+        const out = parseJsonOutput(data.content);
+        let failures;
+        if (!out) {
+          failures = ["The output was not valid JSON."];
+          console.warn(`LEDGER_CHECK_FAILED attempt=${attempt} reason=unparseable`);
+        } else {
+          failures = runDeterministicChecks(out);
+          if (failures.length === 0) break;
+          console.warn(`LEDGER_CHECK_FAILED attempt=${attempt} ${JSON.stringify(failures)}`);
+        }
+        history = [
+          ...history,
+          {
+            role: "user",
+            content:
+              "The output failed these deterministic checks:\n" +
+              failures.map((f) => "- " + f).join("\n") +
+              "\nReturn the same entry corrected. Change only what the checks require. " +
+              "Do not re-derive figures that were computed for you, and use the same " +
+              "account labels in the entries and in the impact table.",
+          },
+        ];
+        const retry = await callModel(system, history, MAX_TOKENS.prepare);
+        const retryData = await retry.json();
+        if (!retry.ok) {
+          console.error("Upstream error on retry", retry.status, retryData?.error?.type);
+          break;
+        }
+        logUsage(`prepare-retry-${attempt}`, retryData.usage);
+        data = retryData;
+        history = [...history, { role: "assistant", content: textOf(data.content) }];
       }
     }
 
