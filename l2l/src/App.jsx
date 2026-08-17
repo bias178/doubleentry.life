@@ -368,6 +368,11 @@ export default function LanguageToLedger() {
       parsed = normaliseResult(parsed);
       const checkErrors = validateResult(parsed);
       if (checkErrors.length > 0) {
+        // A retry costs a full model call, so never let one happen silently:
+        // this line tells us which check fired and why.
+        console.warn("LEDGER_CHECK_FAILED attempt=" + attempt + " " + JSON.stringify(checkErrors));
+      }
+      if (checkErrors.length > 0) {
         if (attempt < 2) {
           return post(
             "Deterministic checks rejected your output. Fix exactly these errors and return the corrected minified JSON, changing nothing else: " + checkErrors.join(" "),
@@ -882,6 +887,8 @@ export default function LanguageToLedger() {
                               ? "Declared by entity"
                               : r.source === "management"
                               ? "Supplied by management"
+                              : r.source === "contract"
+                              ? "Stated in the contract"
                               : r.source === "framework"
                               ? "Required by framework"
                               : "Not declared"}
