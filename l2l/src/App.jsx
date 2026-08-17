@@ -366,21 +366,16 @@ export default function LanguageToLedger() {
         );
       }
       parsed = normaliseResult(parsed);
+      // The deterministic checks and the correction cycle now run on the server,
+      // where a failure is logged and a retry does not cross the network. What
+      // arrives here has already passed them, or has exhausted its two attempts.
       const checkErrors = validateResult(parsed);
       if (checkErrors.length > 0) {
-        // A retry costs a full model call, so never let one happen silently:
-        // this line tells us which check fired and why.
-        console.warn("LEDGER_CHECK_FAILED attempt=" + attempt + " " + JSON.stringify(checkErrors));
-      }
-      if (checkErrors.length > 0) {
-        if (attempt < 2) {
-          return post(
-            "Deterministic checks rejected your output. Fix exactly these errors and return the corrected minified JSON, changing nothing else: " + checkErrors.join(" "),
-            attempt + 1,
-            [...msgs, { role: "assistant", content: clean }]
-          );
-        }
-        setError("The engine produced an entry that failed the accounting checks twice: " + checkErrors.join(" ") + " Nothing unbalanced is ever shown. Post the transaction again.");
+        setError(
+          "The engine produced an entry that failed the accounting checks: " +
+            checkErrors.join(" ") +
+            " Nothing unbalanced is ever shown. Post the transaction again."
+        );
         return;
       }
       setResult(parsed);
