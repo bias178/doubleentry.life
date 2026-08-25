@@ -116,13 +116,15 @@ var BILL_STATE = {
   prior_intangible: 0,
   prior_phoneBookValue: 213,
 
-  // Vitals (EP.28). Cash edges down: the bill takes 42 more than planned this
-  // month. Equity flat. Stress up: an over-budget surprise. Future up: naming
-  // the controllable half gives Bill a target he can act on.
-  cash:   50,
+  // Vitals (EP.29). Cash down 50 -> 45: 1,500 of liquidity committed to the
+  // certification. Equity flat at 58: net assets fall only 62.50, the first
+  // amortisation. Stress flat at 60: no new recurring fixed commitment, the
+  // 1,500 is a one-off outlay. Future up 60 -> 62: the certification is an
+  // investment in future earning capacity.
+  cash:   45,
   equity: 58,
   stress: 60,
-  future: 60,
+  future: 62,
 
   // Label for the homepage vitals panel. The comparison is always the close
   // of the last completed fiscal year against the current state. Change this

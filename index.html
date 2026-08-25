@@ -275,7 +275,7 @@
             <div class="tama-vital-row">
               <span class="tama-vital-label">CASH</span>
               <div class="tama-vital-track"><div class="tama-vital-fill" id="bar-cash" style="background:#1a6b3c"></div></div>
-              <span class="tama-vital-val" id="val-cash" style="color:#1a6b3c">52%</span>
+              <span class="tama-vital-val" id="val-cash" style="color:#1a6b3c">45%</span>
             </div>
             <div class="tama-vital-row">
               <span class="tama-vital-label">EQUITY</span>
@@ -290,7 +290,7 @@
             <div class="tama-vital-row">
               <span class="tama-vital-label">FUTURE</span>
               <div class="tama-vital-track"><div class="tama-vital-fill" id="bar-future" style="background:#2a7a7a"></div></div>
-              <span class="tama-vital-val" id="val-future" style="color:#2a7a7a">55%</span>
+              <span class="tama-vital-val" id="val-future" style="color:#2a7a7a">62%</span>
             </div>
           </div>
         </div>
@@ -469,7 +469,7 @@
       <div class="bill-table">
         <div class="bill-table-header">
           <span class="bill-table-header-label">Bill / Current state / <span id="bs-ep-2">EP.29</span></span>
-          <span class="bill-table-header-label" style="color:rgba(255,255,255,0.4)">Jul 2026</span>
+          <span class="bill-table-header-label" style="color:rgba(255,255,255,0.4)" id="bs-x-period">Aug 2026</span>
         </div>
         <div class="bill-table-row section-head"><span class="bill-table-label section">Income</span><span class="bill-table-val"></span></div>
         <div class="bill-table-row"><span class="bill-table-label">Net monthly salary</span><span class="bill-table-val pos" id="bs-x-income">1,400</span></div>
@@ -705,6 +705,7 @@
     setText('bs-x-food', fmtPlain(s.food));
     setText('bs-x-other', fmtPlain(s.transport + s.phone + s.subs + s.social + s.misc));
     setText('bs-x-surplus', fmtPlain(s.surplus));
+    setText('bs-x-period', (s.date||'').replace(/^\d+\s+/,''));
     setText('bs-x-savings', fmtPlain(s.savings));
     setText('bs-x-deposit', fmtPlain(s.deposit));
     setText('bs-x-phone-nbv', fmtPlain(s.phoneBookValue));
