@@ -534,28 +534,16 @@
 
   <script>
   (function(){
-    // Animate vitals bars on load
-    var vitals = {cash:52, equity:58, stress:60, future:55};
+    // Vitals bars animate from their data-target, which the BILL_STATE script
+    // sets from bill-state.js. No hardcoded values here: they used to override
+    // the real ones on a timer. The before/after panel is filled by the
+    // BILL_STATE script too (prior_ vs current).
     setTimeout(function(){
-      Object.keys(vitals).forEach(function(k){
-        document.getElementById('bar-'+k).style.width = vitals[k]+'%';
+      ['cash','equity','stress','future'].forEach(function(k){
+        var bar=document.getElementById('bar-'+k);
+        if(bar) bar.style.width = (bar.getAttribute('data-target')||0)+'%';
       });
     }, 300);
-
-    // Vitals before/after (for panel)
-    var before = {cash:65, equity:70, stress:25, future:68};
-    setTimeout(function(){
-      Object.keys(vitals).forEach(function(k){
-        var vb = document.getElementById('vb-'+k);
-        var va = document.getElementById('va-'+k);
-        var vbl = document.getElementById('vbl-'+k);
-        var val2 = document.getElementById('val2-'+k);
-        if(vb) vb.style.width = before[k]+'%';
-        if(va) va.style.width = vitals[k]+'%';
-        if(vbl) vbl.textContent = before[k]+'%';
-        if(val2) val2.textContent = vitals[k]+'%';
-      });
-    }, 500);
 
     // Toggle
     window.heroToggle = function(btn){
