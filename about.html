@@ -186,7 +186,7 @@
     <aside class="about-sidebar" aria-label="Project facts">
       <div class="about-sidebar-card">
         <p class="about-sidebar-card-label">The system</p>
-        <p><span id="stat-total-episodes">26</span> episodes across three fiscal years. One accounting concept per entry. One decision in Bill's life. Each EP is an atomic record: self-contained, traceable, part of the sequence.</p>
+        <p><span id="stat-total-episodes">29</span> episodes across three fiscal years. One accounting concept per entry. One decision in Bill's life. Each EP is an atomic record: self-contained, traceable, part of the sequence.</p>
         <a href="fy2026.html">Open the ledger</a>
       </div>
 
@@ -211,7 +211,7 @@
           </div>
           <div class="about-sidebar-stat-row">
             <span class="about-sidebar-stat-label">Net worth</span>
-            <span class="about-sidebar-stat-val" style="color:#1a6b3c" id="bs-glance-networth">+7,405</span>
+            <span class="about-sidebar-stat-val" style="color:#1a6b3c" id="bs-glance-networth">+7,331.50</span>
           </div>
         </div>
       </div>
@@ -291,8 +291,9 @@
       // Bill at a glance: surplus, net worth and income from BILL_STATE, so the
       // card follows the latest entry and never drifts.
       if (typeof BILL_STATE !== 'undefined') {
-        function fmtPlain(n){ var sg=n<0?'-':''; return sg+Math.abs(Math.round(n)).toLocaleString('en-US'); }
-        function fmtSigned(n){ var sg=n<0?'-':'+'; return sg+Math.abs(Math.round(n)).toLocaleString('en-US'); }
+        function fmtNum(n){ return (n % 1 === 0) ? Math.abs(n).toLocaleString('en-US') : Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+        function fmtPlain(n){ var sg=n<0?'-':''; return sg+fmtNum(n); }
+        function fmtSigned(n){ var sg=n<0?'-':'+'; return sg+fmtNum(n); }
         var gS=document.getElementById('bs-glance-surplus');
         var gN=document.getElementById('bs-glance-networth');
         var gI=document.getElementById('bs-glance-income');

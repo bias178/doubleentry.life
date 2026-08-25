@@ -2,10 +2,10 @@
 // Single source of truth. Update only when a new episode is published.
 
 var BILL_STATE = {
-  episode: "EP.28",
+  episode: "EP.29",
   fy:      "FY 2026",
-  date:    "11 Aug 2026",
-  concept: "Budget Variance Analysis",
+  date:    "25 Aug 2026",
+  concept: "Intangible Asset Recognition",
 
   // Drives the "Next entry" link on every episode page. Update this to the
   // new episode's own number/url/title each time a new episode is
@@ -13,9 +13,9 @@ var BILL_STATE = {
   // latestEpisode.number and resolves its "Next entry" link automatically:
   // no need to reopen and edit the previous episode's file by hand.
   latestEpisode: {
-    number: 28,
-    url:    "ep-28.html",
-    title:  "The energy bill came in at 132 against a budget of 90. Whose fault is it?"
+    number: 29,
+    url:    "ep-29.html",
+    title:  "Bill just did something IAS 38 would never allow."
   },
 
   // Homepage BillBoard "Insight" panel (index.html). Previously hardcoded in
@@ -23,14 +23,14 @@ var BILL_STATE = {
   // EP.26", pairing EP.26's number with EP.19's concept. Now it lives here and
   // updates with everything else.
   insight: {
-    label: "Budget Variance Analysis / EP.28",
-    html:  "The energy bill came in at <strong>132</strong> against a budget of <strong>90</strong>. A 42 overrun looks like one problem.<br><br>Split, it is two: <strong>25</strong> of price variance the market drove, structural, so the baseline drops to <strong>160</strong>; <strong>17</strong> of consumption variance Bill can fix.<br><br><strong>React to the total and you mismanage both.</strong>"
+    label: "Intangible Asset Recognition / EP.29",
+    html:  "Bill capitalises a <strong>1,500</strong> certification that IAS 38 would force a company to expense. The reason is control: an employer cannot hold an employee who resigns, but Bill cannot resign from himself.<br><br>The cost becomes an asset, amortised <strong>62.50</strong> a month over 24 months. This month the income statement carries 62.50, not 1,500.<br><br><strong>Capitalising is a claim about the future, written where it can be checked.</strong>"
   },
 
   // FY2026 is the only open fiscal year. Update this by 1 each time a new
   // episode is published. FY2024 (9 EP) and FY2025 (11 EP) are closed and
   // stay static everywhere else in the site.
-  fy2026EpisodeCount: 8,
+  fy2026EpisodeCount: 9,
   fy2024EpisodeCount: 9,
   fy2025EpisodeCount: 11,
 
@@ -72,19 +72,19 @@ var BILL_STATE = {
   //   rows: label, val, tone ("pos" | "neg" | "" for neutral)
   //   divider: true inserts a rule above that row
   homeFeature: {
-    eyebrow:  "Budget variance",
-    headline: "The energy bill was 42 over budget. Only 17 was Bill's to fix.",
+    eyebrow:  "Intangible assets",
+    headline: "Bill capitalized a 1,500 certification. IAS 38 would not let a company do it.",
     body: [
-      "In August the energy bill came in at 132 euro against a budget of 90. The easy reading is one number, 42 over, and one response: spend less. A controller does the opposite and splits it before reacting.",
-      "Twenty-five of the overrun is price variance: the market rate rose, not Bill's decision, and it is structural, so the monthly baseline drops permanently from 185 to 160. Seventeen is consumption variance: he used more than planned, a one-off he can actually fix. React to the total and you mismanage both."
+      "In August Bill pays 1,500 euro for a certification tied to how his role is changing under AI tools. A company would expense it in full the day it is paid, because IAS 38 will not let it capitalize training: it cannot control an employee who resigns tomorrow.",
+      "Bill can, because he cannot resign from himself. The cost becomes an intangible asset, amortized 62.50 a month over 24 months. This month's income statement carries 62.50, not 1,500. The other 1,437.50 sits on the balance sheet as a bet the ledger will return to verify."
     ],
     rows: [
-      { label: "Energy bill (actual)",          val: "132",   tone: "neg" },
-      { label: "Utilities budget",              val: "90",    tone: "" },
-      { label: "Total variance",                val: "-42",   tone: "neg", divider: true },
-      { label: "Price variance (structural)",   val: "25",    tone: "neg" },
-      { label: "Consumption variance (one-off)", val: "17",   tone: "neg", divider: true },
-      { label: "New monthly baseline",          val: "160",   tone: "" }
+      { label: "Certification (cost)",          val: "1,500.00",  tone: "" },
+      { label: "Amortization, month 1",         val: "-62.50",    tone: "neg", divider: true },
+      { label: "Intangible asset (net)",        val: "1,437.50",  tone: "pos" },
+      { label: "Cash after payment",            val: "4,569",     tone: "neg" },
+      { label: "Income statement impact",       val: "-62.50",    tone: "neg", divider: true },
+      { label: "Net assets",                    val: "7,331.50",  tone: "" }
     ]
   },
 
@@ -97,14 +97,23 @@ var BILL_STATE = {
   //  - Depreciation: the smartphone amortises 11/month straight-line (213 at
   //    Jan 2026 close to 136 at Jul, over 7 months). One month accrues, so book
   //    value 136 -> 125.
-  // Net assets: 7,220 -> 7,394 (cash +185, depreciation -11).
-  savings:    6069,
+  // Net assets 11 Aug: 7,220 -> 7,394 (cash +185, depreciation -11).
+  //
+  // EP.29 (25 Aug 2026), same solar month, so the monthly accrual is NOT posted
+  // again; only the certification moves. Bill pays 1,500 for a certification and
+  // capitalises it under IAS 38 (control test met, he cannot resign from
+  // himself), amortised straight-line 62.50/month over 24 months. Cash 6,069 ->
+  // 4,569; intangible 0 -> 1,437.50 (1,500 less first amortisation 62.50).
+  // Net assets 7,394 -> 7,331.50 (only the 62.50 consumed this month).
+  savings:    4569,
   deposit:    1200,
+  intangible: 1437.50,
   phoneBookValue: 125,
 
   // Balance sheet - prior year close (FY2025, Dec 2025)
   prior_savings: 4544,
   prior_deposit: 1200,
+  prior_intangible: 0,
   prior_phoneBookValue: 213,
 
   // Vitals (EP.28). Cash edges down: the bill takes 42 more than planned this
@@ -131,7 +140,7 @@ var BILL_STATE = {
 BILL_STATE.surplus = BILL_STATE.income + BILL_STATE.rent + BILL_STATE.utilities +
                      BILL_STATE.food + BILL_STATE.transport + BILL_STATE.phone +
                      BILL_STATE.subs + BILL_STATE.social + BILL_STATE.misc;
-BILL_STATE.totalAssets  = BILL_STATE.savings + BILL_STATE.deposit + BILL_STATE.phoneBookValue;
+BILL_STATE.totalAssets  = BILL_STATE.savings + BILL_STATE.deposit + BILL_STATE.intangible + BILL_STATE.phoneBookValue;
 BILL_STATE.totalLiab    = 0;
 BILL_STATE.netAssets    = BILL_STATE.totalAssets;
 BILL_STATE.totalEpisodes = BILL_STATE.fy2024EpisodeCount +
@@ -144,12 +153,16 @@ BILL_STATE.prior_surplus = BILL_STATE.prior_income + BILL_STATE.prior_rent +
                            BILL_STATE.prior_transport + BILL_STATE.prior_phone +
                            BILL_STATE.prior_subs + BILL_STATE.prior_social +
                            BILL_STATE.prior_misc;
-BILL_STATE.prior_totalAssets = BILL_STATE.prior_savings + BILL_STATE.prior_deposit + BILL_STATE.prior_phoneBookValue;
+BILL_STATE.prior_totalAssets = BILL_STATE.prior_savings + BILL_STATE.prior_deposit + BILL_STATE.prior_intangible + BILL_STATE.prior_phoneBookValue;
 BILL_STATE.prior_netAssets   = BILL_STATE.prior_totalAssets;
 
 // Update log
 // Each new episode: bump fy2026EpisodeCount by 1, update latestEpisode to
 // the new episode's own number/url/title, in addition to the usual figures.
+// EP.29 25 Aug 2026: intangible asset (IAS 38). Certification 1,500 capitalised,
+//   amortised 62.50/month over 24 months. Cash 6,069 -> 4,569; intangible 1,437.50.
+//   Same solar month as EP.28, so no second monthly accrual. Net assets 7,394 ->
+//   7,331.50 (only the 62.50 first amortisation).
 // EP.28 11 Aug 2026: budget variance (energy). Housing split into rent 510 +
 //   utilities 90 (was 600 bills-included). Price variance +25 (structural)
 //   lifts utilities to 115 and drops the typical surplus 185 -> 160. Consumption
