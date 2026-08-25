@@ -737,34 +737,34 @@
       <div class="fy-vitals-grid">
         <div class="fy-vital">
           <div class="fy-vital-header">
-            <span>CASH</span><span>52%</span>
+            <span>CASH</span><span id="fy-v-cash">45%</span>
           </div>
           <div class="fy-vital-track">
-            <div class="fy-vital-fill" data-target="52"></div>
+            <div class="fy-vital-fill" id="fy-bar-cash" data-target="45"></div>
           </div>
         </div>
         <div class="fy-vital">
           <div class="fy-vital-header">
-            <span>EQUITY</span><span>58%</span>
+            <span>EQUITY</span><span id="fy-v-equity">58%</span>
           </div>
           <div class="fy-vital-track">
-            <div class="fy-vital-fill" data-target="58"></div>
+            <div class="fy-vital-fill" id="fy-bar-equity" data-target="58"></div>
           </div>
         </div>
         <div class="fy-vital">
           <div class="fy-vital-header">
-            <span>STRESS</span><span>60%</span>
+            <span>STRESS</span><span id="fy-v-stress">60%</span>
           </div>
           <div class="fy-vital-track">
-            <div class="fy-vital-fill" data-target="60"></div>
+            <div class="fy-vital-fill" id="fy-bar-stress" data-target="60"></div>
           </div>
         </div>
         <div class="fy-vital">
           <div class="fy-vital-header">
-            <span>FUTURE</span><span>55%</span>
+            <span>FUTURE</span><span id="fy-v-future">62%</span>
           </div>
           <div class="fy-vital-track">
-            <div class="fy-vital-fill" data-target="55"></div>
+            <div class="fy-vital-fill" id="fy-bar-future" data-target="62"></div>
           </div>
         </div>
       </div>
@@ -870,6 +870,11 @@
   <script>
     (function() {
       var s = BILL_STATE;
+      // Bill's vitals / current state: from BILL_STATE so fy2026 never drifts.
+      ['cash','equity','stress','future'].forEach(function(k){
+        var v=document.getElementById('fy-v-'+k); if(v) v.textContent=s[k]+'%';
+        var bar=document.getElementById('fy-bar-'+k); if(bar) bar.setAttribute('data-target', s[k]);
+      });
       function fmtSigned(n) { var sign = n < 0 ? '-' : '+'; return sign + Math.abs(Math.round(n)).toLocaleString('en-US'); }
       function setText(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; }
       setText('fy2026-episode-count-1', 'Episodes: ' + s.fy2026EpisodeCount + ' entries recorded');
