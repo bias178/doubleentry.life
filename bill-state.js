@@ -2,10 +2,10 @@
 // Single source of truth. Update only when a new episode is published.
 
 var BILL_STATE = {
-  episode: "EP.30",
+  episode: "EP.31",
   fy:      "FY 2026",
-  date:    "8 Sep 2026",
-  concept: "Recurring Liability Exposure",
+  date:    "22 Sep 2026",
+  concept: "Incremental Analysis",
 
   // Drives the "Next entry" link on every episode page. Update this to the
   // new episode's own number/url/title each time a new episode is
@@ -13,9 +13,9 @@ var BILL_STATE = {
   // latestEpisode.number and resolves its "Next entry" link automatically:
   // no need to reopen and edit the previous episode's file by hand.
   latestEpisode: {
-    number: 30,
-    url:    "ep-30.html",
-    title:  "Bill spent 450 in September. His bank balance did not move."
+    number: 31,
+    url:    "ep-31.html",
+    title:  "Bill got a 340 euro raise. He keeps 100 of it."
   },
 
   // Homepage BillBoard "Insight" panel (index.html). Previously hardcoded in
@@ -23,14 +23,15 @@ var BILL_STATE = {
   // EP.26", pairing EP.26's number with EP.19's concept. Now it lives here and
   // updates with everything else.
   insight: {
-    label: "Recurring Liability Exposure / EP.30",
-    html:  "Bill buys <strong>450</strong> of work clothes on Buy Now, Pay Later: three interest-free instalments, the first due in November. No cash moves in September.<br><br>Yet the full <strong>450</strong> lands as a debt the day he signs. Current liabilities go from <strong>0</strong> to 450, and net worth falls by the whole amount, not the first instalment.<br><br><strong>A deferred payment is still a payment.</strong>"
+    label: "Incremental Analysis / EP.31",
+    html:  "Bill signs a permanent contract: <strong>1,740</strong> net a month from October, against the <strong>1,400</strong> he earns today. A raise of 340.<br><br>The job is in another city and his rent rises from 510 to 750, rent only in both. Incremental analysis keeps the lines that move and drops the rest: the month improves by <strong>100</strong>, not 340.<br><br>The contract creates no entry. The deposit paid the same day does: 2,250 from cash into a recoverable asset, so net assets hold and liquidity nearly halves.<br><br><strong>The raise is what the employer pays. The increment is what you keep.</strong>"
   },
+
 
   // FY2026 is the only open fiscal year. Update this by 1 each time a new
   // episode is published. FY2024 (9 EP) and FY2025 (11 EP) are closed and
   // stay static everywhere else in the site.
-  fy2026EpisodeCount: 10,
+  fy2026EpisodeCount: 11,
   fy2024EpisodeCount: 9,
   fy2025EpisodeCount: 11,
 
@@ -41,6 +42,12 @@ var BILL_STATE = {
   // variance (+25, structural, market-driven) lifts utilities to 115 and drops
   // the typical monthly surplus permanently from 185 to 160. The consumption
   // variance (+17, one-off) is not baselined: it hits August only.
+  //
+  // EP.31 (22 Sep 2026) does NOT touch this block. The new contract runs from
+  // 1 Oct 2026: 1,740 net and rent 750 (rent only, utilities excluded, so it
+  // stays comparable with the 510 split out in EP.28). Nothing is earned or
+  // owed until October, so the current period stays on the September numbers
+  // and is rewritten when the first month in the new configuration is closed.
   income:     1400,
   rent:       -510,
   utilities:  -115,
@@ -72,21 +79,24 @@ var BILL_STATE = {
   //   rows: label, val, tone ("pos" | "neg" | "" for neutral)
   //   divider: true inserts a rule above that row
   homeFeature: {
-    eyebrow:  "Recurring liability exposure",
-    headline: "Bill spent 450 in September. His bank balance did not move.",
+    eyebrow:  "Incremental analysis",
+    headline: "Bill got a 340 euro raise. He keeps 100 of it.",
     body: [
-      "In September Bill buys 450 euro of work clothes on Buy Now, Pay Later: three interest-free instalments of 150, the first not due until November. Nothing leaves his account, so it feels close to free.",
-      "The ledger disagrees. The day he signs, 450 of debt lands on his balance sheet, and his net worth falls by the full amount, not the 150 he has not even paid. For the first time, Bill's current liabilities are not zero. They are 450."
+      "For the last few weeks Bill was open to work. In September he signs a permanent contract: 1,740 net a month from October, after two years and three months on 1,400. On its own that is a raise of 340, and it is the number anyone would lead with.",
+      "The job is in another city, and the flat that comes with it costs 750 in rent against the 510 he pays now, rent only in both. Incremental analysis keeps the lines that differ and ignores the rest: what changes in his month is 100. The contract itself creates no entry. The deposit on the new flat, paid the same day, does: 2,250 leaves cash for a recoverable asset, so net assets hold at 7,013.50 while his liquidity nearly halves."
     ],
     rows: [
-      { label: "Work clothes (BNPL, 3 x 150)",  val: "450",       tone: "neg" },
-      { label: "Cash paid in September",        val: "0",         tone: "" },
-      { label: "BNPL payable (current, new)",   val: "450",       tone: "neg", divider: true },
-      { label: "Cash (Aug surplus +143)",       val: "4,712",     tone: "pos" },
-      { label: "Current liabilities",           val: "-450",      tone: "neg", divider: true },
-      { label: "Net assets",                    val: "7,013.50",  tone: "" }
+      { label: "Salary increase (1,400 to 1,740)", val: "+340",      tone: "pos" },
+      { label: "Rent increase (510 to 750)",       val: "-240",      tone: "neg" },
+      { label: "Incremental monthly result",       val: "+100",      tone: "pos", divider: true },
+      { label: "New deposit paid (3 x 750)",       val: "-2,250",    tone: "neg" },
+      { label: "Cash after deposit",               val: "2,462",     tone: "" },
+      { label: "Security deposits (recoverable)",  val: "3,450",     tone: "" },
+      { label: "Net assets",                       val: "7,013.50",  tone: "", divider: true }
     ]
   },
+
+
 
   // Balance sheet - current (as at 11 Aug 2026). Updated on the solar month, not
   // per episode. Two effects run in parallel and both must be posted:
@@ -113,8 +123,18 @@ var BILL_STATE = {
   //    expense 450 and BNPL payable 450. No cash moves until November. Instalment
   //    schedule: 1 Nov / 1 Dec / 1 Jan, each -150, clearing the debt by January.
   // Net assets 7,331.50 -> 7,013.50 (cash +143, depreciation -11, clothes -450).
-  savings:    4712,
-  deposit:    1200,
+  //
+  // EP.31 (22 Sep 2026): same solar month as EP.30, so no second monthly accrual
+  // is posted, and signing the employment contract creates no entry at all: no
+  // income is earned and nothing is owed until the job starts on 1 Oct.
+  //  - Deposit: the new lease deposit, three months at 750, is transferred on
+  //    22 Sep. Cash 4,712 -> 2,462, security deposits 1,200 -> 3,450. A deposit
+  //    is recoverable, so this is asset to asset: total current assets stay at
+  //    5,912 and net assets stay at 7,013.50. Only liquidity moves.
+  //  - Bill therefore closes September holding two deposits. The old 1,200 is
+  //    refunded on 1 Oct, when the keys go back, and is posted next time.
+  savings:    2462,
+  deposit:    3450,
   intangible: 1437.50,
   phoneBookValue: 114,
   bnplPayable: 450,
@@ -126,15 +146,18 @@ var BILL_STATE = {
   prior_phoneBookValue: 213,
   prior_bnplPayable: 0,
 
-  // Vitals (EP.30). Cash up 45 -> 46: August's surplus lands and the BNPL takes
-  // no cash this month, so liquidity is marginally higher. Equity down 58 -> 56:
-  // net assets fall 318 (surplus +143, depreciation -11, clothes -450). Stress
-  // up 60 -> 63: Bill's first debt, three instalments ahead. Future down 62 ->
-  // 61: taking on consumption debt, mildly negative even for needed clothes.
-  cash:   46,
+  // Vitals (EP.31). Cash down 46 -> 31: the 2,250 deposit takes 48 percent of
+  // liquid cash on a single day, and the offsetting 1,200 is not back until
+  // 1 Oct. Equity flat 56 -> 56: asset to asset, net assets do not move.
+  // Stress up 63 -> 65: two opposing forces, a permanent contract that removes
+  // the renewal risk behind every month's income, against half the liquidity in
+  // the month Bill has to move; the squeeze is short and known, so the net is a
+  // small rise. Future up 61 -> 66: higher income, structurally stable, and an
+  // incremental result positive before the new city's costs are known.
+  cash:   31,
   equity: 56,
-  stress: 63,
-  future: 61,
+  stress: 65,
+  future: 66,
 
   // Label for the homepage vitals panel. The comparison is always the close
   // of the last completed fiscal year against the current state. Change this
@@ -172,6 +195,19 @@ BILL_STATE.prior_netAssets   = BILL_STATE.prior_totalAssets - BILL_STATE.prior_t
 // Update log
 // Each new episode: bump fy2026EpisodeCount by 1, update latestEpisode to
 // the new episode's own number/url/title, in addition to the usual figures.
+// EP.31 22 Sep 2026: incremental analysis (job change). Permanent contract
+//   signed, 1,740 net a month from 1 Oct against 1,400 today (+340). Rent rises
+//   510 -> 750, rent only in both (+240). Incremental monthly result +100, other
+//   costs held constant until they can be measured in the new city. No entry is
+//   posted: signing is not a transaction, nothing is earned or owed until
+//   October, and EP.30 is the same solar month so no second accrual either.
+//   Same day, the new lease deposit is transferred: 3 x 750 = 2,250. Cash 4,712
+//   -> 2,462, security deposits 1,200 -> 3,450. Asset to asset, so total current
+//   assets hold at 5,912 and net assets hold at 7,013.50; only liquidity moves.
+//   Cash 46 -> 31, stress 63 -> 65, future 61 -> 66. Bill closes September with
+//   two deposits on the balance sheet. Pending for the next publication: old
+//   deposit 1,200 refunded 1 Oct at the handover, and the 48-month lease running
+//   from 1 Oct 2026 at 750 a month, rent only.
 // EP.30 8 Sep 2026: recurring liability exposure (BNPL). Bill buys 450 of work
 //   clothes on Buy Now, Pay Later, 3 x 150 interest-free, first instalment 1 Nov.
 //   Booked in full: clothing expense 450, BNPL payable 450. No cash movement in
