@@ -468,8 +468,8 @@
     <div>
       <div class="bill-table">
         <div class="bill-table-header">
-          <span class="bill-table-header-label">Bill / Current state / <span id="bs-ep-2">EP.30</span></span>
-          <span class="bill-table-header-label" style="color:rgba(255,255,255,0.4)" id="bs-x-period">Sep 2026</span>
+          <span class="bill-table-header-label">Bill / Current state / <span id="bs-ep-2">EP.32</span></span>
+          <span class="bill-table-header-label" style="color:rgba(255,255,255,0.4)" id="bs-x-period">Oct 2026</span>
         </div>
         <div class="bill-table-row section-head"><span class="bill-table-label section">Income</span><span class="bill-table-val"></span></div>
         <div class="bill-table-row"><span class="bill-table-label">Net monthly salary</span><span class="bill-table-val pos" id="bs-x-income">1,400</span></div>
@@ -481,13 +481,15 @@
         <hr class="bill-table-divider" />
         <div class="bill-table-row"><span class="bill-table-label">Monthly surplus</span><span class="bill-table-val pos" id="bs-x-surplus">160</span></div>
         <div class="bill-table-row section-head"><span class="bill-table-label section">Balance sheet</span><span class="bill-table-val"></span></div>
-        <div class="bill-table-row"><span class="bill-table-label">Liquid savings</span><span class="bill-table-val pos" id="bs-x-savings">4,712</span></div>
-        <div class="bill-table-row"><span class="bill-table-label">Rental deposit (recoverable)</span><span class="bill-table-val" id="bs-x-deposit">1,200</span></div>
-        <div class="bill-table-row"><span class="bill-table-label">Smartphone (book value)</span><span class="bill-table-val" id="bs-x-phone-nbv">114</span></div>
-        <div class="bill-table-row"><span class="bill-table-label">Certification (intangible, net)</span><span class="bill-table-val" id="bs-x-intangible">1,437.50</span></div>
+        <div class="bill-table-row"><span class="bill-table-label">Liquid savings</span><span class="bill-table-val pos" id="bs-x-savings">3,072</span></div>
+        <div class="bill-table-row"><span class="bill-table-label">Rental deposit (recoverable)</span><span class="bill-table-val" id="bs-x-deposit">2,250</span></div>
+        <div class="bill-table-row"><span class="bill-table-label">Smartphone (book value)</span><span class="bill-table-val" id="bs-x-phone-nbv">103</span></div>
+        <div class="bill-table-row"><span class="bill-table-label">Certification (intangible, net)</span><span class="bill-table-val" id="bs-x-intangible">1,375.00</span></div>
+        <div class="bill-table-row"><span class="bill-table-label">Right-of-use asset (lease, net)</span><span class="bill-table-val" id="bs-x-rou">12,766</span></div>
         <div class="bill-table-row"><span class="bill-table-label">BNPL payable (current liability)</span><span class="bill-table-val neg" id="bs-x-bnpl">-450</span></div>
+        <div class="bill-table-row"><span class="bill-table-label">Lease liability (8,340 current)</span><span class="bill-table-val neg" id="bs-x-lease">-12,016</span></div>
         <hr class="bill-table-divider" />
-        <div class="bill-table-row"><span class="bill-table-label">Net worth (derived)</span><span class="bill-table-val pos" id="bs-x-networth">7,013.50</span></div>
+        <div class="bill-table-row"><span class="bill-table-label">Net worth (derived)</span><span class="bill-table-val pos" id="bs-x-networth">7,100.00</span></div>
       </div>
     </div>
   </section>
@@ -699,7 +701,9 @@
     setText('bs-x-deposit', fmtPlain(s.deposit));
     setText('bs-x-phone-nbv', fmtPlain(s.phoneBookValue));
     setText('bs-x-intangible', fmtPlain(s.intangible));
+    setText('bs-x-rou', s.rouAsset ? fmtPlain(s.rouAsset) : '0');
     setText('bs-x-bnpl', s.bnplPayable ? '-'+fmtPlain(s.bnplPayable) : '0');
+    setText('bs-x-lease', s.leaseLiability ? '-'+fmtPlain(s.leaseLiability) : '0');
     setText('bs-x-networth', fmtPlain(s.netAssets));
 
     // Episode / entry counters (single source: bill-state.js)
