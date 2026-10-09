@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Note 01 / Behind every price, financial statements / Double Entry Life</title>
+  <meta name="description" content="Accounting will not tell you where the market goes next. It shows what you are buying, what you are paying for it, and which risks sit outside the price." />
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../favicon-180.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --teal:       #2a7a7a;
+      --teal-light: #e6f2f2;
+      --teal-mid:   #c0dede;
+      --red:        #c0392b;
+      --green:      #1a6b3c;
+      --ink:        #1a1a1a;
+      --ink-muted:  #5a5a6a;
+      --paper:      #fafaf8;
+      --neutral:    #6b6b7a;
+      --rule:       #e2e2e0;
+      --font-serif: 'DM Serif Display', Georgia, serif;
+      --font-mono:  'IBM Plex Mono', monospace;
+      --font-sans:  'Inter', system-ui, sans-serif;
+      --max-w:      1080px;
+      --col:        660px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body { font-family: var(--font-sans); background: var(--paper); color: var(--ink); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+
+    .nav { border-bottom: 1px solid var(--rule); position: sticky; top: 0; z-index: 100; background: var(--paper); }
+    .nav-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); }
+    .nav-logo span { color: var(--ink); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--neutral); transition: color 0.15s; }
+    .nav-links a:hover, .nav-links a[aria-current="page"] { color: var(--teal); }
+    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; flex-direction: column; gap: 5px; }
+    .nav-hamburger span { display: block; width: 22px; height: 1.5px; background: var(--ink); }
+    .nav-mobile { display: none; position: absolute; top: 56px; left: 0; right: 0; background: var(--paper); border-bottom: 1px solid var(--rule); padding: 1.5rem 2rem; z-index: 99; }
+    .nav-mobile.open { display: block; }
+    .nav-mobile ul { list-style: none; display: flex; flex-direction: column; gap: 1.25rem; }
+    .nav-mobile a { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--neutral); }
+
+    .page-header { max-width: var(--max-w); margin: 0 auto; padding: 5rem 2rem 3rem; border-bottom: 1px solid var(--rule); }
+    .page-header-eyebrow { font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); margin-bottom: 1.25rem; }
+    .page-header-title { font-family: var(--font-serif); font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; color: var(--ink); max-width: 22ch; }
+
+    .about-body { max-width: var(--max-w); margin: 0 auto; padding: 4rem 2rem; display: grid; grid-template-columns: var(--col) 1fr; gap: 5rem; align-items: start; }
+
+    .about-prose h2 { font-family: var(--font-serif); font-size: 1.5rem; color: var(--ink); margin-bottom: 1rem; margin-top: 2.5rem; line-height: 1.2; }
+    .about-prose h2:first-child { margin-top: 0; }
+    .about-prose p { font-size: 1rem; color: var(--ink-muted); line-height: 1.8; margin-bottom: 1.1rem; }
+    .about-prose p:last-child { margin-bottom: 0; }
+    .about-prose a { color: var(--teal); border-bottom: 1px solid var(--teal-mid); }
+
+    .about-sidebar { display: flex; flex-direction: column; gap: 2rem; }
+    .about-sidebar-card { background: white; border: 1px solid var(--rule); padding: 1.5rem; }
+    .about-sidebar-card-label { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--neutral); margin-bottom: 1rem; }
+    .about-sidebar-card p { font-size: 0.85rem; color: var(--ink-muted); line-height: 1.7; }
+    .about-sidebar-card a { display: inline-block; margin-top: 1rem; font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--teal); border-bottom: 1px solid var(--teal-mid); padding-bottom: 1px; }
+
+    .about-sidebar-stat { display: flex; flex-direction: column; gap: 0; }
+    .about-sidebar-stat-row { display: flex; justify-content: space-between; padding: 0.65rem 0; border-bottom: 1px solid var(--rule); }
+    .about-sidebar-stat-row:last-child { border-bottom: none; }
+    .about-sidebar-stat-label { font-family: var(--font-mono); font-size: 0.65rem; color: var(--neutral); }
+    .about-sidebar-stat-val { font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink); }
+
+    .footer { border-top: 1px solid var(--rule); margin-top: 6rem; }
+    .footer-inner { max-width: var(--max-w); margin: 0 auto; padding: 3rem 2rem; display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; }
+    .footer-brand-name { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); margin-bottom: 0.5rem; }
+    .footer-brand-desc { font-size: 0.8rem; color: var(--neutral); line-height: 1.6; }
+    .footer-links { display: flex; gap: 2rem; }
+    .footer-col-label { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--neutral); margin-bottom: 1rem; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+    .footer-col a { font-size: 0.8rem; color: var(--ink-muted); transition: color 0.15s; }
+    .footer-col a:hover { color: var(--teal); }
+    .footer-bottom { border-top: 1px solid var(--rule); padding: 1.25rem 2rem; max-width: var(--max-w); margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    .footer-copy { font-family: var(--font-mono); font-size: 0.6rem; color: var(--neutral); }
+    .footer-linkedin { font-family: var(--font-mono); font-size: 0.6rem; color: var(--teal); transition: opacity 0.15s; }
+    .footer-connect-links { display: flex; gap: 1rem; }
+    .footer-linkedin:hover { opacity: 0.7; }
+
+    @media (max-width: 800px) {
+      .about-body { grid-template-columns: 1fr; gap: 3rem; }
+      .footer-inner { flex-direction: column; }
+      .footer-links { flex-direction: column; gap: 1.5rem; }
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+      .nav { position: relative; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  
+    .nav a[aria-current="page"]{color:var(--teal);}
+
+    /* blog */
+    .blog-list{max-width:var(--col);list-style:none;}
+    .blog-item{padding:1.75rem 0;border-bottom:1px solid var(--rule);}
+    .blog-item:first-child{padding-top:0;}
+    .blog-item-meta{font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--neutral);margin-bottom:0.6rem;}
+    .blog-item-title{font-family:var(--font-serif);font-size:1.5rem;line-height:1.2;color:var(--ink);margin-bottom:0.6rem;}
+    .blog-item a:hover .blog-item-title{color:var(--teal);}
+    .blog-item-desc{font-size:0.95rem;color:var(--ink-muted);line-height:1.7;}
+    .blog-empty{max-width:var(--col);background:white;border:1px solid var(--rule);padding:1.5rem;}
+    .blog-empty p{font-size:0.95rem;color:var(--ink-muted);line-height:1.7;}
+    .post-wrap{max-width:var(--col);margin:0 auto;padding:4rem 2rem 0;}
+    .post-body p{font-size:1.05rem;color:var(--ink-muted);line-height:1.85;margin-bottom:1.25rem;}
+    .post-body h2{font-family:var(--font-serif);font-size:1.5rem;line-height:1.2;color:var(--ink);margin:2.5rem 0 1rem;}
+    .post-body a{color:var(--teal);border-bottom:1px solid var(--teal-mid);}
+    .post-note{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--rule);font-family:var(--font-mono);font-size:0.68rem;line-height:1.7;color:var(--neutral);}
+    .post-back{display:inline-block;margin-top:2rem;font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--teal);}
+    .post-head-meta{display:flex;flex-wrap:wrap;gap:0.75rem;align-items:center;}
+    .post-marker{font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--paper);background:var(--teal);padding:0.25rem 0.55rem;}
+    .post-standfirst{font-size:1.1rem;color:var(--ink-muted);line-height:1.7;max-width:var(--col);margin-top:1.25rem;}
+    .post-badge{display:inline-block;font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink);background:var(--teal-light);border:1px solid var(--teal-mid);padding:0.3rem 0.6rem;margin-bottom:2rem;}
+    .post-company{background:white;border:1px solid var(--rule);margin-bottom:2.5rem;}
+    .post-company-head{background:var(--ink);padding:0.7rem 1.1rem;font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.75);}
+    .post-company-row{display:flex;justify-content:space-between;gap:1rem;padding:0.65rem 1.1rem;border-bottom:1px solid var(--rule);font-family:var(--font-mono);font-size:0.7rem;}
+    .post-company-row:last-child{border-bottom:none;}
+    .post-company-row span:first-child{color:var(--neutral);}
+    .post-company-row span:last-child{color:var(--ink);text-align:right;}
+    .post-table{width:100%;border-collapse:collapse;background:white;border:1px solid var(--rule);margin:1.75rem 0 0.5rem;font-family:var(--font-mono);font-size:0.72rem;}
+    .post-table th{background:var(--teal-light);color:var(--teal);text-align:right;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;font-size:0.6rem;padding:0.65rem 0.9rem;border-bottom:2px solid var(--ink);}
+    .post-table th:first-child,.post-table td:first-child{text-align:left;}
+    .post-table td{padding:0.6rem 0.9rem;border-bottom:1px solid var(--rule);text-align:right;color:var(--ink);}
+    .post-table tr.total td{font-weight:500;border-top:2px solid var(--ink);border-bottom:none;}
+    .post-table .neg{color:var(--red);}
+    .post-body .post-table-src{line-height:1.6;font-family:var(--font-mono);font-size:0.62rem;color:var(--neutral);margin-bottom:1.75rem;}
+    .post-sources{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--rule);}
+    .post-sources-label{font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--neutral);margin-bottom:0.6rem;}
+    .post-sources p{font-family:var(--font-mono);font-size:0.68rem;line-height:1.7;color:var(--ink-muted);}
+    .fig{background:#fdfae3;border:1px solid #e8e2c4;border-radius:10px;padding:1.6rem 1.4rem 1.2rem;margin:2rem 0 0.5rem;color:#0e5063;}
+    .post-body .fig-kicker{font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:#0e5063;opacity:0.8;margin-bottom:0.5rem;line-height:1.5;}
+    .post-body .fig-title{font-family:var(--font-serif);font-size:1.35rem;line-height:1.2;color:#0e5063;margin-bottom:1.2rem;}
+    .fig-cols{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+    .post-body .fig-colh{min-height:2.6em;font-family:var(--font-mono);font-size:0.58rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem;}
+    .fig-box{font-family:var(--font-mono);font-size:0.62rem;padding:0.55rem 0.6rem;margin-bottom:0.35rem;display:flex;justify-content:space-between;min-height:2.1rem;align-items:center;}
+    .fig-box.base{background:#ebe5c6;color:#0e5063;}
+    .fig-box.cost{background:#b03a2e;color:#fff;}
+    .fig-box.key{background:#198ca6;color:#fff;font-weight:500;}
+    .fig-box.empty{border:1px dashed #cfc7a0;}
+    .post-body .fig-legend{font-family:var(--font-mono);font-size:0.55rem;margin-top:0.6rem;display:flex;align-items:center;gap:0.4rem;}
+    .fig-legend i{display:inline-block;width:9px;height:9px;background:#b03a2e;}
+    .fig-foot{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid #e8e2c4;margin-top:1.2rem;padding-top:0.8rem;}
+    .fig-mark{font-family:'DM Serif Display',Georgia,serif;font-size:0.95rem;color:#0e5063;}
+    .fig-mark em{font-style:italic;}
+    .fig-tag{font-family:var(--font-mono);font-size:0.55rem;font-weight:500;letter-spacing:0.14em;}
+    .fig-bars{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;align-items:end;height:150px;}
+    .fig-bar{display:flex;flex-direction:column-reverse;height:100%;}
+    .fig-bar span{display:block;}
+    .fig-bar .rev{background:#198ca6;}
+    .fig-bar .liab{background:#9bd0ad;}
+    .fig-months{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;font-family:var(--font-mono);font-size:0.5rem;text-align:center;margin-top:0.3rem;}
+    .fig-key{display:flex;gap:1rem;font-family:var(--font-mono);font-size:0.55rem;margin-top:0.8rem;}
+    .fig-key b{display:inline-block;width:9px;height:9px;margin-right:0.35rem;vertical-align:middle;}
+    .post-body .fig-cap{font-family:var(--font-mono);font-size:0.62rem;line-height:1.6;color:var(--neutral);margin-bottom:1.75rem;}
+    /* line balance */
+    h1,h2,h3,.latest-title,.blog-item-title{text-wrap:balance;}
+    p,li{text-wrap:pretty;}
+  </style>
+</head>
+<body>
+
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo">Double&nbsp;<span>Entry</span>&nbsp;Life</a>
+      <ul class="nav-links">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../ledger.html">Ledger</a></li>
+        <li><a href="../start.html">Meet Bill</a></li>
+        <li><a href="../blog/index.html" aria-current="page">Blog</a></li>
+        <li><a href="../about.html" >About</a></li>
+      </ul>
+      <button class="nav-hamburger" aria-label="Open menu" aria-expanded="false" onclick="
+        var open = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!open));
+        document.getElementById('nav-mobile').classList.toggle('open', !open);
+      ">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-mobile" id="nav-mobile">
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../ledger.html">Ledger</a></li>
+        <li><a href="../start.html">Meet Bill</a></li>
+        <li><a href="../blog/index.html" aria-current="page">Blog</a></li>
+        <li><a href="../about.html" >About</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <header class="page-header">
+    <div class="post-head-meta">
+      <span class="post-marker">Note 01</span>
+      <p class="page-header-eyebrow" style="margin:0;">Blog / 10 Oct 2026 / <span id="post-read">2</span> min read</p>
+    </div>
+    <h1 class="page-header-title" style="margin-top:1.25rem;">Behind every price, financial statements.</h1>
+  </header>
+
+  <article class="post-wrap">
+
+    <div class="post-body">
+      <p>Investing conversations are full of stocks, markets and returns. Behind every price there is a company, and behind the company there are <strong>financial statements</strong>.</p>
+      <p>Buying a stock without reading them is like buying a house in a seismic zone without checking the foundations. Or agreeing on a price without noticing that a landfill was approved down the road.</p>
+      <p>Accounting won't tell you where the market goes next. Prices may follow a random walk, and no financial statement removes uncertainty. It does show what you are buying, what you are paying for it, and which risks sit outside the price you are looking at.</p>
+      <p>You don't need to be an accountant to invest. Double Entry Life starts from there: accounting as a way to read the financial reality behind the numbers.</p>
+    </div>
+
+    <div class="post-sources">
+      <p class="post-sources-label">Sources</p>
+      <p>Concept note, no figures.</p>
+    </div>
+
+    <a class="post-back" href="index.html">Back to the blog</a>
+  </article>
+
+  <script>
+  (function(){
+    var b=document.querySelector('.post-body'); if(!b) return;
+    var w=(b.textContent||'').trim().split(/\s+/).length;
+    var el=document.getElementById('post-read'); if(el) el.textContent=Math.max(1,Math.round(w/200));
+  })();
+  </script>
+
+  <footer class="footer" role="contentinfo">
+    <div class="footer-inner">
+      <div>
+        <p class="footer-brand-name">Double Entry Life</p>
+        <p class="footer-brand-desc">The ledger follows Bill. The blog reads company accounts. Both speak accounting.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <p class="footer-col-label">Navigate</p>
+          <ul><li><a href="../ledger.html">Ledger</a></li><li><a href="../start.html">Meet Bill</a></li><li><a href="../blog/index.html">Blog</a></li><li><a href="../about.html">About</a></li></ul>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-label">Connect</p>
+          <ul>
+            <li><a href="https://www.linkedin.com/in/biagio-tozzo-913166138" target="_blank" rel="noopener">LinkedIn</a></li>
+            <li><a href="https://substack.com/@doubleentrylife" target="_blank" rel="noopener">Substack</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">&#169; 2026 Double Entry Life. All entries by Biagio Tozzo.</span>
+      <div class="footer-connect-links">
+        <a href="https://www.linkedin.com/in/biagio-tozzo-913166138" target="_blank" rel="noopener" class="footer-linkedin">LinkedIn</a>
+        <a href="https://substack.com/@doubleentrylife" target="_blank" rel="noopener" class="footer-linkedin">Substack</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      // FY2026 episode count and derived total, from BILL_STATE (single source of truth)
+      var fy2026El = document.getElementById('stat-fy2026-count');
+      if (fy2026El && typeof BILL_STATE !== 'undefined') {
+        fy2026El.textContent = 'Active / ' + BILL_STATE.fy2026EpisodeCount + ' EP';
+      }
+      var totalEl = document.getElementById('stat-total-episodes');
+      if (totalEl && typeof BILL_STATE !== 'undefined') {
+        totalEl.textContent = BILL_STATE.totalEpisodes;
+      }
+      // Bill at a glance: surplus, net worth and income from BILL_STATE, so the
+      // card follows the latest entry and never drifts.
+      if (typeof BILL_STATE !== 'undefined') {
+        function fmtNum(n){ return (n % 1 === 0) ? Math.abs(n).toLocaleString('en-US') : Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+        function fmtPlain(n){ var sg=n<0?'-':''; return sg+fmtNum(n); }
+        function fmtSigned(n){ var sg=n<0?'-':'+'; return sg+fmtNum(n); }
+        var gS=document.getElementById('bs-glance-surplus');
+        var gN=document.getElementById('bs-glance-networth');
+        var gI=document.getElementById('bs-glance-income');
+        if(gS) gS.textContent = fmtPlain(BILL_STATE.surplus);
+        if(gN) gN.textContent = fmtSigned(BILL_STATE.netAssets);
+        if(gI) gI.textContent = fmtPlain(BILL_STATE.income);
+      }
+
+      // Bill's age, recalculated from his birth month/year on every load
+      var billBirthYear = 2000, billBirthMonth = 4; // April 2000
+      var now = new Date();
+      var billAge = now.getFullYear() - billBirthYear;
+      if ((now.getMonth() + 1) < billBirthMonth) billAge -= 1;
+      var billAgeEl = document.getElementById('stat-bill-age');
+      if (billAgeEl) billAgeEl.textContent = billAge;
+
+      // Biagio's years of experience, recalculated from March 2012 on every load
+      var expStartYear = 2012, expStartMonth = 3; // March 2012
+      var expYears = now.getFullYear() - expStartYear;
+      if ((now.getMonth() + 1) < expStartMonth) expYears -= 1;
+      var expEl = document.getElementById('stat-biagio-years');
+      if (expEl) expEl.textContent = expYears;
+    })();
+  </script>
+</body>
+</html>
