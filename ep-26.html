@@ -131,20 +131,6 @@
     @media(max-width:860px){.article-layout{grid-template-columns:1fr;gap:3rem;}.article-sidebar{position:static;}.ep-nav-inner{grid-template-columns:1fr;}.ep-nav-cell.next{text-align:left;border-left:none;border-top:1px solid var(--rule);}.footer-inner{flex-direction:column;}.footer-links{flex-direction:column;gap:1.5rem;}.nav-links{display:none;}.nav-hamburger{display:flex;}.nav{position:relative;}}
     @media(prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important;}}
   
-    /* nav dropdown */
-    .nav-links > li{position:relative;}
-    .nav-drop-toggle{background:none;border:none;cursor:pointer;padding:0;font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--neutral);transition:color 0.15s;}
-    .nav-drop-toggle::after{content:"";display:inline-block;width:6px;height:6px;margin-left:0.6em;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform 0.15s;}
-    .nav-drop-toggle:hover,.nav-drop-toggle.is-current{color:var(--teal);}
-    .nav-sub{display:none;position:absolute;top:100%;left:-0.75rem;min-width:9rem;padding:0.9rem 0.75rem 0.6rem;background:var(--paper);border:1px solid var(--rule);list-style:none;z-index:100;}
-    .nav-sub li{padding:0.35rem 0;}
-    .nav-drop:hover > .nav-sub,.nav-drop.open > .nav-sub,.nav-drop:focus-within > .nav-sub{display:block;}
-    .nav-mobile .nav-sub-m{display:none;flex-direction:column;gap:1rem;padding:1rem 0 0 1rem;list-style:none;}
-    .nav-m-drop.open .nav-sub-m{display:flex;}
-    .nav-m-toggle{background:none;border:none;padding:0;cursor:pointer;}
-    .nav-m-toggle::after{content:"";display:inline-block;width:6px;height:6px;margin-left:0.6em;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform 0.15s;}
-    .nav-m-drop.open .nav-m-toggle::after,.nav-drop.open .nav-drop-toggle::after,.nav-drop:hover .nav-drop-toggle::after{transform:translateY(1px) rotate(-135deg);}
-    .nav-mobile .nav-label{font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--neutral);}
     .nav a[aria-current="page"]{color:var(--teal);}
   </style>
 </head>
@@ -154,8 +140,7 @@
       <a href="index.html" class="nav-logo">Double&nbsp;<span>Entry</span>&nbsp;Life</a>
       <ul class="nav-links">
         <li><a href="index.html">Home</a></li>
-        <li class="nav-drop"><button type="button" class="nav-drop-toggle" aria-expanded="false" aria-haspopup="true">Fiscal Years</button>
-          <ul class="nav-sub"><li><a href="fy2026.html">FY 2026</a></li><li><a href="fy2025.html">FY 2025</a></li><li><a href="fy2024.html">FY 2024</a></li></ul></li>
+        <li><a href="ledger.html">Ledger</a></li>
         <li><a href="start.html">Meet Bill</a></li>
         <li><a href="blog/index.html">Blog</a></li>
         <li><a href="about.html">About</a></li>
@@ -171,7 +156,7 @@
     <div class="nav-mobile" id="nav-mobile">
       <ul>
         <li><a href="index.html">Home</a></li>
-        <li class="nav-m-drop"><button type="button" class="nav-label nav-m-toggle" aria-expanded="false">Fiscal Years</button><ul class="nav-sub-m"><li><a href="fy2026.html">FY 2026</a></li><li><a href="fy2025.html">FY 2025</a></li><li><a href="fy2024.html">FY 2024</a></li></ul></li>
+        <li><a href="ledger.html">Ledger</a></li>
         <li><a href="start.html">Meet Bill</a></li>
         <li><a href="blog/index.html">Blog</a></li>
         <li><a href="about.html">About</a></li>
@@ -255,10 +240,9 @@
   </div></nav>
 <footer class="footer" role="contentinfo">
     <div class="footer-inner">
-      <div><p class="footer-brand-name">Double Entry Life</p><p class="footer-brand-desc">A financial reporting system rendered as editorial content. Est. April 2024.</p></div>
+      <div><p class="footer-brand-name">Double Entry Life</p><p class="footer-brand-desc">A financial reporting system rendered as editorial content, and a free blog on company accounts read through an accountant's eyes. Est. April 2024.</p></div>
       <div class="footer-links">
-        <div class="footer-col"><p class="footer-col-label">System</p><ul><li><a href="fy2026.html">FY 2026</a></li><li><a href="fy2025.html">FY 2025</a></li><li><a href="fy2024.html">FY 2024</a></li></ul></div>
-        <div class="footer-col"><p class="footer-col-label">Navigate</p><ul><li><a href="start.html">Meet Bill</a></li><li><a href="blog/index.html">Blog</a></li><li><a href="about.html">About</a></li></ul></div>
+        <div class="footer-col"><p class="footer-col-label">Navigate</p><ul><li><a href="ledger.html">Ledger</a></li><li><a href="start.html">Meet Bill</a></li><li><a href="blog/index.html">Blog</a></li><li><a href="about.html">About</a></li></ul></div>
         <div class="footer-col"><p class="footer-col-label">Connect</p><ul><li><a href="https://substack.com/@doubleentrylife" target="_blank" rel="noopener">Substack</a></li><li><a href="https://www.linkedin.com/in/biagio-tozzo-913166138" target="_blank" rel="noopener">LinkedIn</a></li><li><a href="https://substack.com/@doubleentrylife" target="_blank" rel="noopener">Substack</a></li></ul></div>
       </div>
     </div>
@@ -313,14 +297,5 @@
     }
   })();
   </script>
-<script>
-(function(){var d=document.querySelector('.nav-drop');if(!d)return;var b=d.querySelector('.nav-drop-toggle');
-b.addEventListener('click',function(e){e.stopPropagation();var o=d.classList.toggle('open');b.setAttribute('aria-expanded',String(o));});
-document.addEventListener('click',function(){d.classList.remove('open');b.setAttribute('aria-expanded','false');});})();
-</script>
-<script>
-(function(){var m=document.querySelector('.nav-m-drop');if(!m)return;var b=m.querySelector('.nav-m-toggle');
-b.addEventListener('click',function(){var o=m.classList.toggle('open');b.setAttribute('aria-expanded',String(o));});})();
-</script>
 </body>
 </html>

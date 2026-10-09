@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>About / Double Entry Life</title>
-  <meta name="description" content="Double Entry Life is a financial reporting system rendered as editorial content. A project by Biagio Tozzo, Senior Accounting Manager." />
+  <meta name="description" content="Double Entry Life is a financial reporting system rendered as editorial content, with a separate blog on company accounts. A project by Biagio Tozzo, Senior Accounting Manager." />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png" />
@@ -98,20 +98,6 @@
     }
     @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
   
-    /* nav dropdown */
-    .nav-links > li{position:relative;}
-    .nav-drop-toggle{background:none;border:none;cursor:pointer;padding:0;font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--neutral);transition:color 0.15s;}
-    .nav-drop-toggle::after{content:"";display:inline-block;width:6px;height:6px;margin-left:0.6em;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform 0.15s;}
-    .nav-drop-toggle:hover,.nav-drop-toggle.is-current{color:var(--teal);}
-    .nav-sub{display:none;position:absolute;top:100%;left:-0.75rem;min-width:9rem;padding:0.9rem 0.75rem 0.6rem;background:var(--paper);border:1px solid var(--rule);list-style:none;z-index:100;}
-    .nav-sub li{padding:0.35rem 0;}
-    .nav-drop:hover > .nav-sub,.nav-drop.open > .nav-sub,.nav-drop:focus-within > .nav-sub{display:block;}
-    .nav-mobile .nav-sub-m{display:none;flex-direction:column;gap:1rem;padding:1rem 0 0 1rem;list-style:none;}
-    .nav-m-drop.open .nav-sub-m{display:flex;}
-    .nav-m-toggle{background:none;border:none;padding:0;cursor:pointer;}
-    .nav-m-toggle::after{content:"";display:inline-block;width:6px;height:6px;margin-left:0.6em;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform 0.15s;}
-    .nav-m-drop.open .nav-m-toggle::after,.nav-drop.open .nav-drop-toggle::after,.nav-drop:hover .nav-drop-toggle::after{transform:translateY(1px) rotate(-135deg);}
-    .nav-mobile .nav-label{font-family:var(--font-mono);font-size:0.75rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--neutral);}
     .nav a[aria-current="page"]{color:var(--teal);}
   </style>
 </head>
@@ -122,8 +108,7 @@
       <a href="index.html" class="nav-logo">Double&nbsp;<span>Entry</span>&nbsp;Life</a>
       <ul class="nav-links">
         <li><a href="index.html">Home</a></li>
-        <li class="nav-drop"><button type="button" class="nav-drop-toggle" aria-expanded="false" aria-haspopup="true">Fiscal Years</button>
-          <ul class="nav-sub"><li><a href="fy2026.html">FY 2026</a></li><li><a href="fy2025.html">FY 2025</a></li><li><a href="fy2024.html">FY 2024</a></li></ul></li>
+        <li><a href="ledger.html">Ledger</a></li>
         <li><a href="start.html">Meet Bill</a></li>
         <li><a href="blog/index.html">Blog</a></li>
         <li><a href="about.html" aria-current="page">About</a></li>
@@ -139,7 +124,7 @@
     <div class="nav-mobile" id="nav-mobile">
       <ul>
         <li><a href="index.html">Home</a></li>
-        <li class="nav-m-drop"><button type="button" class="nav-label nav-m-toggle" aria-expanded="false">Fiscal Years</button><ul class="nav-sub-m"><li><a href="fy2026.html">FY 2026</a></li><li><a href="fy2025.html">FY 2025</a></li><li><a href="fy2024.html">FY 2024</a></li></ul></li>
+        <li><a href="ledger.html">Ledger</a></li>
         <li><a href="start.html">Meet Bill</a></li>
         <li><a href="blog/index.html">Blog</a></li>
         <li><a href="about.html" aria-current="page">About</a></li>
@@ -163,12 +148,15 @@
         Double Entry Life is built on a precise observation. Accounting already has a word for everything that feels confusing in personal finance. Depreciation, accruals, sunk cost, the difference between cash flow and income: these are not abstract. They describe what is already happening in people's financial lives, whether or not they have the vocabulary for it.
       </p>
 
-      <h2>What this system is</h2>
+      <h2>What this site is</h2>
       <p>
-        This is not a blog. It is a financial reporting system rendered as editorial content. Every page behaves like a component of a ledger. There are four objects in the system: FY (fiscal year container), EP (episode ledger entry), Bill (single persistent entity), and the BillBoard (financial statement UI).
+        The site has two sections, and they do different jobs.
       </p>
       <p>
-        The system has been running since April 2024. FY 2024 was a short year, nine months, opening the books. FY 2025 ran the full calendar year under the going concern principle. FY 2026 is the restatement: three years of data, one open ledger.
+        The first is Bill's ledger. It is not a blog. It is a financial reporting system rendered as editorial content. Every page behaves like a component of a ledger. There are four objects in the system: FY (fiscal year container), EP (episode ledger entry), Bill (single persistent entity), and the BillBoard (financial statement UI).
+      </p>
+      <p>
+        The system has been running since April 2024. FY 2024 was a short year, nine months, opening the books. FY 2025 ran the full calendar year under the going concern principle. FY 2026 is the restatement: three years of data, one open ledger. A new episode is published every two weeks. Every episode is listed in order in the Ledger, and Meet Bill is the place to start.
       </p>
 
       <h2>Why Bill</h2>
@@ -183,8 +171,16 @@
       <p>
         Personal finance content tends to cluster around two modes: motivational frameworks with no numerical precision, and spreadsheet tutorials with no human story. This system does neither. The accounting concept is the frame. Bill's decision is the content. The ledger is the evidence.
       </p>
+
+      <h2>The blog</h2>
       <p>
-        The LinkedIn series and its parallel Substack distribute the episodes externally. The site is the system of record. LinkedIn and Substack are reporting channels, not the origin.
+        The second section is the <a href="blog/index.html">blog</a>. It is open space for general considerations on corporate financial statements and on listed companies, read the way an accountant reads them. It has no fixed calendar, no episode numbers and no fiscal year.
+      </p>
+      <p>
+        The blog is separate from Bill. It does not touch his numbers, and his ledger does not draw on it. When a post uses figures from a listed company, they come from its published annual report and the source is named. When a case is illustrative, with round numbers, the post says so.
+      </p>
+      <p>
+        LinkedIn and Substack carry both sections. The site is the system of record.
       </p>
 
       <h2>About the author</h2>
@@ -202,7 +198,13 @@
       <div class="about-sidebar-card">
         <p class="about-sidebar-card-label">The system</p>
         <p><span id="stat-total-episodes">30</span> episodes across three fiscal years. One accounting concept per entry. One decision in Bill's life. Each EP is an atomic record: self-contained, traceable, part of the sequence.</p>
-        <a href="fy2026.html">Open the ledger</a>
+        <a href="ledger.html">Open the ledger</a>
+      </div>
+
+      <div class="about-sidebar-card">
+        <p class="about-sidebar-card-label">The blog</p>
+        <p>Considerations on company accounts and listed companies. Separate from Bill, with no episode numbers and no fiscal year.</p>
+        <a href="blog/index.html">Open the blog</a>
       </div>
 
       <div class="about-sidebar-card">
@@ -255,23 +257,12 @@
     <div class="footer-inner">
       <div>
         <p class="footer-brand-name">Double Entry Life</p>
-        <p class="footer-brand-desc">A financial reporting system rendered as editorial content. Est. April 2024.</p>
+        <p class="footer-brand-desc">A financial reporting system rendered as editorial content, and a free blog on company accounts read through an accountant's eyes. Est. April 2024.</p>
       </div>
       <div class="footer-links">
         <div class="footer-col">
-          <p class="footer-col-label">System</p>
-          <ul>
-            <li><a href="fy2026.html">FY 2026</a></li>
-            <li><a href="fy2025.html">FY 2025</a></li>
-            <li><a href="fy2024.html">FY 2024</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
           <p class="footer-col-label">Navigate</p>
-          <ul>
-            <li><a href="start.html">Meet Bill</a></li><li><a href="blog/index.html">Blog</a></li>
-            <li><a href="about.html">About</a></li>
-          </ul>
+          <ul><li><a href="ledger.html">Ledger</a></li><li><a href="start.html">Meet Bill</a></li><li><a href="blog/index.html">Blog</a></li><li><a href="about.html">About</a></li></ul>
         </div>
         <div class="footer-col">
           <p class="footer-col-label">Connect</p>
@@ -333,14 +324,5 @@
       if (expEl) expEl.textContent = expYears;
     })();
   </script>
-<script>
-(function(){var d=document.querySelector('.nav-drop');if(!d)return;var b=d.querySelector('.nav-drop-toggle');
-b.addEventListener('click',function(e){e.stopPropagation();var o=d.classList.toggle('open');b.setAttribute('aria-expanded',String(o));});
-document.addEventListener('click',function(){d.classList.remove('open');b.setAttribute('aria-expanded','false');});})();
-</script>
-<script>
-(function(){var m=document.querySelector('.nav-m-drop');if(!m)return;var b=m.querySelector('.nav-m-toggle');
-b.addEventListener('click',function(){var o=m.classList.toggle('open');b.setAttribute('aria-expanded',String(o));});})();
-</script>
 </body>
 </html>
