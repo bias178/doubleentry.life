@@ -186,7 +186,7 @@
       </div>
       <div class="page-header-note">
         <strong>How to read this</strong>
-        Current period = <span id="bs-note-period">EP.30 (Sep 2026)</span>. Prior period = same month prior year (<span id="bs-note-prior">Sep 2025</span>) for the cash flow statement, FY2025 closing for the balance sheet. All figures in EUR.
+        Balance sheet as at <span id="bs-note-period">EP.32 (6 Oct 2026)</span>, compared with the FY2025 closing. Cash flow statement on the new contract structure (October run rate, month not yet closed), compared with the same month a year earlier (<span id="bs-note-prior">Sep 2025</span> in the prior column). All figures in EUR.
       </div>
     </div>
   </header>
@@ -199,29 +199,29 @@
       <div class="xbrl-statement">
         <div class="xbrl-header">
           <span class="xbrl-header-title">Statement of Cash Flows</span>
-          <span class="xbrl-header-sub">Period ending Sep 2026 vs Sep 2025 / EUR / Monthly</span>
+          <span class="xbrl-header-sub">Period ending <span id="bs-cf-period">Sep 2026</span> vs <span id="bs-cf-prior">Sep 2025</span> / EUR / Monthly, new contract structure</span>
         </div>
         <div class="xbrl-col-headers">
           <span class="xbrl-col-head">Line item</span>
-          <span class="xbrl-col-head">Sep 2026</span>
-          <span class="xbrl-col-head">Sep 2025</span>
+          <span class="xbrl-col-head" id="bs-cf-col1">Sep 2026</span>
+          <span class="xbrl-col-head" id="bs-cf-col2">Sep 2025</span>
           <span class="xbrl-col-head">Change</span>
         </div>
 
         <div class="xbrl-section"><span class="xbrl-section-label">Operating inflows</span><span></span><span></span><span></span></div>
         <div class="xbrl-row indent">
           <span class="xbrl-label">Net salary</span>
-          <span class="xbrl-val pos" id="s-income">1,400</span>
+          <span class="xbrl-val pos" id="s-income">1,740</span>
           <span class="xbrl-val muted" id="s-prior-income">1,400</span>
-          <span class="xbrl-change neutral" id="s-chg-income">0</span>
+          <span class="xbrl-change pos" id="s-chg-income">+340</span>
         </div>
 
         <div class="xbrl-section"><span class="xbrl-section-label">Operating outflows</span><span></span><span></span><span></span></div>
         <div class="xbrl-row indent">
           <span class="xbrl-label">Rent</span>
-          <span class="xbrl-val neg">-510</span>
+          <span class="xbrl-val neg">-750</span>
           <span class="xbrl-val muted">-510</span>
-          <span class="xbrl-change neutral">0</span>
+          <span class="xbrl-change neg">-240</span>
         </div>
         <div class="xbrl-row indent">
           <span class="xbrl-label">Utilities (energy)</span>
@@ -268,9 +268,9 @@
 
         <div class="xbrl-row total">
           <span class="xbrl-label">Net cash from operating activities</span>
-          <span class="xbrl-val pos">160</span>
+          <span class="xbrl-val pos">260</span>
           <span class="xbrl-val muted neg">-90</span>
-          <span class="xbrl-change pos">+250</span>
+          <span class="xbrl-change pos">+350</span>
         </div>
       </div>
 
@@ -279,11 +279,11 @@
       <div class="xbrl-statement">
         <div class="xbrl-header">
           <span class="xbrl-header-title">Statement of Financial Position</span>
-          <span class="xbrl-header-sub">As at Sep 2026 vs Dec 2025 / EUR</span>
+          <span class="xbrl-header-sub">As at <span id="bs-sfp-asat">6 Oct 2026</span> vs Dec 2025 / EUR</span>
         </div>
         <div class="xbrl-col-headers">
           <span class="xbrl-col-head">Line item</span>
-          <span class="xbrl-col-head">Sep 2026</span>
+          <span class="xbrl-col-head" id="bs-sfp-col">Oct 2026</span>
           <span class="xbrl-col-head">Dec 2025</span>
           <span class="xbrl-col-head">Change</span>
         </div>
@@ -358,8 +358,8 @@
           <div class="profile-row"><span class="profile-row-label">Nationality</span><span class="profile-row-val">European (generic)</span></div>
           <div class="profile-row"><span class="profile-row-label">Education</span><span class="profile-row-val">Graduate, Apr 2024</span></div>
           <div class="profile-row"><span class="profile-row-label">First employment</span><span class="profile-row-val">Jun 2024 / 900 net</span></div>
-          <div class="profile-row"><span class="profile-row-label">Current employment</span><span class="profile-row-val">Sep 2025 / 1,400 net</span></div>
-          <div class="profile-row"><span class="profile-row-label">Housing</span><span class="profile-row-val">Shared flat / 600 rent</span></div>
+          <div class="profile-row"><span class="profile-row-label">Current employment</span><span class="profile-row-val" id="bs-employment">Oct 2026 / 1,740 net</span></div>
+          <div class="profile-row"><span class="profile-row-label">Housing</span><span class="profile-row-val">Furnished flat / 750 rent</span></div>
           <div class="profile-row"><span class="profile-row-label">System entry</span><span class="profile-row-val">EP.01 / 15 Apr 2024</span></div>
         </div>
       </div>
@@ -468,7 +468,7 @@
 
   <footer class="footer" role="contentinfo">
     <div class="footer-inner">
-      <div><p class="footer-brand-name">Double Entry Life</p><p class="footer-brand-desc">Accounting applied to one life and to listed companies. The ledger follows Bill. The blog reads company accounts. Est. April 2024.</p></div>
+      <div><p class="footer-brand-name">Double Entry Life</p><p class="footer-brand-desc">Accounting applied to one life and to listed companies. The ledger follows Bill. The blog reads company accounts.</p></div>
       <div class="footer-links">
         <div class="footer-col"><p class="footer-col-label">Navigate</p><ul><li><a href="ledger.html">Ledger</a></li><li><a href="start.html">Meet Bill</a></li><li><a href="blog/index.html">Blog</a></li><li><a href="about.html">About</a></li></ul></div>
         <div class="footer-col"><p class="footer-col-label">Connect</p><ul><li><a href="https://www.linkedin.com/in/biagio-tozzo-913166138" target="_blank" rel="noopener">LinkedIn</a></li><li><a href="https://substack.com/@doubleentrylife" target="_blank" rel="noopener">Substack</a></li></ul></div>
@@ -494,10 +494,14 @@
     // "How to read this" period label, and the two vitals EP labels, all from
     // bill-state.js so this page needs no manual edit at publication. The month
     // comes from the episode date, not a parse of today's date.
-    var noteMonth = (s.date||'').replace(/^\d+\s+/,'');       // "28 Jul 2026" -> "Jul 2026"
-    setText('bs-note-period', s.episode + ' (' + noteMonth + ')');
-    var priorMonth = noteMonth.replace(/(\d{4})$/, function(m){return (parseInt(m,10)-1);});
-    setText('bs-note-prior', priorMonth);
+    setText('bs-note-period', s.episode + ' (' + s.date + ')');
+    setText('bs-sfp-asat', s.date);
+    setText('bs-sfp-col', (s.date||'').replace(/^\d+\s+/,''));
+    var cf = s.cashFlowPeriod || '';
+    var cfPrior = s.cashFlowPriorPeriod || cf.replace(/(\d{4})$/, function(m){return (parseInt(m,10)-1);});
+    ['bs-cf-period','bs-cf-col1'].forEach(function(id){ setText(id, cf); });
+    ['bs-cf-prior','bs-cf-col2','bs-note-prior'].forEach(function(id){ setText(id, cfPrior); });
+    if (s.currentContract) setText('bs-employment', s.currentContract.since + ' / ' + s.currentContract.net.toLocaleString('en-US') + ' net');
     setText('bs-vitals-ep-1', s.episode);
     setText('bs-vitals-ep-2', s.episode);
     var vitals = {cash:s.cash, equity:s.equity, stress:s.stress, future:s.future};

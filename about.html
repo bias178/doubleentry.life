@@ -164,7 +164,7 @@
         A fictional character with precise, stable numbers allows the accounting logic to be the variable. Bill's salary, savings, mortgage, and debts do not change between episodes unless an episode event explicitly changes them. His net worth is a derived value, not an assumption. Every number is traceable to a specific EP.
       </p>
       <p>
-        Bill is not aspirational and he is not a cautionary tale. He started with 1,000 euro and a degree. Two years later he earns 1,400 net and wonders if the trajectory is right. The ledger knows. He is starting to learn how to read it.
+        Bill is not aspirational and he is not a cautionary tale. He started with 1,000 euro and a degree. Today he earns <span id="about-income">1,740</span> net and wonders if the trajectory is right. The ledger knows. He is starting to learn how to read it.
       </p>
 
       <h2>Why accounting</h2>
@@ -223,8 +223,8 @@
             <span class="about-sidebar-stat-val" id="bs-glance-income">1,400</span>
           </div>
           <div class="about-sidebar-stat-row">
-            <span class="about-sidebar-stat-label">Monthly surplus</span>
-            <span class="about-sidebar-stat-val" id="bs-glance-surplus">160</span>
+            <span class="about-sidebar-stat-label" id="bs-glance-surplus-label">Monthly surplus, Oct 2026</span>
+            <span class="about-sidebar-stat-val" id="bs-glance-surplus">260</span>
           </div>
           <div class="about-sidebar-stat-row">
             <span class="about-sidebar-stat-label">Net worth</span>
@@ -257,7 +257,7 @@
     <div class="footer-inner">
       <div>
         <p class="footer-brand-name">Double Entry Life</p>
-        <p class="footer-brand-desc">Accounting applied to one life and to listed companies. The ledger follows Bill. The blog reads company accounts. Est. April 2024.</p>
+        <p class="footer-brand-desc">Accounting applied to one life and to listed companies. The ledger follows Bill. The blog reads company accounts.</p>
       </div>
       <div class="footer-links">
         <div class="footer-col">
@@ -305,7 +305,9 @@
         var gI=document.getElementById('bs-glance-income');
         if(gS) gS.textContent = fmtPlain(BILL_STATE.surplus);
         if(gN) gN.textContent = fmtSigned(BILL_STATE.netAssets);
-        if(gI) gI.textContent = fmtPlain(BILL_STATE.income);
+        var aI=document.getElementById('about-income'); if(aI && BILL_STATE.currentContract) aI.textContent = fmtPlain(BILL_STATE.currentContract.net);
+        if(gI) gI.textContent = fmtPlain(BILL_STATE.currentContract ? BILL_STATE.currentContract.net : BILL_STATE.income);
+        var gL=document.getElementById('bs-glance-surplus-label'); if(gL && BILL_STATE.cashFlowPeriod) gL.textContent = 'Monthly surplus, ' + BILL_STATE.cashFlowPeriod;
       }
 
       // Bill's age, recalculated from his birth month/year on every load

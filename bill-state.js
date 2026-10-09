@@ -28,6 +28,16 @@ var BILL_STATE = {
   },
 
 
+  // Employment and monthly-statement labels (added 9 Oct 2026).
+  // currentContract: Bill's contract in force (EP.31: permanent contract, 1,740 net
+  // from 1 Oct 2026). Shown in Meet Bill (entity record) and About (at a glance).
+  // cashFlowPeriod / cashFlowPriorPeriod are the months the monthly block and its
+  // prior-year comparison represent; they drive the labels of the monthly statement.
+  // Update them together with the block (EP.34: first closed month on the new structure).
+  currentContract: { since: "Oct 2026", net: 1740 },
+  cashFlowPeriod:  "Oct 2026",
+  cashFlowPriorPeriod: "Sep 2025",
+
   // FY2026 is the only open fiscal year. Update this by 1 each time a new
   // episode is published. FY2024 (9 EP) and FY2025 (11 EP) are closed and
   // stay static everywhere else in the site.
@@ -48,8 +58,14 @@ var BILL_STATE = {
   // stays comparable with the 510 split out in EP.28). Nothing is earned or
   // owed until October, so the current period stays on the September numbers
   // and is rewritten when the first month in the new configuration is closed.
-  income:     1400,
-  rent:       -510,
+  // 9 Oct 2026, editorial decision: the current block now shows the new contract
+  // structure instead of waiting for the October close. Income 1,740 and rent 750
+  // (rent only) come from EP.31; every other line is held at the September value,
+  // as EP.31 states ("other costs held constant until they can be measured in the
+  // new city"). Surplus is derived: 1,740 - 750 - 115 - 250 - 80 - 25 - 30 - 150
+  // - 80 = 260 (160 + 340 - 240). It is a run rate, not a closed month.
+  income:     1740,
+  rent:       -750,
   utilities:  -115,
   food:       -250,
   transport:  -80,
