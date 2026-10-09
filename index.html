@@ -205,6 +205,9 @@
     .footer-linkedin:hover{opacity:0.7;}
 
     /* RESPONSIVE */
+    .hero-paths{flex-direction:column;align-items:flex-start;gap:1rem;}
+    .hero-path{display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;margin:0;}
+    .hero-path span{font-size:0.95rem;color:var(--ink-muted);min-width:15rem;}
     .latest{max-width:var(--max-w);margin:0 auto;padding:4rem 2rem;}
     .latest-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--rule);border:1px solid var(--rule);}
     .latest-card{background:var(--paper);padding:2rem 1.75rem 2.25rem;}
@@ -268,11 +271,11 @@
   <section class="hero" aria-label="Introduction">
     <div class="hero-copy">
       <p class="hero-system-label">Welcome / Est. Apr 2024</p>
-      <h1 class="hero-headline">Financial statements, read through an <em>accountant's</em> eyes.</h1>
-      <p class="hero-subhead">Double Entry Life has two parts. The ledger follows Bill, a fictional character, and records his financial decisions the way an accountant would: one episode every two weeks, one accounting concept each, numbers that add up. The blog looks at company accounts and listed companies in the same way. If you are new here, start with Bill.</p>
-      <div class="hero-actions">
-        <a href="start.html" class="btn-primary">Meet Bill</a>
-        <a href="ledger.html" class="btn-ghost">Open the ledger</a>
+      <h1 class="hero-headline">Financial statements, read through <em>accounting</em>.</h1>
+      <p class="hero-subhead">Double Entry Life reads everyday finance and company accounts through accounting. In the ledger, Bill is a fictional character whose decisions are recorded like those of any entity: one episode every two weeks, one accounting concept each, numbers that add up. On the blog, the same lens goes to company accounts and listed companies.</p>
+      <div class="hero-actions hero-paths">
+        <p class="hero-path"><span>Want to discover Bill?</span><a href="start.html" class="btn-primary">Start here</a></p>
+        <p class="hero-path"><span>Want the latest from the blog?</span><a href="blog/index.html" class="btn-ghost">Go here</a></p>
       </div>
     </div>
 
@@ -384,7 +387,7 @@
       <p class="latest-label">Latest from the blog</p>
       <p class="latest-meta" id="lt-blog-meta">Company accounts and listed companies</p>
       <h2 class="latest-title" id="lt-blog-title">The first post is on its way.</h2>
-      <p class="latest-text" id="lt-blog-text">The blog is a separate space for general considerations on financial statements and listed companies, read the way an accountant reads them.</p>
+      <p class="latest-text" id="lt-blog-text">The blog is a separate space for general considerations on financial statements and listed companies, read through accounting.</p>
       <a href="blog/index.html" class="latest-link" id="lt-blog-link">Visit the blog</a>
     </div>
     </div>
@@ -394,49 +397,14 @@
 
 <hr class="divider" />
 
-  <!-- BILL -->
-  <section class="bill" aria-label="Bill's financial baseline">
-    <div>
-      <p class="bill-eyebrow">The entity</p>
-      <h2 class="bill-headline">Bill is not a case study.<br>He is a persistent entity<br>in an open ledger.</h2>
-      <p class="bill-body">He started with 1,000 euro in April 2024. Every number since then is the result of a specific decision, recorded in a specific episode. His net worth is derived, never assumed.</p>
-      <a href="ledger.html" class="bill-link">Read Bill's full ledger</a>
-    </div>
-    <div>
-      <div class="bill-table">
-        <div class="bill-table-header">
-          <span class="bill-table-header-label">Bill / Current state / <span id="bs-ep-2">EP.32</span></span>
-          <span class="bill-table-header-label" style="color:rgba(255,255,255,0.4)" id="bs-x-period">Oct 2026</span>
-        </div>
-        <div class="bill-table-row section-head"><span class="bill-table-label section">Income</span><span class="bill-table-val"></span></div>
-        <div class="bill-table-row"><span class="bill-table-label">Net monthly salary</span><span class="bill-table-val pos" id="bs-x-income">1,400</span></div>
-        <div class="bill-table-row section-head"><span class="bill-table-label section">Fixed outflows</span><span class="bill-table-val"></span></div>
-        <div class="bill-table-row"><span class="bill-table-label">Rent (shared flat)</span><span class="bill-table-val neg" id="bs-x-rent">-510</span></div>
-        <div class="bill-table-row"><span class="bill-table-label">Utilities (energy)</span><span class="bill-table-val neg" id="bs-x-utilities">-115</span></div>
-        <div class="bill-table-row"><span class="bill-table-label">Food</span><span class="bill-table-val neg" id="bs-x-food">-250</span></div>
-        <div class="bill-table-row"><span class="bill-table-label">Transport / phone / misc</span><span class="bill-table-val neg" id="bs-x-other">-365</span></div>
-        <hr class="bill-table-divider" />
-        <div class="bill-table-row"><span class="bill-table-label">Monthly surplus</span><span class="bill-table-val pos" id="bs-x-surplus">160</span></div>
-        <div class="bill-table-row section-head"><span class="bill-table-label section">Balance sheet</span><span class="bill-table-val"></span></div>
-        <div class="bill-table-row"><span class="bill-table-label">Liquid savings</span><span class="bill-table-val pos" id="bs-x-savings">3,072</span></div>
-        <div class="bill-table-row"><span class="bill-table-label">Rental deposit (recoverable)</span><span class="bill-table-val" id="bs-x-deposit">2,250</span></div>
-        <div class="bill-table-row"><span class="bill-table-label">Smartphone (book value)</span><span class="bill-table-val" id="bs-x-phone-nbv">103</span></div>
-        <div class="bill-table-row"><span class="bill-table-label">Certification (intangible, net)</span><span class="bill-table-val" id="bs-x-intangible">1,375.00</span></div>
-        <div class="bill-table-row"><span class="bill-table-label">Right-of-use asset (lease, net)</span><span class="bill-table-val" id="bs-x-rou">12,766</span></div>
-        <div class="bill-table-row"><span class="bill-table-label">BNPL payable (current liability)</span><span class="bill-table-val neg" id="bs-x-bnpl">-450</span></div>
-        <div class="bill-table-row"><span class="bill-table-label">Lease liability (8,340 current)</span><span class="bill-table-val neg" id="bs-x-lease">-12,016</span></div>
-        <hr class="bill-table-divider" />
-        <div class="bill-table-row"><span class="bill-table-label">Net worth (derived)</span><span class="bill-table-val pos" id="bs-x-networth">7,100.00</span></div>
-      </div>
-    </div>
-  </section>
+  
 
   <!-- FOOTER -->
   <footer class="footer" role="contentinfo">
     <div class="footer-inner">
       <div>
         <p class="footer-brand-name">Double Entry Life</p>
-        <p class="footer-brand-desc">A financial reporting system rendered as editorial content, and a free blog on company accounts read through an accountant's eyes. Est. April 2024.</p>
+        <p class="footer-brand-desc">Accounting applied to one life and to listed companies. The ledger follows Bill. The blog reads company accounts. Est. April 2024.</p>
       </div>
       <div class="footer-links">
         <div class="footer-col">
