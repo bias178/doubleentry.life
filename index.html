@@ -273,7 +273,7 @@
     <div class="hero-copy">
       <p class="hero-system-label">A ledger and a blog</p>
       <h1 class="hero-headline">What <em>accounting</em> says about a life, and about the companies you hear about.</h1>
-      <p class="hero-subhead">Double Entry Life follows Bill, a fictional character whose decisions are recorded like those of any entity: one episode every two weeks, one accounting concept each, numbers that add up. The blog does the same with company accounts and listed companies, in plain language.</p>
+      <p class="hero-subhead">Double Entry Life follows Bill, a fictional character whose decisions are recorded like those of any entity: one episode every two weeks, one accounting concept each, numbers that add up. The blog does the same with company accounts, in plain language.</p>
       <div class="hero-actions hero-paths">
         <p class="hero-path"><span>Want to discover Bill?</span><a href="start.html" class="btn-primary">Start here</a></p>
         <p class="hero-path"><span>Want the latest from the blog?</span><a href="blog/index.html" class="btn-primary">Go here</a></p>
@@ -386,9 +386,9 @@
     </div>
     <div class="latest-card">
       <p class="latest-label">Latest from the blog</p>
-      <p class="latest-meta" id="lt-blog-meta">Company accounts and listed companies</p>
+      <p class="latest-meta" id="lt-blog-meta">Company accounts, listed or not</p>
       <h2 class="latest-title" id="lt-blog-title">The first post is on its way.</h2>
-      <p class="latest-text" id="lt-blog-text">The blog is a separate space for general considerations on financial statements and listed companies, read through accounting.</p>
+      <p class="latest-text" id="lt-blog-text">The blog is a separate space for general considerations on company accounts, listed or not, read through accounting.</p>
       <a href="blog/index.html" class="latest-link" id="lt-blog-link">Visit the blog</a>
     </div>
     </div>
@@ -405,7 +405,7 @@
     <div class="footer-inner">
       <div>
         <p class="footer-brand-name">Double Entry Life</p>
-        <p class="footer-brand-desc">Accounting applied to one life and to listed companies. The ledger follows Bill. The blog reads company accounts.</p>
+        <p class="footer-brand-desc">The ledger follows Bill. The blog reads company accounts. Both speak accounting.</p>
       </div>
       <div class="footer-links">
         <div class="footer-col">
@@ -550,7 +550,7 @@
     (function(){
       var p = (typeof BLOG_POSTS !== 'undefined' && BLOG_POSTS.length) ? BLOG_POSTS[0] : null;
       if (!p) return;
-      setText('lt-blog-meta', p.date);
+      setText('lt-blog-meta', (p.note ? 'Note ' + p.note + ' / ' : '') + p.date);
       setText('lt-blog-title', p.title);
       setText('lt-blog-text', p.desc);
       var a = document.getElementById('lt-blog-link');
