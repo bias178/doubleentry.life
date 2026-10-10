@@ -136,9 +136,22 @@
     .post-sources{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid var(--rule);}
     .post-sources-label{font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--neutral);margin-bottom:0.6rem;}
     .post-sources p{font-family:var(--font-mono);font-size:0.68rem;line-height:1.7;color:var(--ink-muted);}
+    .ep-nav{border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);background:white;margin-top:4rem;}
+    .ep-nav-inner{max-width:var(--max-w);margin:0 auto;display:grid;grid-template-columns:1fr 1fr;}
+    .ep-nav-cell{padding:1.25rem 2rem;display:flex;flex-direction:column;gap:0.3rem;transition:background 0.15s;}
+    .ep-nav-cell:hover{background:var(--teal-light);}
+    .ep-nav-cell.next{text-align:right;border-left:1px solid var(--rule);}
+    .ep-nav-cell.disabled{opacity:0.3;pointer-events:none;}
+    .ep-nav-direction{font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--neutral);}
+    .ep-nav-ep{font-family:var(--font-mono);font-size:0.62rem;color:var(--teal);}
+    .ep-nav-title{font-family:var(--font-serif);font-size:0.95rem;color:var(--ink);line-height:1.2;}
+    @media(max-width:860px){.ep-nav-inner{grid-template-columns:1fr;}.ep-nav-cell.next{text-align:left;border-left:none;border-top:1px solid var(--rule);}}
     .fig{background:#fdfae3;border:1px solid #e8e2c4;border-radius:10px;padding:1.6rem 1.4rem 1.2rem;margin:2rem 0 0.5rem;color:#0e5063;}
     .post-body .fig-kicker{font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:#0e5063;opacity:0.8;margin-bottom:0.5rem;line-height:1.5;}
     .post-body .fig-title{font-family:var(--font-serif);font-size:1.35rem;line-height:1.2;color:#0e5063;margin-bottom:1.2rem;}
+    .fig-grid{display:grid;grid-template-columns:1fr 1fr;column-gap:1rem;row-gap:0.35rem;align-items:stretch;}
+    .fig-grid .fig-box{margin-bottom:0;}
+    .post-body .fig-grid .fig-colh{align-self:end;min-height:0;margin-bottom:0.2rem;}
     .fig-cols{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
     .post-body .fig-colh{min-height:2.6em;font-family:var(--font-mono);font-size:0.58rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem;}
     .fig-box{font-family:var(--font-mono);font-size:0.62rem;padding:0.55rem 0.6rem;margin-bottom:0.35rem;display:flex;justify-content:space-between;min-height:2.1rem;align-items:center;}
@@ -215,20 +228,7 @@
       <div class="fig" role="img" aria-label="Same rent, same cash, a different EBITDA">
         <p class="fig-kicker">Leases and EBITDA, IFRS 16 and ASC 842</p>
         <p class="fig-title">Same rent, same cash, a different EBITDA</p>
-        <div class="fig-cols">
-          <div><p class="fig-colh">IFRS 16</p>
-            <div class="fig-box base">Other operating costs</div>
-            <div class="fig-box empty"></div>
-            <div class="fig-box key">EBITDA<span>higher</span></div>
-            <div class="fig-box cost">Depreciation</div>
-            <div class="fig-box cost">Interest</div></div>
-          <div><p class="fig-colh">ASC 842, operating lease</p>
-            <div class="fig-box base">Other operating costs</div>
-            <div class="fig-box cost">Lease cost</div>
-            <div class="fig-box key">EBITDA<span>lower</span></div>
-            <div class="fig-box empty"></div>
-            <div class="fig-box empty"></div></div>
-        </div>
+        <div class="fig-grid"><p class="fig-colh">IFRS 16</p><p class="fig-colh">ASC 842, operating lease</p><div class="fig-box base">Other operating costs</div><div class="fig-box base">Other operating costs</div><div class="fig-box empty"></div><div class="fig-box cost">Lease cost</div><div class="fig-box key">EBITDA<span>higher</span></div><div class="fig-box key">EBITDA<span>lower</span></div><div class="fig-box cost">Depreciation</div><div class="fig-box empty"></div><div class="fig-box cost">Interest</div><div class="fig-box empty"></div></div>
         <p class="fig-legend"><i></i>the same lease, the same cash out</p>
         <div class="fig-foot"><span class="fig-mark">doubleentry<em>.life</em></span><span class="fig-tag">Illustrative</span></div>
       </div>
@@ -241,9 +241,31 @@
       <p>IFRS 16 Leases. ASC 842 Leases. Illustrative case.</p>
     </div>
 
+
     <a class="post-back" href="index.html">Back to the blog</a>
   </article>
 
+  <nav class="ep-nav" aria-label="Note navigation"><div class="ep-nav-inner">
+    <a href="note-02-same-net-income.html" class="ep-nav-cell prev"><span class="ep-nav-direction">&#8592; Previous note</span><span class="ep-nav-ep">NOTE 02</span><span class="ep-nav-title">A share price says nothing about how the company got there.</span></a>
+    <a href="note-04-dividends-and-equity.html" class="ep-nav-cell next"><span class="ep-nav-direction">Next note &#8594;</span><span class="ep-nav-ep">NOTE 04</span><span class="ep-nav-title">The dividend never appears in the income statement.</span></a>
+  </div></nav>
+
+  <script src="posts.js"></script>
+  <script>
+  (function(){
+    if(typeof BLOG_POSTS==='undefined') return;
+    var me='03', list=BLOG_POSTS.slice().reverse(), i=-1;
+    for(var k=0;k<list.length;k++) if(list[k].note===me) i=k;
+    if(i<0) return;
+    var nx=list[i+1], cell=document.getElementById('note-nav-next');
+    if(nx && cell){
+      var a=document.createElement('a'); a.href=nx.url; a.className='ep-nav-cell next';
+      a.innerHTML='<span class="ep-nav-direction">Next note &#8594;</span><span class="ep-nav-ep">NOTE '+nx.note+'</span><span class="ep-nav-title"></span>';
+      a.querySelector('.ep-nav-title').textContent=nx.title;
+      cell.replaceWith(a);
+    }
+  })();
+  </script>
   <script>
   (function(){
     var b=document.querySelector('.post-body'); if(!b) return;
