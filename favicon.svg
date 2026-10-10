@@ -9,7 +9,6 @@
       <stop offset="100%" stop-color="rgb(155, 208, 173)" />
     </linearGradient>
   </defs>
-  <rect x="0" y="0" width="256.0" height="512" fill="url(#teal)" />
-  <rect x="256.0" y="0" width="256.0" height="512" fill="url(#mint)" />
-  <polygon points="256.00,81.92 297.85,214.15 430.08,256.00 297.85,297.85 256.00,430.08 214.15,297.85 81.92,256.00 214.15,214.15" fill="rgb(253, 250, 227)" />
+  <rect x="0" y="0" width="256" height="512" fill="url(#teal)" />
+  <rect x="256" y="0" width="256" height="512" fill="url(#mint)" />
 </svg>
