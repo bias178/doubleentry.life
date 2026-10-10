@@ -102,7 +102,17 @@
     /* line balance */
     h1,h2,h3,.latest-title,.blog-item-title{text-wrap:balance;}
     p,li{text-wrap:pretty;}
-  </style>
+      /* compact footer */
+    .footer-inner{align-items:center !important;padding-top:2.25rem !important;padding-bottom:2.25rem !important;}
+    .footer-links{gap:0 !important;}
+    .footer-col-label{display:none !important;}
+    .footer-col ul{flex-direction:row !important;flex-wrap:wrap;gap:0.5rem 1.5rem !important;}
+    .footer-col a{font-family:var(--font-mono) !important;font-size:0.68rem !important;letter-spacing:0.06em;text-transform:uppercase;}
+    @media (max-width: 860px){ .footer-inner{flex-direction:column;align-items:flex-start !important;gap:1.25rem !important;} .footer-bottom{flex-direction:column;align-items:flex-start !important;gap:0.6rem;} }
+    .page-header-title em{font-style:italic;color:var(--teal);}
+    .about-sidebar-stat-row{gap:1rem;}
+    .about-sidebar-stat-val{white-space:nowrap;}
+</style>
 </head>
 <body>
 
@@ -137,7 +147,7 @@
 
   <header class="page-header">
     <p class="page-header-eyebrow">About the project</p>
-    <h1 class="page-header-title">Accounting is a language. It reads a life as well as it reads a company.</h1>
+    <h1 class="page-header-title"><em>Accounting</em> is a language. It reads a life as well as it reads a company.</h1>
   </header>
 
   <div class="about-body">
@@ -156,7 +166,7 @@
         Double Entry Life runs on two tracks, each with its own rules.
       </p>
       <p>
-        The first is Bill's ledger. It is not a blog. It is a financial reporting system rendered as editorial content. Every page behaves like a component of a ledger. There are four objects in the system: FY (fiscal year container), EP (episode ledger entry), Bill (single persistent entity), and the BillBoard (financial statement UI).
+        The first is Bill's ledger. It is not a blog. It follows one fictional life with real accounting, so that a salary, a lease or a purchase on instalments can be read the way a company reads its own numbers.
       </p>
       <p>
         The system has been running since April 2024. FY 2024 was a short year, nine months, opening the books. FY 2025 ran the full calendar year under the going concern principle. FY 2026 is the restatement: three years of data, one open ledger. A new episode is published every two weeks. Every episode is listed in order in the Ledger, and Meet Bill is the place to start.
@@ -200,7 +210,7 @@
     <aside class="about-sidebar" aria-label="Project facts">
       <div class="about-sidebar-card">
         <p class="about-sidebar-card-label">The system</p>
-        <p><span id="stat-total-episodes">30</span> episodes across three fiscal years. One accounting concept per entry. One decision in Bill's life. Each EP is an atomic record: self-contained, traceable, part of the sequence.</p>
+        <p><span id="stat-total-episodes">30</span> episodes across three fiscal years. One accounting concept per entry. One decision in Bill's life. Each EP is an atomic record: self-contained, traceable, part of the sequence. Each one carries a BillBoard: ledger, vitals and insight.</p>
         <a href="ledger.html">Open the ledger</a>
       </div>
 
@@ -211,7 +221,7 @@
       </div>
 
       <div class="about-sidebar-card">
-        <p class="about-sidebar-card-label">Bill at a glance / Current</p>
+        <p class="about-sidebar-card-label">Bill at a glance / <span id="bs-glance-ep">EP.32</span></p>
         <div class="about-sidebar-stat">
           <div class="about-sidebar-stat-row">
             <span class="about-sidebar-stat-label">Age</span>
@@ -226,7 +236,7 @@
             <span class="about-sidebar-stat-val" id="bs-glance-income">1,400</span>
           </div>
           <div class="about-sidebar-stat-row">
-            <span class="about-sidebar-stat-label" id="bs-glance-surplus-label">Monthly surplus, Oct 2026</span>
+            <span class="about-sidebar-stat-label" id="bs-glance-surplus-label">Surplus, Oct 2026</span>
             <span class="about-sidebar-stat-val" id="bs-glance-surplus">260</span>
           </div>
           <div class="about-sidebar-stat-row">
@@ -250,14 +260,7 @@
           <p class="footer-col-label">Navigate</p>
           <ul><li><a href="ledger.html">Ledger</a></li><li><a href="start.html">Meet Bill</a></li><li><a href="blog/index.html">Blog</a></li><li><a href="about.html">About</a></li></ul>
         </div>
-        <div class="footer-col">
-          <p class="footer-col-label">Connect</p>
-          <ul>
-            <li><a href="https://www.linkedin.com/in/biagio-tozzo-913166138" target="_blank" rel="noopener">LinkedIn</a></li>
-            <li><a href="https://substack.com/@doubleentrylife" target="_blank" rel="noopener">Substack</a></li>
-          </ul>
         </div>
-      </div>
     </div>
     <div class="footer-bottom">
       <span class="footer-copy">&#169; 2026 Double Entry Life. All entries by Biagio Tozzo.</span>
@@ -290,10 +293,11 @@
         var gN=document.getElementById('bs-glance-networth');
         var gI=document.getElementById('bs-glance-income');
         if(gS) gS.textContent = fmtPlain(BILL_STATE.surplus);
+        var gE=document.getElementById('bs-glance-ep'); if(gE) gE.textContent = BILL_STATE.episode;
         if(gN) gN.textContent = fmtSigned(BILL_STATE.netAssets);
         var aI=document.getElementById('about-income'); if(aI && BILL_STATE.currentContract) aI.textContent = fmtPlain(BILL_STATE.currentContract.net);
         if(gI) gI.textContent = fmtPlain(BILL_STATE.currentContract ? BILL_STATE.currentContract.net : BILL_STATE.income);
-        var gL=document.getElementById('bs-glance-surplus-label'); if(gL && BILL_STATE.cashFlowPeriod) gL.textContent = 'Monthly surplus, ' + BILL_STATE.cashFlowPeriod;
+        var gL=document.getElementById('bs-glance-surplus-label'); if(gL && BILL_STATE.cashFlowPeriod) gL.textContent = 'Surplus, ' + BILL_STATE.cashFlowPeriod;
       }
 
       // Bill's age, recalculated from his birth month/year on every load
