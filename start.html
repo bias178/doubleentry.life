@@ -205,7 +205,19 @@
     /* line balance */
     h1,h2,h3,.latest-title,.blog-item-title{text-wrap:balance;}
     p,li{text-wrap:pretty;}
-  </style>
+      /* compact footer */
+    .footer-inner{align-items:center !important;padding-top:2.25rem !important;padding-bottom:2.25rem !important;}
+    .footer-links{gap:0 !important;}
+    .footer-col-label{display:none !important;}
+    .footer-col ul{flex-direction:row !important;flex-wrap:wrap;gap:0.5rem 1.5rem !important;}
+    .footer-col a{font-family:var(--font-mono) !important;font-size:0.68rem !important;letter-spacing:0.06em;text-transform:uppercase;}
+    @media (max-width: 860px){ .footer-inner{flex-direction:column;align-items:flex-start !important;gap:1.25rem !important;} .footer-bottom{flex-direction:column;align-items:flex-start !important;gap:0.6rem;} }
+    .page-header-inner{grid-template-columns:1fr !important;}
+    .bb-row{display:grid;grid-template-columns:minmax(0,420px) minmax(0,320px);gap:2.5rem;align-items:start;margin-top:2rem;}
+    .bb-row .bb-wrap{margin-top:0;}
+    .bb-row .page-header-note{max-width:none;margin-top:0;}
+    @media (max-width:860px){ .bb-row{grid-template-columns:1fr;gap:1.75rem;} }
+</style>
 </head>
 <body>
 
@@ -244,6 +256,7 @@
         <p class="page-header-eyebrow">Entity record / Bill</p>
         <h1 class="page-header-title">Meet Bill</h1>
         <p class="page-header-sub">Single persistent entity / Active since EP.01 / 15 Apr 2024</p>
+        <div class="bb-row">
         <div class="bb-wrap">
         <div class="hero-tama" aria-label="Bill's dashboard">
       <div class="tama-device">
@@ -335,11 +348,13 @@
       <p class="hero-tama-caption">Bill's management dashboard</p>
     </div>
         </div>
-      </div>
-      <div class="page-header-note">
+        <div class="page-header-note">
         <strong>How to read this</strong>
         Balance sheet as at <span id="bs-note-period">EP.32 (6 Oct 2026)</span>, compared with the FY2025 closing. Cash flow statement on the new contract structure (October run rate, month not yet closed), compared with the same month a year earlier (<span id="bs-note-prior">Sep 2025</span> in the prior column). All figures in EUR.
       </div>
+        </div>
+      </div>
+
     </div>
   </header>
 
@@ -572,8 +587,7 @@
       <div><p class="footer-brand-name">Double Entry Life</p><p class="footer-brand-desc">The ledger follows Bill. The blog reads company accounts. Both speak accounting.</p></div>
       <div class="footer-links">
         <div class="footer-col"><p class="footer-col-label">Navigate</p><ul><li><a href="ledger.html">Ledger</a></li><li><a href="start.html">Meet Bill</a></li><li><a href="blog/index.html">Blog</a></li><li><a href="about.html">About</a></li></ul></div>
-        <div class="footer-col"><p class="footer-col-label">Connect</p><ul><li><a href="https://www.linkedin.com/in/biagio-tozzo-913166138" target="_blank" rel="noopener">LinkedIn</a></li><li><a href="https://substack.com/@doubleentrylife" target="_blank" rel="noopener">Substack</a></li></ul></div>
-      </div>
+        </div>
     </div>
     <div class="footer-bottom">
       <span class="footer-copy">&#169; 2026 Double Entry Life. All entries by Biagio Tozzo.</span>
