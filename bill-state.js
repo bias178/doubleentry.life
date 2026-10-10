@@ -36,7 +36,7 @@ var BILL_STATE = {
   // Update them together with the block (EP.34: first closed month on the new structure).
   currentContract: { since: "Oct 2026", net: 1740 },
   cashFlowPeriod:  "Oct 2026",
-  cashFlowPriorPeriod: "Sep 2025",
+  cashFlowPriorPeriod: "Oct 2025",
 
   // FY2026 is the only open fiscal year. Update this by 1 each time a new
   // episode is published. FY2024 (9 EP) and FY2025 (11 EP) are closed and
@@ -74,19 +74,22 @@ var BILL_STATE = {
   social:     -150,
   misc:       -80,
 
-  // Prior period: monthly (Aug 2025, same month prior year). Bill still lived at
-  // his parents' (EP.16: nothing changes until September). Same pre-move
-  // structure as Jul 2025: 900 in, 405 out, surplus 495 (EP.03). No rent, no
-  // utilities of his own.
-  prior_income:     900,
-  prior_rent:       0,
-  prior_utilities:  0,
-  prior_food:       -80,
-  prior_transport:  -120,
+  // Prior period: monthly, same month prior year = Oct 2025 (set 10 Oct 2026).
+  // Not a closed episode month: derived from Sep 2025 (EP.18 actual, -90) plus
+  // EP.18/EP.19. Canon totals: base surplus 105 (EP.18), new recurring costs 158
+  // (EP.19: gym 35, coffee 50, streaming 13, train home 60), surplus -53. The
+  // split of the 195 one-off first-month friction removed vs Sep 2025 (food -60,
+  // transport -60, social -75) was agreed with Biagio on 10 Oct 2026.
+  // Rule: with no significant event, Bill keeps earning and spending as before.
+  prior_income:     1400,
+  prior_rent:       -510,
+  prior_utilities:  -90,
+  prior_food:       -310,
+  prior_transport:  -100,
   prior_phone:      -25,
-  prior_subs:       -30,
-  prior_social:     -150,
-  prior_misc:       0,
+  prior_subs:       -43,
+  prior_social:     -230,
+  prior_misc:       -145,
 
   // Homepage feature section (index.html). Rewritten at every publication so
   // the home reflects the latest entry instead of one fixed narrative. The
