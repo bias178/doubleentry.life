@@ -12,6 +12,15 @@
 // }
 var BLOG_POSTS = [
   {
+    title: "Seven definitions of net debt.",
+    note:  "10",
+    date:  "13 Oct 2026",
+    topic: "Net debt, APMs",
+    type:  "illustrative",
+    url:   "note-10-net-debt-definitions.html",
+    desc:  "The same label on seven balance sheets. What each company leaves in or out of net debt changes the leverage ratio built on top of it."
+  },
+  {
     title: "Profit up, cash down.",
     note:  "09",
     date:  "10 Oct 2026",
