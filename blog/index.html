@@ -243,6 +243,13 @@
     .footer-col ul{flex-direction:row !important;flex-wrap:wrap;gap:0.5rem 1.5rem !important;}
     .footer-col a{font-family:var(--font-mono) !important;font-size:0.68rem !important;letter-spacing:0.06em;text-transform:uppercase;}
     @media (max-width: 860px){ .footer-inner{flex-direction:column;align-items:flex-start !important;gap:1.25rem !important;} .footer-bottom{flex-direction:column;align-items:flex-start !important;gap:0.6rem;} }
+    /* subscribe */
+    .subscribe{max-width:var(--max-w);margin:0 auto;padding:0 2rem;}
+    .subscribe-card{background:white;border:1px solid var(--rule);padding:1.75rem;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1.25rem;}
+    .subscribe-label{font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--neutral);margin-bottom:0.5rem;}
+    .subscribe-text{font-family:var(--font-serif);font-size:1.25rem;line-height:1.3;color:var(--ink);}
+    .subscribe-btn{display:inline-block;background:var(--green);color:white;font-family:var(--font-mono);font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;padding:0.85rem 1.4rem;transition:opacity 0.15s;}
+    .subscribe-btn:hover{opacity:0.85;}
 </style>
 </head>
 <body>
@@ -305,6 +312,16 @@
       <span class="ledger-col-head right">Read</span>
     </div>
     <div id="blog-list"></div>
+  </section>
+
+  <section class="subscribe" aria-label="Subscribe">
+    <div class="subscribe-card">
+      <div>
+        <p class="subscribe-label">By email</p>
+        <p class="subscribe-text">New blog pieces and ledger entries, in your inbox.</p>
+      </div>
+      <a class="subscribe-btn" href="https://doubleentrylife.substack.com/subscribe" target="_blank" rel="noopener">Subscribe</a>
+    </div>
   </section>
 
   <footer class="footer" role="contentinfo">
