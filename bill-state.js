@@ -2,10 +2,10 @@
 // Single source of truth. Update only when a new episode is published.
 
 var BILL_STATE = {
-  episode: "EP.32",
+  episode: "EP.33",
   fy:      "FY 2026",
-  date:    "6 Oct 2026",
-  concept: "Lease Liability Measurement",
+  date:    "20 Oct 2026",
+  concept: "Share-Based Payment",
 
   // Drives the "Next entry" link on every episode page. Update this to the
   // new episode's own number/url/title each time a new episode is
@@ -13,9 +13,9 @@ var BILL_STATE = {
   // latestEpisode.number and resolves its "Next entry" link automatically:
   // no need to reopen and edit the previous episode's file by hand.
   latestEpisode: {
-    number: 32,
-    url:    "ep-32.html",
-    title:  "The contract runs 4 years. The liability does not."
+    number: 33,
+    url:    "ep-33.html",
+    title:  "Bill was granted 3,000 euro of shares. His ledger records nothing."
   },
 
   // Homepage BillBoard "Insight" panel (index.html). Previously hardcoded in
@@ -23,8 +23,8 @@ var BILL_STATE = {
   // EP.26", pairing EP.26's number with EP.19's concept. Now it lives here and
   // updates with everything else.
   insight: {
-    label: "Lease Liability Measurement / EP.32",
-    html:  "Bill signs a 48-month lease at 750 a month. 48 x 750 is <strong>36,000</strong>. What lands on his balance sheet is <strong>12,016</strong>.<br><br>IFRS 16 measures the lease term, not the contract. Bill cannot leave before month 18 and nothing makes staying beyond it reasonably certain, so the term is 18 months. That judgement alone removes <strong>22,500</strong>.<br><br>Discounting the remaining 13,500 at his own borrowing rate of 8 per cent removes a further <strong>734</strong>.<br><br><strong>Settle the term before you argue about the rate.</strong>"
+    label: "Share-Based Payment / EP.33",
+    html:  "Bill is granted 150 restricted stock units at 20 euro a share. On the grant date that is <strong>3,000</strong> euro.<br><br>IFRS 2 is written for the company. It spreads the 3,000 over the 36 months of the vesting period, <strong>1,000</strong> a year, against equity, and the amount does not move if the share price does.<br><br>Bill's ledger records nothing until the units vest. Net assets stay at <strong>7,100.00</strong>.<br><br><strong>A grant is a cost for the company long before it is anything for the employee.</strong>"
   },
 
 
@@ -41,7 +41,7 @@ var BILL_STATE = {
   // FY2026 is the only open fiscal year. Update this by 1 each time a new
   // episode is published. FY2024 (9 EP) and FY2025 (11 EP) are closed and
   // stay static everywhere else in the site.
-  fy2026EpisodeCount: 12,
+  fy2026EpisodeCount: 13,
   fy2024EpisodeCount: 9,
   fy2025EpisodeCount: 11,
 
@@ -98,20 +98,19 @@ var BILL_STATE = {
   //   rows: label, val, tone ("pos" | "neg" | "" for neutral)
   //   divider: true inserts a rule above that row
   homeFeature: {
-    eyebrow:  "Incremental analysis",
-    headline: "Bill got a 340 euro raise. He keeps 100 of it.",
+    eyebrow:  "Share-based payment",
+    headline: "Bill was granted 3,000 euro of shares. His ledger records nothing.",
     body: [
-      "For the last few weeks Bill was open to work. In September he signs a permanent contract: 1,740 net a month from October, after two years and three months on 1,400. On its own that is a raise of 340, and it is the number anyone would lead with.",
-      "The job is in another city, and the flat that comes with it costs 750 in rent against the 510 he pays now, rent only in both. Incremental analysis keeps the lines that differ and ignores the rest: what changes in his month is 100. The contract itself creates no entry. The deposit on the new flat, paid the same day, does: 2,250 leaves cash for a recoverable asset, so net assets hold at 7,013.50 while his liquidity nearly halves."
+      "Among the papers from his first day Bill has a grant letter: 150 restricted stock units, shares of the company delivered on 1 October 2029 if he is still employed. At 20 euro a share on the grant date that is 3,000 euro, about 42 per cent of his net assets.",
+      "IFRS 2 is written for the company, which spreads the 3,000 over the 36 months of the vesting period, 1,000 a year against equity. Bill's own ledger has nothing to write: he owns no shares yet and the right to them can still be lost. Net assets hold at 7,100.00 and the company's cost does not move if the share price does."
     ],
     rows: [
-      { label: "Salary increase (1,400 to 1,740)", val: "+340",      tone: "pos" },
-      { label: "Rent increase (510 to 750)",       val: "-240",      tone: "neg" },
-      { label: "Incremental monthly result",       val: "+100",      tone: "pos", divider: true },
-      { label: "New deposit paid (3 x 750)",       val: "-2,250",    tone: "neg" },
-      { label: "Cash after deposit",               val: "2,462",     tone: "" },
-      { label: "Security deposits (recoverable)",  val: "3,450",     tone: "" },
-      { label: "Net assets",                       val: "7,013.50",  tone: "", divider: true }
+      { label: "Restricted stock units granted",   val: "150",       tone: "" },
+      { label: "Share price at grant date",        val: "20.00",     tone: "" },
+      { label: "Fair value at grant date",         val: "3,000",     tone: "" },
+      { label: "Entry in Bill's ledger",           val: "0",         tone: "", divider: true },
+      { label: "Company cost per year",            val: "1,000",     tone: "" },
+      { label: "Net assets",                       val: "7,100.00",  tone: "", divider: true }
     ]
   },
 
@@ -182,6 +181,13 @@ var BILL_STATE = {
   prior_rouAsset: 0,
   prior_leaseLiability: 0,
 
+  // EP.33 (20 Oct 2026): same solar month as EP.32, so no monthly accrual is posted,
+  // and the grant of 150 restricted stock units (20 euro a share on 1 Oct 2026, 3,000
+  // at grant date, all vesting 1 Oct 2029, service condition only, equity-settled)
+  // creates no entry in Bill's ledger. IFRS 2 is the company's accounting: 1,000 a
+  // year, 83.33 a month, against equity. Every balance-sheet figure below is
+  // unchanged from EP.32. Only vitals move (Future +2, see below).
+  //
   // Vitals (EP.32). Cash 31 -> 36: the old 1,200 deposit is back and September's
   // surplus is banked, so the buffer rises 2,462 -> 3,072 against an income that
   // is now 1,740. Equity 56 -> 44 without Bill gaining or losing anything: net
@@ -193,10 +199,13 @@ var BILL_STATE = {
   // utilities are still unknown and 8,340 of the lease falls due within twelve
   // months. Future 66 -> 69: permanent contract, higher income, and a housing
   // horizon that is now measured rather than assumed.
+  // EP.33: Cash 36, Equity 44 and Stress 64 hold, because nothing is posted. Future
+  // 69 -> 71: a 3 year tie to the employer with a 3,000 grant behind it, conditional
+  // on staying until 1 Oct 2029, so the horizon lengthens but nothing is banked.
   cash:   36,
   equity: 44,
   stress: 64,
-  future: 69,
+  future: 71,
 
   // Label for the homepage vitals panel. The comparison is always the close
   // of the last completed fiscal year against the current state. Change this
@@ -234,6 +243,16 @@ BILL_STATE.prior_netAssets   = BILL_STATE.prior_totalAssets - BILL_STATE.prior_t
 // Update log
 // Each new episode: bump fy2026EpisodeCount by 1, update latestEpisode to
 // the new episode's own number/url/title, in addition to the usual figures.
+// EP.33 20 Oct 2026: share-based payment (IFRS 2). Bill's grant letter: 150 restricted
+//   stock units, granted 1 Oct 2026 at 20.00 a share, fair value at grant date 3,000.
+//   Service condition only, all units vest 1 Oct 2029, equity-settled. Company cost
+//   1,000 a year (83.33 a month) against equity, fixed at grant-date fair value.
+//   Bill's ledger: no entry, nothing owned until the units vest. Same solar month as
+//   EP.32, so no accrual. Net assets 7,100.00 unchanged, total assets 19,566, total
+//   liabilities 12,466. Vitals: Future 69 -> 71, others unchanged. Tax on delivery
+//   deliberately left out of the episode.
+//   Files touched: ep-33.html, bill-state.js, and the FY2026 archive in ledger.html
+//   (fy2026.html is now only a redirect to ledger.html#fy2026).
 // EP.32 6 Oct 2026: lease liability measurement (IFRS 16). Bill has the keys and
 //   the job has started. 48-month lease at 750, rent only. Lease term assessed at
 //   18 months (cannot terminate before month 18, 6 months notice; furnished flat,
