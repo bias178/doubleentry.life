@@ -15,8 +15,8 @@ var BLOG_POSTS = [
     title: "Where the buyback shares go",
     note:  "11",
     date:  "27 Oct 2026",
-    topic: "IAS 32, IFRS 2",
-    type:  "illustrative",
+    topic: "ASC 505-30, ASC 718",
+    type:  "company",
     url:   "note-11-buyback-employee-shares.html",
     desc:  "40 million shares bought, 14 million handed to employees, and only 3 million of those came from the ones bought back."
   },
