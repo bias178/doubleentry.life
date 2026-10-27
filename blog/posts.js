@@ -111,3 +111,21 @@ var BLOG_POSTS = [
     desc:  "Accounting will not tell you where the market goes next. It shows what you are buying, what you are paying for it, and which risks sit outside the price."
   }
 ];
+
+// Visit counter (GoatCounter, no cookies). Lives here and in bill-state.js so
+// every page that loads either file is counted; the flag avoids a double count
+// on pages that load both. No external script: a single invisible request.
+(function(){
+  if (window.__delCounted) return;
+  window.__delCounted = true;
+  var h = location.hostname;
+  if (h !== 'doubleentry.life' && h !== 'www.doubleentry.life') return;
+  try {
+    var q = 'p=' + encodeURIComponent(location.pathname) +
+            '&t=' + encodeURIComponent(document.title) +
+            '&r=' + encodeURIComponent(document.referrer) +
+            '&s=' + screen.width + ',' + screen.height + ',' + (window.devicePixelRatio || 1) +
+            '&rnd=' + Math.random().toString(36).slice(2);
+    new Image().src = 'https://doubleentrylife.goatcounter.com/count?' + q;
+  } catch (e) {}
+})();
