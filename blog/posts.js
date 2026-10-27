@@ -12,13 +12,13 @@
 // }
 var BLOG_POSTS = [
   {
-    title: "Of every 3 shares bought back, 1 went to employees.",
+    title: "Where the buyback shares go",
     note:  "11",
     date:  "27 Oct 2026",
     topic: "IAS 32, IFRS 2",
     type:  "illustrative",
     url:   "note-11-buyback-employee-shares.html",
-    desc:  "A buyback and a share plan in the same year. The accounts record them in different places, and the share count only moves by the difference."
+    desc:  "40 million shares bought, 14 million handed to employees, and only 3 million of those came from the ones bought back."
   },
   {
     title: "Seven definitions of net debt.",
