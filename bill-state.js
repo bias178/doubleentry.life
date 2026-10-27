@@ -316,3 +316,21 @@ BILL_STATE.prior_netAssets   = BILL_STATE.prior_totalAssets - BILL_STATE.prior_t
 // Sep 2025: relocation -1600. New job 1400/mo, rent 600. Surplus 185.
 // Jun 2024 - Aug 2025: first job 900/mo, parents home. Surplus 495.
 // Apr 2024: 1000 graduation gift.
+
+// Visit counter (GoatCounter, no cookies). Lives here and in bill-state.js so
+// every page that loads either file is counted; the flag avoids a double count
+// on pages that load both. No external script: a single invisible request.
+(function(){
+  if (window.__delCounted) return;
+  window.__delCounted = true;
+  var h = location.hostname;
+  if (h !== 'doubleentry.life' && h !== 'www.doubleentry.life') return;
+  try {
+    var q = 'p=' + encodeURIComponent(location.pathname) +
+            '&t=' + encodeURIComponent(document.title) +
+            '&r=' + encodeURIComponent(document.referrer) +
+            '&s=' + screen.width + ',' + screen.height + ',' + (window.devicePixelRatio || 1) +
+            '&rnd=' + Math.random().toString(36).slice(2);
+    new Image().src = 'https://doubleentrylife.goatcounter.com/count?' + q;
+  } catch (e) {}
+})();
