@@ -202,6 +202,9 @@
     /* subscribe in hero */
     .hero-promise .hero-subhead:not(.hero-subhead-lead){margin-bottom:1.75rem;}
     .hero-subscribe{display:flex;flex-wrap:wrap;align-items:center;gap:0.75rem 1.25rem;}
+    /* subscribe: three soft pulses after load, then still; off with reduced motion */
+    @keyframes del-pulse{0%{box-shadow:0 0 0 0 rgba(42,122,122,0.45);}70%{box-shadow:0 0 0 14px rgba(42,122,122,0);}100%{box-shadow:0 0 0 0 rgba(42,122,122,0);}}
+    .hero-subscribe .btn-primary{animation:del-pulse 1.8s ease-out 0.8s 3;}
     .hero-subscribe-text{font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--neutral);}
       /* compact footer */
     .footer-inner{align-items:center !important;padding-top:2.25rem !important;padding-bottom:2.25rem !important;}
