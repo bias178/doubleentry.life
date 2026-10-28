@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /article-template.html
+Disallow: /blog/post-template.html
+Disallow: /l2l/
+Disallow: /f2f/
+Disallow: /brand-kit.zip
+
+Sitemap: https://doubleentry.life/sitemap.xml
