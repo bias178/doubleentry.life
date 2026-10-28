@@ -199,6 +199,12 @@
       .hero-copy .hero-headline{max-width:9.6em;}
       .hero-copy{grid-template-columns:1fr 0.9fr;}
     }
+    /* subscribe in hero */
+    .hero-promise .hero-subhead:not(.hero-subhead-lead){margin-bottom:1.75rem;}
+    .hero-subscribe{display:flex;flex-wrap:wrap;align-items:center;gap:0.75rem 1.25rem;}
+    .hero-subscribe-text{font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--neutral);}
+    .subscribe-btn{display:inline-block;background:var(--green);color:white;font-family:var(--font-mono);font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;padding:0.85rem 1.4rem;transition:opacity 0.15s;}
+    .subscribe-btn:hover{opacity:0.85;}
       /* compact footer */
     .footer-inner{align-items:center !important;padding-top:2.25rem !important;padding-bottom:2.25rem !important;}
     .footer-links{gap:0 !important;}
@@ -246,7 +252,11 @@
       <h1 class="hero-headline">What <em>accounting</em> says about a life, and about the companies you hear about.</h1>
       <div class="hero-promise">
       <p class="hero-subhead hero-subhead-lead">Behind every result, there is a decision, an estimate or a matter of timing.</p>
-      <p class="hero-subhead">Bill's ledger shows them at work in an ordinary life, one new entry every two weeks. The blog explores them through company accounts, in plain language.</p>
+      <p class="hero-subhead">Bill's ledger shows them at work in an ordinary life. The blog finds them in company accounts, in plain language.</p>
+      <div class="hero-subscribe">
+        <a class="subscribe-btn" href="https://doubleentrylife.substack.com/subscribe" target="_blank" rel="noopener">Subscribe</a>
+        <span class="hero-subscribe-text">One piece a week by email: Bill's ledger one week, the blog the next</span>
+      </div>
       </div>
 
     </div>
