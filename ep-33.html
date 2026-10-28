@@ -297,18 +297,30 @@
 <script src="bill-state.js"></script>
 <script>
   (function(){
+    // Next entry: the episode right after this one. If it is the latest, its
+    // title comes from bill-state.js; if more episodes have been published
+    // since, the title is read from ledger.html. No manual edit needed here.
     var thisEp = 33;
-    var next = BILL_STATE.latestEpisode;
-    if (next && next.number > thisEp) {
-      var cell = document.getElementById('ep-nav-next');
-      if (cell) {
-        var a = document.createElement('a');
-        a.href = next.url;
-        a.className = 'ep-nav-cell next';
-        a.innerHTML = '<span class="ep-nav-direction">Next entry &#8594;</span><span class="ep-nav-ep">EP.' + next.number + '</span><span class="ep-nav-title">' + next.title + '</span>';
-        cell.replaceWith(a);
-      }
+    var nextNum = thisEp + 1;
+    var nextLabel = (nextNum < 10 ? '0' : '') + nextNum;
+    var cell = document.getElementById('ep-nav-next');
+    var latest = (typeof BILL_STATE !== 'undefined') ? BILL_STATE.latestEpisode : null;
+    if (!cell || !latest || latest.number < nextNum) return;
+    function link(url, title) {
+      var a = document.createElement('a');
+      a.href = url;
+      a.className = 'ep-nav-cell next';
+      a.innerHTML = '<span class="ep-nav-direction">Next entry &#8594;</span><span class="ep-nav-ep">EP.' + nextLabel + '</span><span class="ep-nav-title"></span>';
+      a.querySelector('.ep-nav-title').textContent = title;
+      cell.replaceWith(a);
     }
+    if (latest.number === nextNum) { link(latest.url, latest.title); return; }
+    var url = 'ep-' + nextLabel + '.html';
+    fetch('ledger.html').then(function (r) { return r.text(); }).then(function (t) {
+      var d = new DOMParser().parseFromString(t, 'text/html');
+      var e = d.querySelector('a[href="' + url + '"] .ledger-entry-title');
+      link(url, e ? e.textContent.trim() : '');
+    }).catch(function () { link(url, ''); });
   })();
   </script>
 </body>
