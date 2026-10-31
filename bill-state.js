@@ -158,10 +158,10 @@ var BILL_STATE = {
   bnplPayable: 450,
 
   // Lease (EP.32, 1 Oct 2026). First time the running balance sheet carries a
-  // lease: EP.17 recognised a right-of-use asset and a liability inside its own
-  // episode ledger, but the figures were never carried into this file, so the
-  // homepage balance sheet has been showing neither. A 48-month contract makes
-  // that omission untenable, and the two lines enter here permanently.
+  // lease. The previous lease (EP.17, 12 months at 600) used the IFRS 16 short-term
+  // exemption: no right-of-use asset, no liability, rent expensed as it fell due.
+  // A 48-month contract takes the new lease out of the exemption, and the two
+  // lines enter here permanently.
   // Term 18 months (non-cancellable period; no extension is reasonably certain),
   // incremental borrowing rate 8.0%. Liability is the PV of the 17 payments
   // still outstanding after the 1 Oct payment; the ROU asset is that liability
@@ -273,9 +273,10 @@ BILL_STATE.prior_netAssets   = BILL_STATE.prior_totalAssets - BILL_STATE.prior_t
 //   NOTE: this publication touched four files, not three. index.html gained two
 //   balance-sheet rows (right-of-use asset, lease liability) because its rows are
 //   hardcoded. From EP.33 the usual three-file rule applies again.
-//   OPEN ITEM: EP.17's own page shows ROU 7,200 / lease liability 7,200, so the
-//   short-term exemption was never used there; the editorial calendar says it
-//   was. The calendar is wrong and needs correcting.
+//   RESOLVED 31 Oct 2026: EP.17's text, tip and closing line all say the short-term
+//   exemption applied (12 months, no right-of-use asset, no liability). Its BillBoard
+//   had two stray rows (ROU 7,200 / lease liability -7,200); they were removed and the
+//   Insight text rewritten. The editorial calendar was right.
 // EP.31 22 Sep 2026: incremental analysis (job change). Permanent contract
 //   signed, 1,740 net a month from 1 Oct against 1,400 today (+340). Rent rises
 //   510 -> 750, rent only in both (+240). Incremental monthly result +100, other
