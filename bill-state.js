@@ -2,10 +2,10 @@
 // Single source of truth. Update only when a new episode is published.
 
 var BILL_STATE = {
-  episode: "EP.33",
+  episode: "EP.34",
   fy:      "FY 2026",
-  date:    "20 Oct 2026",
-  concept: "Share-Based Payment",
+  date:    "3 Nov 2026",
+  concept: "Liability Settlement",
 
   // Drives the "Next entry" link on every episode page. Update this to the
   // new episode's own number/url/title each time a new episode is
@@ -13,9 +13,9 @@ var BILL_STATE = {
   // latestEpisode.number and resolves its "Next entry" link automatically:
   // no need to reopen and edit the previous episode's file by hand.
   latestEpisode: {
-    number: 33,
-    url:    "ep-33.html",
-    title:  "Bill was granted 3,000 euro of shares. His ledger records nothing."
+    number: 34,
+    url:    "ep-34.html",
+    title:  "Buy Now, Pay Later: Bill's first instalment is 150 euro. His profit does not move."
   },
 
   // Homepage BillBoard "Insight" panel (index.html). Previously hardcoded in
@@ -23,9 +23,10 @@ var BILL_STATE = {
   // EP.26", pairing EP.26's number with EP.19's concept. Now it lives here and
   // updates with everything else.
   insight: {
-    label: "Share-Based Payment / EP.33",
-    html:  "Bill is granted 150 restricted stock units at 20 euro a share. On the grant date that is <strong>3,000</strong> euro.<br><br>IFRS 2 is written for the company. It spreads the 3,000 over the 36 months of the vesting period, <strong>1,000</strong> a year, against equity, and the amount does not move if the share price does.<br><br>Bill's ledger records nothing until the units vest. Net assets stay at <strong>7,100.00</strong>.<br><br><strong>A grant is a cost for the company long before it is anything for the employee.</strong>"
+    label: "Liability Settlement / EP.34",
+    html:  "Bill pays the first of 3 instalments on the work clothes, <strong>150</strong> euro on 1 November.<br><br>The expense of 450 went into the books on 8 September, when the plan was signed. The instalment reduces the BNPL payable from <strong>450</strong> to <strong>300</strong> and cash by the same amount. No expense is recognised.<br><br>Net assets do not move on the day. They stand at <strong>7,247</strong> after October's profit of 147.<br><br><strong>A payment settles a debt. The cost was booked when the debt was signed.</strong>"
   },
+
 
 
   // Employment and monthly-statement labels (added 9 Oct 2026).
@@ -41,7 +42,7 @@ var BILL_STATE = {
   // FY2026 is the only open fiscal year. Update this by 1 each time a new
   // episode is published. FY2024 (9 EP) and FY2025 (11 EP) are closed and
   // stay static everywhere else in the site.
-  fy2026EpisodeCount: 13,
+  fy2026EpisodeCount: 14,
   fy2024EpisodeCount: 9,
   fy2025EpisodeCount: 11,
 
@@ -63,7 +64,10 @@ var BILL_STATE = {
   // (rent only) come from EP.31; every other line is held at the September value,
   // as EP.31 states ("other costs held constant until they can be measured in the
   // new city"). Surplus is derived: 1,740 - 750 - 115 - 250 - 80 - 25 - 30 - 150
-  // - 80 = 260 (160 + 340 - 240). It is a run rate, not a closed month.
+  // - 80 = 260 (160 + 340 - 240). It was a run rate until EP.34.
+  // EP.34 (3 Nov 2026): October is now a closed month on the new structure. Every
+  // line except rent and income was held at the September value (canon continuity
+  // rule, confirmed 31 Oct 2026), so the cash surplus stays 260.
   income:     1740,
   rent:       -750,
   utilities:  -115,
@@ -98,21 +102,22 @@ var BILL_STATE = {
   //   rows: label, val, tone ("pos" | "neg" | "" for neutral)
   //   divider: true inserts a rule above that row
   homeFeature: {
-    eyebrow:  "Share-based payment",
-    headline: "Bill was granted 3,000 euro of shares. His ledger records nothing.",
+    eyebrow:  "Liability settlement",
+    headline: "Buy Now, Pay Later: Bill's first instalment is 150 euro. His profit does not move.",
     body: [
-      "Among the papers from his first day Bill has a grant letter: 150 restricted stock units, shares of the company delivered on 1 October 2029 if he is still employed. At 20 euro a share on the grant date that is 3,000 euro, about 42 per cent of his net assets.",
-      "IFRS 2 is written for the company, which spreads the 3,000 over the 36 months of the vesting period, 1,000 a year against equity. Bill's own ledger has nothing to write: he owns no shares yet and the right to them can still be lost. Net assets hold at 7,100.00 and the company's cost does not move if the share price does."
+      "On 1 November, after the October salary has landed, Bill pays the first of 3 instalments on the work clothes bought on 8 September: 150 euro. The bank statement shows one more outflow. The ledger shows none that touches profit, because the whole 450 was booked as an expense on the day the plan was signed.",
+      "The instalment is the second half of that transaction. It reduces the BNPL payable from 450 to 300 and cash by the same 150, so net assets do not move on the day. They stand at 7,247 after October's profit of 147."
     ],
     rows: [
-      { label: "Restricted stock units granted",   val: "150",       tone: "" },
-      { label: "Share price at grant date",        val: "20.00",     tone: "" },
-      { label: "Fair value at grant date",         val: "3,000",     tone: "" },
-      { label: "Entry in Bill's ledger",           val: "0",         tone: "", divider: true },
-      { label: "Company cost per year",            val: "1,000",     tone: "" },
-      { label: "Net assets",                       val: "7,100.00",  tone: "", divider: true }
+      { label: "BNPL instalment paid",             val: "-150",      tone: "neg" },
+      { label: "BNPL payable before",              val: "450",       tone: "" },
+      { label: "BNPL payable after",               val: "300",       tone: "" },
+      { label: "Expense recognised",               val: "0",         tone: "", divider: true },
+      { label: "October profit",                   val: "147",       tone: "pos" },
+      { label: "Net assets",                       val: "7,247",     tone: "", divider: true }
     ]
   },
+
 
 
 
@@ -151,11 +156,11 @@ var BILL_STATE = {
   //    5,912 and net assets stay at 7,013.50. Only liquidity moves.
   //  - Bill therefore closes September holding two deposits. The old 1,200 is
   //    refunded on 1 Oct, when the keys go back, and is posted next time.
-  savings:    3072,
+  savings:    3182,
   deposit:    2250,
-  intangible: 1375.00,
-  phoneBookValue: 103,
-  bnplPayable: 450,
+  intangible: 1312,
+  phoneBookValue: 92,
+  bnplPayable: 300,
 
   // Lease (EP.32, 1 Oct 2026). First time the running balance sheet carries a
   // lease. The previous lease (EP.17, 12 months at 600) used the IFRS 16 short-term
@@ -167,10 +172,10 @@ var BILL_STATE = {
   // still outstanding after the 1 Oct payment; the ROU asset is that liability
   // plus the 750 paid at commencement. Split: 8,340 current, 3,676 non-current.
   // Monthly from October: depreciation 709 + interest on the liability.
-  rouAsset:               12766,
-  leaseLiability:         12016,
-  leaseLiabCurrent:        8340,
-  leaseLiabNonCurrent:     3676,
+  rouAsset:               12057,
+  leaseLiability:         11346,
+  leaseLiabCurrent:        8395,
+  leaseLiabNonCurrent:     2951,
 
   // Balance sheet - prior year close (FY2025, Dec 2025)
   prior_savings: 4544,
@@ -202,9 +207,9 @@ var BILL_STATE = {
   // EP.33: Cash 36, Equity 44 and Stress 64 hold, because nothing is posted. Future
   // 69 -> 71: a 3 year tie to the employer with a 3,000 grant behind it, conditional
   // on staying until 1 Oct 2029, so the horizon lengthens but nothing is banked.
-  cash:   36,
-  equity: 44,
-  stress: 64,
+  cash:   37,
+  equity: 45,
+  stress: 66,
   future: 71,
 
   // Label for the homepage vitals panel. The comparison is always the close
@@ -243,6 +248,27 @@ BILL_STATE.prior_netAssets   = BILL_STATE.prior_totalAssets - BILL_STATE.prior_t
 // Update log
 // Each new episode: bump fy2026EpisodeCount by 1, update latestEpisode to
 // the new episode's own number/url/title, in addition to the usual figures.
+// EP.34 3 Nov 2026: liability settlement (BNPL). First of 3 instalments, 150 on 1 Nov:
+//   Dr BNPL payable 150 / Cr Cash 150. No expense: the 450 went to clothing expense on
+//   8 Sep (EP.30). BNPL payable 450 -> 300. Instalments left: 1 Dec, 1 Jan.
+//   New solar month, so the October accrual is posted with this episode. Whole euro from
+//   here on (rule of 31 Oct 2026): entries are rounded and balances follow the posted entries.
+//   October (salary 1,740 arrived at month end, before the 1 Nov payments; recurring costs
+//   730 as in September: utilities 115, food 250, transport 80, phone 25, subs 30, social
+//   150, misc 80): cash +1,010 (the 1 Oct rent of 750 was already posted at EP.32),
+//   3,072 -> 4,082. Smartphone amortisation 11 (103 -> 92). Certification amortisation
+//   63 (62.50 rounded, 1,375 -> 1,312; the last instalment absorbs the rounding).
+//   Lease: right-of-use depreciation 709 (12,766 -> 12,057), interest 80 on the liability
+//   (12,016 -> 12,096). October profit 1,740 - 730 - 11 - 63 - 789 = 147. Net assets
+//   7,100 -> 7,247. Total assets 19,566 -> 19,793, liabilities 12,466 -> 12,546.
+//   1 Nov payments: BNPL 150 and rent 750 (Dr Lease liability 750 / Cr Cash 750). The rent
+//   is posted at EP.34 as a discrete payment, like the 1 Oct rent at EP.32, so the monthly
+//   accruals bank only the non-rent flows. Lease liability 12,096 -> 11,346 (8,395 current,
+//   2,951 non-current, same schedule method as EP.32). Cash 4,082 -> 3,182. Total assets
+//   18,893, total liabilities 11,646, net assets 7,247.
+//   Vitals: Cash 36 -> 37, Equity 44 -> 45, Stress 64 -> 66 (fixed monthly commitments
+//   750 -> 900 until January), Future 71 unchanged.
+//   Files touched: ep-34.html, bill-state.js, ledger.html (FY2026 archive), sitemap.xml.
 // EP.33 20 Oct 2026: share-based payment (IFRS 2). Bill's grant letter: 150 restricted
 //   stock units, granted 1 Oct 2026 at 20.00 a share, fair value at grant date 3,000.
 //   Service condition only, all units vest 1 Oct 2029, equity-settled. Company cost
