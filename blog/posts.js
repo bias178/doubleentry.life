@@ -12,6 +12,15 @@
 // }
 var BLOG_POSTS = [
   {
+    title: "Like for Like: One Quarter, Four Growth Rates",
+    note:  "12",
+    date:  "10 Nov 2026",
+    topic: "Like for like, APMs",
+    type:  "illustrative",
+    url:   "note-12-like-for-like.html",
+    desc:  "One illustrative company, round numbers, and four answers to how much it grew."
+  },
+  {
     title: "Where the buyback shares go",
     note:  "11",
     date:  "27 Oct 2026",
