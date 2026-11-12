@@ -198,7 +198,7 @@ var BILL_STATE = {
   // is now 1,740. Equity 56 -> 44 without Bill gaining or losing anything: net
   // assets move only +86.50, but recognising the lease adds 12,766 of assets and
   // 12,016 of liabilities, so the same net worth now sits on a balance sheet
-  // three times the size. This is the IFRS 16 gross-up, and it is the number a
+  // almost three times the size. This is the IFRS 16 gross-up, and it is the number a
   // lender reads first. Stress 65 -> 64: rent goes 625 all-in to 750 rent-only
   // against 340 more income, so the ratio improves slightly, but the new city's
   // utilities are still unknown and 8,340 of the lease falls due within twelve
@@ -291,7 +291,7 @@ BILL_STATE.prior_netAssets   = BILL_STATE.prior_totalAssets - BILL_STATE.prior_t
 //   Also posted, September accrual (last complete month on the old structure):
 //   cash +160, smartphone -11 (114 -> 103), certification -62.50 (1,437.50 ->
 //   1,375.00). Old deposit refunded 1 Oct: cash +1,200, deposits 3,450 -> 2,250.
-//   Net assets 7,013.50 -> 7,100.00. Total assets 7,013.50 -> 19,566, total
+//   Net assets 7,013.50 -> 7,100.00. Total assets 7,463.50 -> 19,566, total
 //   liabilities 450 -> 12,466.
 //   Monthly blocks (current and prior) deliberately untouched: October is not
 //   closed, so the current period still shows September on the old structure and
