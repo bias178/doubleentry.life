@@ -2,10 +2,10 @@
 // Single source of truth. Update only when a new episode is published.
 
 var BILL_STATE = {
-  episode: "EP.34",
+  episode: "EP.35",
   fy:      "FY 2026",
-  date:    "3 Nov 2026",
-  concept: "Liability Settlement",
+  date:    "17 Nov 2026",
+  concept: "Prepaid Expense",
 
   // Drives the "Next entry" link on every episode page. Update this to the
   // new episode's own number/url/title each time a new episode is
@@ -13,9 +13,9 @@ var BILL_STATE = {
   // latestEpisode.number and resolves its "Next entry" link automatically:
   // no need to reopen and edit the previous episode's file by hand.
   latestEpisode: {
-    number: 34,
-    url:    "ep-34.html",
-    title:  "Buy Now, Pay Later: Bill's first instalment is 150 euro. His profit does not move."
+    number: 35,
+    url:    "ep-35.html",
+    title:  "A Black Friday deal: a year of streaming for 70 euro. Bill's ledger keeps count, month by month."
   },
 
   // Homepage BillBoard "Insight" panel (index.html). Previously hardcoded in
@@ -23,8 +23,8 @@ var BILL_STATE = {
   // EP.26", pairing EP.26's number with EP.19's concept. Now it lives here and
   // updates with everything else.
   insight: {
-    label: "Liability Settlement / EP.34",
-    html:  "Bill pays the first of 3 instalments on the work clothes, <strong>150</strong> euro on 1 November.<br><br>The expense of 450 went into the books on 8 September, when the plan was signed. The instalment reduces the BNPL payable from <strong>450</strong> to <strong>300</strong> and cash by the same amount. No expense is recognised.<br><br>Net assets do not move on the day. They stand at <strong>7,247</strong> after October's profit of 147.<br><br><strong>A payment settles a debt. The cost was booked when the debt was signed.</strong>"
+    label: "Prepaid Expense / EP.35",
+    html:  "Bill pays <strong>70</strong> euro on 17 November for a year of a video streaming service, on the Black Friday offer.<br><br>The ledger charges him about <strong>6</strong> euro a month, so the 70 euro stands on the balance sheet as a prepaid expense and falls by 6 every month. 12 euro will reach the FY 2026 books and 58 the FY 2027 books.<br><br>Net assets do not move on the day. They stand at <strong>7,247</strong>; cash goes from 3,182 to 3,112.<br><br><strong>A prepayment buys months, and the ledger uses them up one at a time.</strong>"
   },
 
 
@@ -36,13 +36,13 @@ var BILL_STATE = {
   // prior-year comparison represent; they drive the labels of the monthly statement.
   // Update them together with the block (EP.34: first closed month on the new structure).
   currentContract: { since: "Oct 2026", net: 1740 },
-  cashFlowPeriod:  "Oct 2026",
+  cashFlowPeriod:  "Nov 2026",
   cashFlowPriorPeriod: "Oct 2025",
 
   // FY2026 is the only open fiscal year. Update this by 1 each time a new
   // episode is published. FY2024 (9 EP) and FY2025 (11 EP) are closed and
   // stay static everywhere else in the site.
-  fy2026EpisodeCount: 14,
+  fy2026EpisodeCount: 15,
   fy2024EpisodeCount: 9,
   fy2025EpisodeCount: 11,
 
@@ -68,13 +68,17 @@ var BILL_STATE = {
   // EP.34 (3 Nov 2026): October is now a closed month on the new structure. Every
   // line except rent and income was held at the September value (canon continuity
   // rule, confirmed 31 Oct 2026), so the cash surplus stays 260.
+  // EP.35 (17 Nov 2026): the block moves to November on the current run rate (decision of
+  // 12 Nov 2026). Subscriptions 30 -> 36: the annual plan of a video streaming service
+  // (70, 12 months, 6 a month) joins the recurring costs from November. Surplus 260 -> 254.
+  // The prior-year column stays Oct 2025 (cashFlowPriorPeriod).
   income:     1740,
   rent:       -750,
   utilities:  -115,
   food:       -250,
   transport:  -80,
   phone:      -25,
-  subs:       -30,
+  subs:       -36,
   social:     -150,
   misc:       -80,
 
@@ -102,18 +106,18 @@ var BILL_STATE = {
   //   rows: label, val, tone ("pos" | "neg" | "" for neutral)
   //   divider: true inserts a rule above that row
   homeFeature: {
-    eyebrow:  "Liability settlement",
-    headline: "Buy Now, Pay Later: Bill's first instalment is 150 euro. His profit does not move.",
+    eyebrow:  "Prepaid expense",
+    headline: "A Black Friday deal: a year of streaming for 70 euro. Bill's ledger keeps count, month by month.",
     body: [
-      "On 1 November, after the October salary has landed, Bill pays the first of 3 instalments on the work clothes bought on 8 September: 150 euro. The bank statement shows one more outflow. The ledger shows none that touches profit, because the whole 450 was booked as an expense on the day the plan was signed.",
-      "The instalment is the second half of that transaction. It reduces the BNPL payable from 450 to 300 and cash by the same 150, so net assets do not move on the day. They stand at 7,247 after October's profit of 147."
+      "On 17 November Bill takes the Black Friday offer on the annual plan of a video streaming service: 70 euro instead of 140, against 168 at the monthly rate. His account loses the 70 euro that day. The ledger divides it by 12 and charges him about 6 euro a month.",
+      "What he has paid and not yet used stays on the balance sheet as a prepaid expense, 70 euro on the day, falling by 6 every month. Net assets do not move. They stand at 7,247, and cash goes from 3,182 to 3,112."
     ],
     rows: [
-      { label: "BNPL instalment paid",             val: "-150",      tone: "neg" },
-      { label: "BNPL payable before",              val: "450",       tone: "" },
-      { label: "BNPL payable after",               val: "300",       tone: "" },
-      { label: "Expense recognised",               val: "0",         tone: "", divider: true },
-      { label: "October profit",                   val: "147",       tone: "pos" },
+      { label: "Annual plan paid",                 val: "-70",       tone: "neg" },
+      { label: "Prepaid expense",                  val: "70",        tone: "" },
+      { label: "Monthly cost (70 / 12)",           val: "6",         tone: "neg" },
+      { label: "Expense recognised today",         val: "0",         tone: "", divider: true },
+      { label: "Cash after payment",               val: "3,112",     tone: "" },
       { label: "Net assets",                       val: "7,247",     tone: "", divider: true }
     ]
   },
@@ -156,11 +160,15 @@ var BILL_STATE = {
   //    5,912 and net assets stay at 7,013.50. Only liquidity moves.
   //  - Bill therefore closes September holding two deposits. The old 1,200 is
   //    refunded on 1 Oct, when the keys go back, and is posted next time.
-  savings:    3182,
+  savings:    3112,
   deposit:    2250,
   intangible: 1312,
   phoneBookValue: 92,
   bnplPayable: 300,
+  // EP.35 (17 Nov 2026): annual plan of a video streaming service, 70 paid on 17 Nov, 12 months
+  // (Nov 2026 to Oct 2027), 6 a month, the last month 4. Prepaid expense, current asset. Cash 3,182 -> 3,112.
+  // At 31 Dec 2026: 58 left (12 charged to FY 2026). Net assets unchanged at 7,247.
+  prepaid:    70,
 
   // Lease (EP.32, 1 Oct 2026). First time the running balance sheet carries a
   // lease. The previous lease (EP.17, 12 months at 600) used the IFRS 16 short-term
@@ -183,6 +191,7 @@ var BILL_STATE = {
   prior_intangible: 0,
   prior_phoneBookValue: 213,
   prior_bnplPayable: 0,
+  prior_prepaid: 0,
   prior_rouAsset: 0,
   prior_leaseLiability: 0,
 
@@ -207,7 +216,7 @@ var BILL_STATE = {
   // EP.33: Cash 36, Equity 44 and Stress 64 hold, because nothing is posted. Future
   // 69 -> 71: a 3 year tie to the employer with a 3,000 grant behind it, conditional
   // on staying until 1 Oct 2029, so the horizon lengthens but nothing is banked.
-  cash:   37,
+  cash:   36,
   equity: 45,
   stress: 66,
   future: 71,
@@ -228,7 +237,7 @@ var BILL_STATE = {
 BILL_STATE.surplus = BILL_STATE.income + BILL_STATE.rent + BILL_STATE.utilities +
                      BILL_STATE.food + BILL_STATE.transport + BILL_STATE.phone +
                      BILL_STATE.subs + BILL_STATE.social + BILL_STATE.misc;
-BILL_STATE.totalAssets  = BILL_STATE.savings + BILL_STATE.deposit + BILL_STATE.intangible + BILL_STATE.phoneBookValue + BILL_STATE.rouAsset;
+BILL_STATE.totalAssets  = BILL_STATE.savings + BILL_STATE.deposit + BILL_STATE.prepaid + BILL_STATE.intangible + BILL_STATE.phoneBookValue + BILL_STATE.rouAsset;
 BILL_STATE.totalLiab    = BILL_STATE.bnplPayable + BILL_STATE.leaseLiability;
 BILL_STATE.netAssets    = BILL_STATE.totalAssets - BILL_STATE.totalLiab;
 BILL_STATE.totalEpisodes = BILL_STATE.fy2024EpisodeCount +
@@ -241,11 +250,24 @@ BILL_STATE.prior_surplus = BILL_STATE.prior_income + BILL_STATE.prior_rent +
                            BILL_STATE.prior_transport + BILL_STATE.prior_phone +
                            BILL_STATE.prior_subs + BILL_STATE.prior_social +
                            BILL_STATE.prior_misc;
-BILL_STATE.prior_totalAssets = BILL_STATE.prior_savings + BILL_STATE.prior_deposit + BILL_STATE.prior_intangible + BILL_STATE.prior_phoneBookValue + BILL_STATE.prior_rouAsset;
+BILL_STATE.prior_totalAssets = BILL_STATE.prior_savings + BILL_STATE.prior_deposit + BILL_STATE.prior_prepaid + BILL_STATE.prior_intangible + BILL_STATE.prior_phoneBookValue + BILL_STATE.prior_rouAsset;
 BILL_STATE.prior_totalLiab   = BILL_STATE.prior_bnplPayable + BILL_STATE.prior_leaseLiability;
 BILL_STATE.prior_netAssets   = BILL_STATE.prior_totalAssets - BILL_STATE.prior_totalLiab;
 
 // Update log
+// EP.35 17 Nov 2026: prepaid expense (annual plan of a video streaming service, Black Friday
+//   offer). 70 paid on 17 Nov for 12 months (usual annual price 140, monthly plan 14, so 168
+//   over 12 months): Dr Prepaid expense 70 / Cr Cash 70. Cash 3,182 -> 3,112, prepaid 0 -> 70,
+//   total assets 18,893 and net assets 7,247 unchanged, liabilities 11,646 unchanged. Same
+//   solar month as EP.34, so no monthly accrual is posted; November closes with the next
+//   episode (6 to subscription expense, prepaid 70 -> 64). Cost 6 a month, last month 4
+//   (70 / 12 = 5.83, whole euro, rounding in the last month). FY 2026 gets 12 (Nov, Dec), FY 2027
+//   gets 58; at 31 Dec 2026 the 58 left is a current asset (IAS 1.66). Monthly block moved to
+//   Nov 2026 on the current run rate: subs -30 -> -36, surplus 260 -> 254 (prior column
+//   stays Oct 2025, -53). Vitals: Cash 37 -> 36, others unchanged. New balance-sheet line,
+//   so start.html (buildSFP) gained a row; the home reads the state and needs no edit.
+//   Files touched: ep-35.html, bill-state.js, ledger.html (FY2026 archive), sitemap.xml, plus
+//   start.html for the new line and its note.
 // Each new episode: bump fy2026EpisodeCount by 1, update latestEpisode to
 // the new episode's own number/url/title, in addition to the usual figures.
 // EP.34 3 Nov 2026: liability settlement (BNPL). First of 3 instalments, 150 on 1 Nov:

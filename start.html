@@ -312,11 +312,11 @@
               <tr><td>Food</td><td class="neg" id="bs-t-food">-250</td></tr>
               <tr><td>Transport</td><td class="neg" id="bs-t-transport">-80</td></tr>
               <tr><td>Phone</td><td class="neg" id="bs-t-phone">-25</td></tr>
-              <tr><td>Subscriptions</td><td class="neg" id="bs-t-subs">-30</td></tr>
+              <tr><td>Subscriptions</td><td class="neg" id="bs-t-subs">-36</td></tr>
               <tr><td>Social (incl. train home)</td><td class="neg" id="bs-t-social">-150</td></tr>
               <tr><td>Misc</td><td class="neg" id="bs-t-misc">-80</td></tr>
-              <tr class="ttl"><td>Monthly surplus</td><td class="pos" id="bs-t-surplus">+260</td></tr>
-              <tr class="muted"><td>Surplus vs last year</td><td class="neg" id="bs-t-surplus-delta">+313</td></tr>
+              <tr class="ttl"><td>Monthly surplus</td><td class="pos" id="bs-t-surplus">+254</td></tr>
+              <tr class="muted"><td>Surplus vs last year</td><td class="neg" id="bs-t-surplus-delta">+307</td></tr>
             </table>
           </div>
           <div class="tama-panel" id="hero-panel-vitals">
@@ -350,7 +350,7 @@
         </div>
         <div class="page-header-note">
         <strong>How to read this</strong>
-        Balance sheet as at <span id="bs-note-period">EP.33 (20 Oct 2026)</span>, compared with the FY2025 closing. Cash flow statement on the new contract structure (October, a closed month), compared with the same month a year earlier (<span id="bs-note-prior">Oct 2025</span> in the prior column). All figures in EUR.
+        Balance sheet as at <span id="bs-note-period">EP.33 (20 Oct 2026)</span>, compared with the FY2025 closing. Cash flow statement on the new contract structure (November, on the current run rate), compared with the prior-year column (<span id="bs-note-prior">Oct 2025</span>). All figures in EUR.
       </div>
         </div>
       </div>
@@ -416,9 +416,9 @@
         </div>
         <div class="xbrl-row indent">
           <span class="xbrl-label">Subscriptions</span>
-          <span class="xbrl-val neg">-30</span>
+          <span class="xbrl-val neg">-36</span>
           <span class="xbrl-val muted">-43</span>
-          <span class="xbrl-change pos">+13</span>
+          <span class="xbrl-change pos">+7</span>
         </div>
         <div class="xbrl-row indent">
           <span class="xbrl-label">Social and leisure</span>
@@ -435,9 +435,9 @@
 
         <div class="xbrl-row total">
           <span class="xbrl-label">Net cash from operating activities</span>
-          <span class="xbrl-val pos">260</span>
+          <span class="xbrl-val pos">254</span>
           <span class="xbrl-val muted neg">-53</span>
-          <span class="xbrl-change pos">+313</span>
+          <span class="xbrl-change pos">+307</span>
         </div>
       </div>
 
@@ -781,7 +781,7 @@ function buildSFP(s){
   function sec(t){ return '<div class="xbrl-section"><span class="xbrl-section-label">'+t+'</span><span></span><span></span><span></span></div>'; }
   var pLC = s.prior_leaseLiabCurrent||0, pLN = (s.prior_leaseLiability||0) - pLC;
   var nca = s.phoneBookValue + s.intangible + s.rouAsset, pnca = s.prior_phoneBookValue + s.prior_intangible + s.prior_rouAsset;
-  var ca = s.savings + s.deposit, pca = s.prior_savings + s.prior_deposit;
+  var ca = s.savings + s.deposit + (s.prepaid||0), pca = s.prior_savings + s.prior_deposit + (s.prior_prepaid||0);
   var cl = s.bnplPayable + s.leaseLiabCurrent, pcl = s.prior_bnplPayable + pLC;
   var h = '';
   h += sec('Non-current assets');
@@ -792,6 +792,7 @@ function buildSFP(s){
   h += sec('Current assets');
   h += row('Cash and cash equivalents', s.savings, s.prior_savings, 'indent');
   h += row('Security deposit (recoverable)', s.deposit, s.prior_deposit, 'indent');
+  h += row('Prepaid expense (annual plan)', s.prepaid||0, s.prior_prepaid||0, 'indent');
   h += row('Total current assets', ca, pca, 'subtotal');
   h += row('Total assets', s.totalAssets, s.prior_totalAssets, 'subtotal');
   h += sec('Non-current liabilities');
